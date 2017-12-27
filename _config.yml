@@ -1,2 +1,24 @@
-theme: jekyll-theme-cayman
-baseurl: /andrehu88.github.com
+# Basic
+title: JackHu's Blog
+author: HUYong
+description: 嗨，我是JackHu，一个能读万卷书，行万里路的iOS开发者。<br/>现于上海松江，从事移动APP开发。
+
+url: "https://www.sohod.cn"
+
+permalink: /:year/:month/:title/
+
+# Format
+highlighter: plain
+markdown: redcarpet
+redcarpet:
+  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "strikethrough", "superscript", tables]
+
+# Pagination
+gems: [jekyll-paginate]
+paginate: 15
+paginate_path: "pages/:num/"
+
+# Social
+social:
+    qq: 229376483
+    mail: huyong229@163.com

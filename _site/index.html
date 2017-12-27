@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/images/logo.png">
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+
+    <title>JackHu&#39;s Blog</title>
+
+    <meta property="og:url" content="/">
+    <meta property="og:title" content="JackHu&#39;s Blog">
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="嗨，我是jackHu，一名来自湖北襄阳的iOS开发者。<br/>现于上海松江，从事互联网开发工作。">
+
+    <!--   Core CSS Files   -->
+    <link href="//cdn.bootcss.com/flex-layout-attribute/1.0.3/css/flex-layout-attribute.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
+
+    <!-- Canonical SEO -->
+    <link rel="canonical" href="https://wnglmng.com/">
+    <link rel="alternate" type="application/rss+xml" title="JackHu's Blog" href="https://wnglmng.com/feed.xml">
+</head>
+
+<body>
+    <div id="nav" layout="row top-left">
+    <div self="left">
+        <a href="/"><div class="logo logo-isNotVisIfMobile">JackHu's Blog</div></a>
+        <a href="/"><div class="logo logo-isVisIfMobile"></div></a>
+    </div>
+    <div class="nav-isNotVisIfMobile">
+        <div class="item">
+            <a href="/tags">Tags</a>
+        </div>
+        <div class="item">
+            <a href="/videos">Videos</a>
+        </div>
+    </div>
+    <div class="nav-isVisIfMobile">
+        <div class="item">
+            <a href="/tags">Tags</a>
+        </div>
+        <div class="item">
+            <a href="/videos">Videos</a>
+        </div>
+    </div>
+</div>
+
+    <div id="content">
+        <div class="container container--header">
+    <h1 class="h1--home-title">JackHu's Blog</h1>
+    <p>嗨，我是JackHu，一个能读万卷书，行万里路的iOS开发者。<br/>现于上海松江，从事移动APP开发。</p>
+</div>
+
+        <link rel="stylesheet" type="text/css" href="/assets/css/homepage.css">
+
+<div class="container--grid home-container">
+    <ul layout="rows top-left" id="MixItUpF13DC5">
+        
+        
+        <li class="mix" style="display: inline-block;" data-bound="">
+            <a href="/2017/12/objcRuntme/">
+                <div class="card card--article not-visible">
+                    <div class="card-body">
+                        <div class="card-title card-title--articleIfNoImage">objcRuntime小记</div>
+                        <p class="card-description card-description--clamp-14">“runtime学习”</p>
+                        <p class="card-description card-article-preview">
+                            最近在学习objc的底层runtime知识，学到这块时就做个小笔记，做个总结，归纳。刚好最近也搭建了自己的GitHub博客，就以此作为个人博客的开篇吧objc函数调用总结Objective-C是动态语言，编译时并不决定函数的调用，通俗的讲，所有的类型声明都是给编译器看的。OC的函数调用实际上就是向一个objc对象(或者Class)发消息，发消息实际上就是沿着它的isa指针寻找真正的函数地址runtime中声明了id和Class的类型，简化如下```struct objc_class {    struct objc_class *isa;};struct objc_object {    struct objc_class *isa;};typedef struct objc_clas...
+                        </p>
+                        <p></p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-footer-wrapper" layout="row bottom-left">
+                            <div class="card-type is-notShownIfHover">2017-12-25</div>
+                            <div class="card-tag is-notShownIfHover">@HUYong</div>
+                            <div class="card-tag is-shownIfHover">
+                                
+                                    objc &nbsp;&nbsp;
+                                
+                            </div>
+                            <div class="card-logo is-shownIfHover" self="right"></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </li>
+        
+        
+        
+    </ul>
+    <div class="container--call-to-action" style="text-align: center; margin: 0px 0 30px 0;">
+    
+    
+</div>
+
+</div>
+
+    </div>
+    <div id="footer" layout="rows center-left">
+    <div id="end-mark">
+        <div class="end-mark-icon"></div>
+        <p class="copyright">JackHu' Blog © 2017&nbsp;&nbsp;·&nbsp;&nbsp;愿你出走半生，归来仍是少年</p>
+    </div>
+    <div id="footer-links" self="right">
+        <ul>
+            <!-- <a href="#"><li class="wechat" target="_blank"></li></a> -->
+            <a href="mailto:huyong229@163.com" target="_blank"><li class="mail"></li></a>
+            <a href="http://weibo.com/" target="_blank"><li class="weibo"></li></a>
+            <a href="https://github.com/" target="_blank"><li class="github"></li></a>
+        </ul>
+    </div>
+</div>
+
+</body>
+<!--   Core JS Files   -->
+<script src="//cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/mixitup/2.1.11/jquery.mixitup.min.js"></script>
+<script src="/assets/js/main.js"></script>
+
+</html>
