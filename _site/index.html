@@ -51,7 +51,7 @@
     <div id="content">
         <div class="container container--header">
     <h1 class="h1--home-title">JackHu的一片天地</h1>
-    <p>嗨，我是JackHu，一个能读万卷书，行万里路的iOS开发者。<br/>现于上海松江，从事移动APP开发。</p>
+    <p>嗨，我是JackHu，一个能读万卷书，行万里路的iOS开发者。<br/>现居上海松江，从事移动APP开发。</p>
 </div>
 
         <link rel="stylesheet" type="text/css" href="/assets/css/homepage.css">
@@ -67,7 +67,7 @@
                         <div class="card-title card-title--articleIfNoImage">objcRuntime小记</div>
                         <p class="card-description card-description--clamp-14">“runtime学习”</p>
                         <p class="card-description card-article-preview">
-                            最近在学习objc的底层runtime知识，学到这块时就做个小笔记，做个总结，归纳。刚好最近也搭建了自己的GitHub博客，就以此作为个人博客的开篇吧objc函数调用总结Objective-C是动态语言，编译时并不决定函数的调用，通俗的讲，所有的类型声明都是给编译器看的。OC的函数调用实际上就是向一个objc对象(或者Class)发消息，发消息实际上就是沿着它的isa指针寻找真正的函数地址runtime中声明了id和Class的类型，简化如下```struct objc_class {    struct objc_class *isa;};struct objc_object {    struct objc_class *isa;};typedef struct objc_clas...
+                            最近在学习objc的底层runtime知识，学到这块时就做个小笔记，做个总结。刚好最近也搭建了自己的GitHub博客，就以此作为个人博客的开篇吧什么是runtime我们知道高级编程语言要想成为可执行文件的过程：高级语言 -&gt; 汇编语言 -&gt; 机器语言。机器语言是计算机唯一能识别的语言。所以从OC代码到最后的可执行文件的过程大概有：OC -&gt; C - &gt;编译(汇编) -&gt; 可执行文件 。从OC到C的过程就是由runtime来实现。通俗的将runtime就是把面向对象的类转变为面向过程的结构体我们导入import &lt;objc/runtime.h&gt;，查看runtime.h的头文件，会发现以下代码/// Represents an instance o...
                         </p>
                         <p></p>
                     </div>

@@ -12,6 +12,8 @@ highlighter: plain
 markdown: redcarpet
 redcarpet:
   extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "strikethrough", "superscript", tables]
+kramdown:
+  input: GFM
 
 # Pagination
 gems: [jekyll-paginate]
