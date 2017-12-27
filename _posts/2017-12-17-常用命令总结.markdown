@@ -1,0 +1,39 @@
+---
+layout:         post
+title:          工作和学习中常用的各种命令总结
+subtitle:       terminal命令
+card-image:
+date:           2017-12-27
+tags:           总结
+post-card-type: article
+---
+### 常用的终端命令太多，有时候经常会忘记，或者记错。所以来篇博客记录下
+
+```shell
+ls path 列出文件
+ls -l 详细信息
+ls -a 包括隐藏文件
+```
+
+```shell
+rm 参数 文件 
+rm -rf 递归和强制
+rm -rf/ 删除系统的所有文件，勿使用
+```
+
+在某一个路径下，如果想显示当前的路径:```pwd```,如果想在finder中打开```open .``
+
+apache的操作
+
+```shell
+sudo apachectl -k start 	开启Apache服务
+sudo apachectl -k restart 	重启Apache服务
+sudo apachectl -k stop	 	关闭Apache服务
+```
+
+mysql的操作
+
+```shell
+service mysql start  开启MySQL服务
+```
+
