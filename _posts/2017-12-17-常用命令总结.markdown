@@ -21,7 +21,7 @@ rm -rf 递归和强制
 rm -rf/ 删除系统的所有文件，勿使用
 ```
 
-在某一个路径下，如果想显示当前的路径:```pwd```,如果想在finder中打开```open .``
+在某一个路径下，如果想显示当前的路径:```pwd```,如果想在finder中打开```open .```
 
 apache的操作
 
@@ -31,9 +31,23 @@ sudo apachectl -k restart 	重启Apache服务
 sudo apachectl -k stop	 	关闭Apache服务
 ```
 
-mysql的操作
+mysql的操作(linux)
 
 ```shell
 service mysql start  开启MySQL服务
+```
+
+mysql的操作(Mac)，在Mac下MySQL的安装目录在```/usr/local/mysql/bin/mysql```下
+
+```shell
+alias mysql=/usr/local/mysql/bin/mysql
+alias mysqladmin=/usr/local/mysql/bin/mysqladmin
+export PATH=${PATH}:/usr/local/mysql/bin  添加用户环境变量 .bash_profile
+```
+
+如果在Mac上使用HomeBrew安装
+
+```
+mysql.server  {start|stop|restart|reload|force-reload|status}  [ MySQL server options
 ```
 
