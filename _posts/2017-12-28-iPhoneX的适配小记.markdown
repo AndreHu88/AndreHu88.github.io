@@ -18,7 +18,7 @@ StatusBarHeight:44.000000
 TabBarHeight:83.000000
 NavHeight:44.000000
 ScreenHeight:812.000000
-frame: {{0, 0}, {375, 812}}
+frame: {0, 0}, {375, 812}
 ```
 
 再次打印```Phone7```的尺寸信息
