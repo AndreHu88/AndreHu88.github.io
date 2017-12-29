@@ -27,7 +27,7 @@ frame: [0, 0, 375, 812]
 StatusBarHeight:20.000000
 TabBarHeight:49.000000
 NavHeight:44.000000
-frame: {{0, 0}, {375, 667}}
+frame: [0, 0, 375, 667]
 ScreenHeight:667.000000
 ```
 

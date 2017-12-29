@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+    <!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/images/logo.png">
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+
+    <title>工作和学习中常用的各种命令总结</title>
+
+    <meta property="og:url" content="/">
+    <meta property="og:title" content="工作和学习中常用的各种命令总结">
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="常用的终端命令太多，有时候经常会忘记，或者记错。所以来篇博客记录下">
+
+    <!--   Core CSS Files   -->
+    <link href="//cdn.bootcss.com/flex-layout-attribute/1.0.3/css/flex-layout-attribute.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
+
+    <!-- Canonical SEO -->
+    <link rel="canonical" href="https://www.sohod.cn/2017/12/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/">
+    <link rel="alternate" type="application/rss+xml" title="JackHu的一片天地" href="https://www.sohod.cn/feed.xml">
+</head>
+
+<body>
+    <div id="nav" layout="row top-left">
+    <div self="left">
+        <a href="/"><div class="logo logo-isNotVisIfMobile">JackHu的一片天地</div></a>
+        <a href="/"><div class="logo logo-isVisIfMobile"></div></a>
+    </div>
+    <div class="nav-isNotVisIfMobile">
+        <div class="item">
+            <a href="/tags">Tags</a>
+        </div>
+        <div class="item">
+            <a href="/videos">Videos</a>
+        </div>
+    </div>
+    <div class="nav-isVisIfMobile">
+        <div class="item">
+            <a href="/tags">Tags</a>
+        </div>
+        <div class="item">
+            <a href="/videos">Videos</a>
+        </div>
+    </div>
+</div>
+
+    <div id="content">
+        <div class="container container--header">
+    <h1 class="h1--home-title">工作和学习中常用的各种命令总结</h1>
+    <p>terminal命令</p>
+</div>
+
+        <link rel="stylesheet" type="text/css" href="/assets/css/article.css">
+
+<div class="page-wrapper">
+    <div class="container--text">
+        <h3>常用的终端命令太多，有时候经常会忘记，或者记错。所以来篇博客记录下</h3>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">ls path 列出文件
+ls -l 详细信息
+ls -a 包括隐藏文件
+</code></pre></figure><figure class="highlight"><pre><code class="language-shell" data-lang="shell">rm 参数 文件 
+rm -rf 递归和强制
+rm -rf/ 删除系统的所有文件，勿使用
+</code></pre></figure>
+<p>在某一个路径下，如果想显示当前的路径:<code>pwd</code>,如果想在finder中打开<code>open .</code></p>
+
+<p>apache的操作</p>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">sudo apachectl -k start     开启Apache服务
+sudo apachectl -k restart   重启Apache服务
+sudo apachectl -k stop      关闭Apache服务
+</code></pre></figure>
+<p>mysql的操作(linux)</p>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">service mysql start  开启MySQL服务
+</code></pre></figure>
+<p>mysql的操作(Mac)，在Mac下MySQL的安装目录在<code>/usr/local/mysql/bin/mysql</code>下</p>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">alias mysql=/usr/local/mysql/bin/mysql
+alias mysqladmin=/usr/local/mysql/bin/mysqladmin
+export PATH=${PATH}:/usr/local/mysql/bin  添加用户环境变量 .bash_profile
+</code></pre></figure>
+<p>如果在Mac上使用HomeBrew安装</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">mysql.server  {start|stop|restart|reload|force-reload|status}  [ MySQL server options
+</code></pre></figure>
+    </div>
+</div>
+
+<style type="text/css">
+    .ds-thread {
+        max-width: 680px;
+        margin: auto;
+    }
+</style>
+
+<!-- 多说评论框 start -->
+<!-- <div class="ds-thread" data-thread-key="/2017/12/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/" data-title=工作和学习中常用的各种命令总结 data-url=https://www.sohod.cn/2017/12/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/></div> -->
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+// var duoshuoQuery = {short_name:"wnglmng"};
+//     (function() {
+//         var ds = document.createElement('script');
+//         ds.type = 'text/javascript';ds.async = true;
+//         ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+//         ds.charset = 'UTF-8';
+//         (document.getElementsByTagName('head')[0]
+//          || document.getElementsByTagName('body')[0]).appendChild(ds);
+//     })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+<div class="related_posts-container" style="max-width: 790px;">
+    <p class="related_posts-header">RELATED ARTICLES</p>
+
+    <div layout="rows center-spread">
+
+        
+        
+        
+            <a href="/2017/12/objcRuntme/">
+                <div class="card card--article not-visible">
+                    <div class="card-body">
+                        <div class="card-title card-title--articleIfNoImage">objcRuntime小记</div>
+                        <p class="card-description card-description--clamp-14">“runtime学习”</p>
+                        <p class="card-description card-article-preview">
+                            最近在学习objc的底层runtime知识，学到这块时就做个小笔记，做个总结。刚好最近也搭建了自己的GitHub博客，就以此作为个人博客的开篇吧什么是runtime我们知道高级编程语言要想成为可执行文件的过程：高级语言 -&gt; 汇编语言 -&gt; 机器语言。机器语言是计算机唯一能识别的语言。所以从OC代码到最后的可执行文件的过程大概有：OC -&gt; C - &gt;编译(汇编) -&gt; 可执行文件 。从OC到C的过程就是由runtime来实现。通俗的将runtime就是把面向对象的类转变为面向过程的结构体我们导入import &lt;objc/runtime.h&gt;，查看runtime.h的头文件，会发现以下代码/// Represents an instance o...
+                        </p>
+                        <p></p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-footer-wrapper" layout="row bottom-left">
+                            <div class="card-type is-notShownIfHover">2017-12-25</div>
+                            <div class="card-tag is-notShownIfHover">@HuYong</div>
+                            <div class="card-tag is-shownIfHover">
+                                
+                                    objc &nbsp;&nbsp;
+                                
+                            </div>
+                            <div class="card-logo is-shownIfHover" self="right"></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        
+        
+        
+
+        
+        
+        
+            <a href="/2017/12/iPhoneX%E7%9A%84%E9%80%82%E9%85%8D%E5%B0%8F%E8%AE%B0/">
+                <div class="card card--article not-visible">
+                    <div class="card-body">
+                        <div class="card-title card-title--articleIfNoImage">iPhoneX的适配问题</div>
+                        <p class="card-description card-description--clamp-14">“总结一次iPhone X的适配”</p>
+                        <p class="card-description card-article-preview">
+                            ### 记录一次iPhone X的适配过程，做个总结自iOS11后，苹果推出```iPhone X```。由于```iPhoneX```的尺寸，外观不太常规，所以适配自然就不太一样。而且iOS11后，有些API做了些改变。在Xcode中，我打印了```iPhone X```的一些尺寸信息```objective-cStatusBarHeight:44.000000TabBarHeight:83.000000NavHeight:44.000000ScreenHeight:812.000000frame: [0, 0, 375, 812]```再次打印```Phone7```的尺寸信息```objective-cStatusBarHeight:20.000000TabBarHeight:4...
+                        </p>
+                        <p></p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-footer-wrapper" layout="row bottom-left">
+                            <div class="card-type is-notShownIfHover">2017-12-28</div>
+                            <div class="card-tag is-notShownIfHover">@HuYong</div>
+                            <div class="card-tag is-shownIfHover">
+                                
+                                    总结 &nbsp;&nbsp;
+                                
+                            </div>
+                            <div class="card-logo is-shownIfHover" self="right"></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        
+        
+        
+
+    </div>
+</div>
+
+
+    </div>
+    <div id="footer" layout="rows center-left">
+    <div id="end-mark">
+        <div class="end-mark-icon"></div>
+        <p class="copyright">JackHu' Blog © 2017&nbsp;&nbsp;·&nbsp;&nbsp;愿你出走半生，归来仍是少年</p>
+    </div>
+    <div id="footer-links" self="right">
+        <ul>
+            <!-- <a href="#"><li class="wechat" target="_blank"></li></a> -->
+            <a href="mailto:huyong229@163.com" target="_blank"><li class="mail"></li></a>
+            <a href="http://weibo.com/huyong668" target="_blank"><li class="weibo"></li></a>
+            <a href="https://github.com/https://github.com" target="_blank"><li class="github"></li></a>
+        </ul>
+    </div>
+</div>
+
+</body>
+<!--   Core JS Files   -->
+<script src="//cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/mixitup/2.1.11/jquery.mixitup.min.js"></script>
+<script src="/assets/js/main.js"></script>
+
+</html>
