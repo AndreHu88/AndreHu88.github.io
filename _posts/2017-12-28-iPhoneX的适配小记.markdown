@@ -2,10 +2,10 @@
 layout:         post
 title:          iPhoneX的适配问题
 subtitle:       总结一次iPhone X的适配
-card-image:
+card-image:	https://developer.apple.com/ios/update-apps-for-iphone-x/images/illustrations/checklist-safe-area-landscape.svg
 date:           2017-12-28
-tags:           总结
-post-card-type: article
+tags:           iOS
+post-card-type: image
 ---
 ### 记录一次iPhone X的适配过程，做个总结
 
@@ -32,6 +32,10 @@ ScreenHeight:667.000000
 ```
 
 首先要在launchImage中加入iPhone X的启动页，大小为1125*2436，再次启动APP发现可以全屏显示了。
+![launchImage](https://developer.apple.com/ios/update-apps-for-iphone-x/images/illustrations/checklist-safe-area-portrait.svg)
+![launchImage](https://developer.apple.com/ios/update-apps-for-iphone-x/images/illustrations/checklist-safe-area-landscape.svg)
+
+在开发中尽量把我们的内容放到图中的safeArea中
 
 在iOS11中增加了几个新的API。
 
@@ -64,8 +68,7 @@ viewWillLayoutSubviews
 ```
 
 总结来看，总体变化有：
-
 1.状态栏由20pt变成44pt，所以导航栏从64pt变为88pt
-
 2.底部多出了34pt的home indicator的边距
 
+更多的适配细节还是见[苹果人机交互指南网站](https://developer.apple.com/cn/ios/update-apps-for-iphone-x/)

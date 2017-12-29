@@ -4,7 +4,7 @@ title:          工作和学习中常用的各种命令总结
 subtitle:       terminal命令
 card-image:
 date:           2017-12-27
-tags:           总结
+tags:           iOS
 post-card-type: article
 ---
 ### 常用的终端命令太多，有时候经常会忘记，或者记错。所以来篇博客记录下
