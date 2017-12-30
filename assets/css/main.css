@@ -140,12 +140,12 @@ body #nav {
 
 #nav div.logo {
 	background-image: url('/assets/images/logo.png');
-	background-size: 30px 30px;
+	background-size: 90px 80px;
 	background-repeat: no-repeat;
 	background-position: left center;
 	color: #90949C;
 	float: left;
-	padding: 0 0 0 42px;
+	padding: 0 0 0 100px;
 	font-weight: 200;
 	font-size: 18px;
 }
