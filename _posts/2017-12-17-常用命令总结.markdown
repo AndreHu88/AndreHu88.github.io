@@ -23,9 +23,12 @@ rm -rf/ 删除系统的所有文件，勿使用
 
 在某一个路径下，如果想显示当前的路径:```pwd```,如果想在finder中打开```open .```
 
-apache的操作
+**Apache**的操作，Mac系统自带Apache，apachectl命令
 
 ```shell
+cd /ect/apache2		配置文件
+cd /usr/bin			程序
+cd /Library/WebServer/Documents		默认根目录
 sudo apachectl -k start 	开启Apache服务
 sudo apachectl -k restart 	重启Apache服务
 sudo apachectl -k stop	 	关闭Apache服务
