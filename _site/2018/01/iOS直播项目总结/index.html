@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+    <!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="apple-touch-icon" sizes="110x90" href="/assets/images/logo.png">
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+
+    <title>iOS直播项目总结</title>
+
+    <meta property="og:url" content="/">
+    <meta property="og:title" content="iOS直播项目总结">
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="直播流媒体介绍视频流传输使用的是RTMP协议（类似于socket，基于TCP）TMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP">
+
+    <!--   Core CSS Files   -->
+    <link href="//cdn.bootcss.com/flex-layout-attribute/1.0.3/css/flex-layout-attribute.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
+
+    <!-- Canonical SEO -->
+    <link rel="canonical" href="https://www.sohod.cn/2018/01/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/">
+    <link rel="alternate" type="application/rss+xml" title="JackHu的一片天地" href="https://www.sohod.cn/feed.xml">
+</head>
+
+<body>
+    <div id="nav" layout="row top-left">
+    <div self="left">
+        <a href="/"><div class="logo logo-isNotVisIfMobile">JackHu的一片天地</div></a>
+        <a href="/"><div class="logo logo-isVisIfMobile"></div></a>
+    </div>
+    <div class="nav-isNotVisIfMobile">
+        <div class="item">
+            <a href="/tags">Tags</a>
+        </div>
+        <div class="item">
+            <a href="/videos">Videos</a>
+        </div>
+    </div>
+    <div class="nav-isVisIfMobile">
+        <div class="item">
+            <a href="/tags">Tags</a>
+        </div>
+        <div class="item">
+            <a href="/videos">Videos</a>
+        </div>
+    </div>
+</div>
+
+    <div id="content">
+        <div class="container container--header">
+    <h1 class="h1--home-title">iOS直播项目总结</h1>
+    <p>学学直播</p>
+</div>
+
+        <link rel="stylesheet" type="text/css" href="/assets/css/article.css">
+
+<div class="page-wrapper">
+    <div class="container--text">
+        <h3>直播流媒体介绍</h3>
+
+<blockquote>
+<p>视频流传输使用的是RTMP协议（类似于socket，基于TCP）
+TMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP</p>
+
+<p>流媒体开发:网络层(socket或st)负责传输，协议层(rtmp或hls)负责网络打包，封装层(flv、ts)负责编解码数据的封装，编码层(h.264和aac)负责图像，音频压缩。
+  用于对象,视频,音频的传输.这个协议建立在TCP协议或者轮询HTTP协议之上.</p>
+
+<p>HLS:由Apple公司定义的用于实时流传输的协议,HLS基于HTTP协议实现，传输内容包括两部分，一是M3U8描述文件，二是TS媒体文件。可实现流媒体的直播和点播，主要应用在iOS系统
+HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低</p>
+</blockquote>
+
+<h3>如何播放流媒体</h3>
+
+<blockquote>
+<p>流媒体的主要格式有Flv 和 TS, 我们要对视频进行解码（解压缩），这里我们使用B站的开源框架IJKPlayer.</p>
+
+<p>IJKPlayer是一个基于FFMpeg的开源框架，FFmpeg是一套可以用来记录、转换数字音频、视频，并能将其转化为流的开源跨平台计算机程序，能实现如视频编码,解码,转码,串流,播放等丰富的功能。其支持的视频格式以及播放协议非常丰富,几乎包含了所有音视频编解码、封装格式以及播放协议</p>
+</blockquote>
+
+<h5>如何在iOS中集成IJKPlayer</h5>
+
+<blockquote>
+<p>1.下载IJKPlayer 下载地址:<a href="https://github.com/Bilibili/ijkplayer">https://github.com/Bilibili/ijkplayer</a>
+  2.编译IJKPlayer，其实是编译 ffmpeg
+  3.打包IJKMediaFramework.framework框架，
+      设置好 scheme 后, 分别选择真机和模拟器进行编译
+      合并真机和模拟器版本的 framework
+      lipo -create &quot;真机版本路径&quot; &quot;模拟器版本路径&quot; -output &quot;合并后的文件路径&quot;
+  4.合并IJKMediaFramework</p>
+</blockquote>
+
+<h5>如何使用IJKPlayer播放直播流媒体</h5>
+<figure class="highlight"><pre><code class="language-text" data-lang="text"> //用URL来创建IJKFFMoviePlayerVC
+    IJKFFOptions *options = [IJKFFOptions optionsByDefault];
+    IJKFFMoviePlayerController * player = [[IJKFFMoviePlayerController alloc] initWithContentURL:URL withOptions:options];
+    self.player = player;
+    self.player.view.frame = self.view.bounds;
+    self.player.shouldAutoplay = YES;
+</code></pre></figure>
+    </div>
+</div>
+
+<style type="text/css">
+    .ds-thread {
+        max-width: 680px;
+        margin: auto;
+    }
+</style>
+
+<!-- 多说评论框 start -->
+<!-- <div class="ds-thread" data-thread-key="/2018/01/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/" data-title=iOS直播项目总结 data-url=https://www.sohod.cn/2018/01/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/></div> -->
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+// var duoshuoQuery = {short_name:"wnglmng"};
+//     (function() {
+//         var ds = document.createElement('script');
+//         ds.type = 'text/javascript';ds.async = true;
+//         ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+//         ds.charset = 'UTF-8';
+//         (document.getElementsByTagName('head')[0]
+//          || document.getElementsByTagName('body')[0]).appendChild(ds);
+//     })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+<div class="related_posts-container" style="max-width: 790px;">
+    <p class="related_posts-header">RELATED ARTICLES</p>
+
+    <div layout="rows center-spread">
+
+        
+        
+        
+        
+            <a href="/2017/12/iPhoneX%E7%9A%84%E9%80%82%E9%85%8D%E5%B0%8F%E8%AE%B0/">
+                <div class="card card--article not-visible" >
+                    <div class="card-body">
+                        <div class="card-title">iPhoneX的适配问题</div>
+                        <div class="card-description card-description--clamp-0">
+                            记录一次iPhone X的适配过程，做个总结自iOS11后，苹果推出iPhone X。由于iPhoneX的尺寸，外观不太常规，所以适配自然就不太一样。而且iOS11后，有些API做了些改变。在Xcode中，我打印了iPhone X的一些尺寸信息StatusBarHeight:44.000000TabBarHeight:83.000000NavHeight:44.000000ScreenHei...
+                        </div>
+                    </div>
+                    <div class="card-hero">
+                        <div class="card-image card-image--size-185" data-url="https://developer.apple.com/ios/update-apps-for-iphone-x/images/illustrations/checklist-safe-area-landscape.svg"></div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-footer-wrapper" layout="row bottom-left">
+                            <div class="card-type is-notShownIfHover">2017-12-28</div>
+                            <div class="card-tag is-notShownIfHover">@HuYong</div>
+                            <div class="card-tag is-shownIfHover">
+                                
+                                    iOS &nbsp;&nbsp;
+                                
+                            </div>
+                            <div class="card-logo is-shownIfHover" self="right"></div>
+                        </div>
+                    </div>
+                 </div>
+            </a>
+        
+        
+
+        
+        
+        
+            <a href="/2018/03/%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E5%B0%8F%E8%AE%B0/">
+                <div class="card card--article not-visible">
+                    <div class="card-body">
+                        <div class="card-title card-title--articleIfNoImage">转场动画小记</div>
+                        <p class="card-description card-description--clamp-14">“总结转场”</p>
+                        <p class="card-description card-article-preview">
+                            ####1.简单push动画和present动画```[self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@""];[self.navigationController pushViewController:[] animated:NO];[self.view.window.layer addAnimation:[self presentAnimation] forKey:nil];[self presentViewController:second animated:NO completion:nil]; //系统的API- (void)addAnimation:(CAAnima...
+                        </p>
+                        <p></p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-footer-wrapper" layout="row bottom-left">
+                            <div class="card-type is-notShownIfHover">2018-03-17</div>
+                            <div class="card-tag is-notShownIfHover">@HuYong</div>
+                            <div class="card-tag is-shownIfHover">
+                                
+                                    iOS &nbsp;&nbsp;
+                                
+                            </div>
+                            <div class="card-logo is-shownIfHover" self="right"></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        
+        
+        
+
+    </div>
+</div>
+
+
+    </div>
+    <div id="footer" layout="rows center-left">
+    <div id="end-mark">
+        <div class="end-mark-icon"></div>
+        <p class="copyright">JackHu's Blog © 2017&nbsp;&nbsp;·&nbsp;&nbsp;愿你出走半生，归来仍是少年</p>
+    </div>
+    <div id="footer-links" self="right">
+        <ul>
+            <!-- <a href="#"><li class="wechat" target="_blank"></li></a> -->
+            <a href="mailto:huyong229@163.com" target="_blank"><li class="mail"></li></a>
+            <a href="http://weibo.com/huyong668" target="_blank"><li class="weibo"></li></a>
+            <a href="https://github.com/https://github.com" target="_blank"><li class="github"></li></a>
+        </ul>
+    </div>
+</div>
+
+</body>
+<!--   Core JS Files   -->
+<script src="//cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/mixitup/2.1.11/jquery.mixitup.min.js"></script>
+<script src="/assets/js/main.js"></script>
+
+</html>

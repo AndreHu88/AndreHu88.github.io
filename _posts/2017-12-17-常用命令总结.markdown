@@ -54,3 +54,4 @@ export PATH=${PATH}:/usr/local/mysql/bin  添加用户环境变量 .bash_profile
 mysql.server  {start|stop|restart|reload|force-reload|status}  [ MySQL server options
 ```
 
+

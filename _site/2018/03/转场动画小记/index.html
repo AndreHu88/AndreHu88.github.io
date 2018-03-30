@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+    <!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="apple-touch-icon" sizes="110x90" href="/assets/images/logo.png">
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+
+    <title>转场动画小记</title>
+
+    <meta property="og:url" content="/">
+    <meta property="og:title" content="转场动画小记">
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="1.简单push动画和present动画[self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@&quot;&quot;];[self.navigationController pushViewControll...">
+
+    <!--   Core CSS Files   -->
+    <link href="//cdn.bootcss.com/flex-layout-attribute/1.0.3/css/flex-layout-attribute.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
+
+    <!-- Canonical SEO -->
+    <link rel="canonical" href="https://www.sohod.cn/2018/03/%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E5%B0%8F%E8%AE%B0/">
+    <link rel="alternate" type="application/rss+xml" title="JackHu的一片天地" href="https://www.sohod.cn/feed.xml">
+</head>
+
+<body>
+    <div id="nav" layout="row top-left">
+    <div self="left">
+        <a href="/"><div class="logo logo-isNotVisIfMobile">JackHu的一片天地</div></a>
+        <a href="/"><div class="logo logo-isVisIfMobile"></div></a>
+    </div>
+    <div class="nav-isNotVisIfMobile">
+        <div class="item">
+            <a href="/tags">Tags</a>
+        </div>
+        <div class="item">
+            <a href="/videos">Videos</a>
+        </div>
+    </div>
+    <div class="nav-isVisIfMobile">
+        <div class="item">
+            <a href="/tags">Tags</a>
+        </div>
+        <div class="item">
+            <a href="/videos">Videos</a>
+        </div>
+    </div>
+</div>
+
+    <div id="content">
+        <div class="container container--header">
+    <h1 class="h1--home-title">转场动画小记</h1>
+    <p>总结转场</p>
+</div>
+
+        <link rel="stylesheet" type="text/css" href="/assets/css/article.css">
+
+<div class="page-wrapper">
+    <div class="container--text">
+        <h4>1.简单push动画和present动画</h4>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">[self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@&quot;&quot;];
+[self.navigationController pushViewController:[] animated:NO];
+
+[self.view.window.layer addAnimation:[self presentAnimation] forKey:nil];
+[self presentViewController:second animated:NO completion:nil]; 
+
+//系统的API
+- (void)addAnimation:(CAAnimation *)anim forKey:(nullable NSString *)key;
+</code></pre></figure>
+<p>自定义push动画，然后在push时添加到navigationController中
+CATransition -&gt; CAAnimation -&gt; NSObject
+```
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.6;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">//动画类型，一下是系统API的介绍
+/* The name of the transition. Current legal transition types include
+ * `fade&#39;, `moveIn&#39;, `push&#39; and `reveal&#39;. Defaults to `fade&#39;. */
+transition.type = @&quot;&quot;;
+
+/*私有API
+ cube                   立方体效果
+ pageCurl               向上翻一页
+ pageUnCurl             向下翻一页
+ rippleEffect           水滴波动效果
+ suckEffect             变成小布块飞走的感觉
+ oglFlip                上下翻转
+ cameraIrisHollowClose  相机镜头关闭效果
+ cameraIrisHollowOpen   相机镜头打开效果
+ */
+</code></pre></figure><figure class="highlight"><pre><code class="language-text" data-lang="text">最后push或present页面就可以完成动画
+
+####2.非交互式转场动画
+1.需要当前的navigationController遵循&lt;UINavigationControllerDelegate&gt;并实现其代理方法
+</code></pre></figure>
+<ul>
+<li> (nullable id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
+                               animationControllerForOperation:(UINavigationControllerOperation)operation
+                                            fromViewController:(UIViewController *)fromVC
+                                              toViewController:(UIViewController *)toVC 
+```
+可以在此代理方法中判断当前是push还是pop</li>
+</ul>
+
+<p>2.我们需要在代理方法中返回一个UIViewControllerAnimatedTransitioning对象，于是我们创建一个类继承自NSObject，遵循<UIViewControllerAnimatedTransitioning>协议，并实现其代理方法
+代理方法主要有以下2个
+```
+// This is used for percent driven interactive transitions, as well as for
+// container controllers that have companion animations that might need to
+// synchronize with the main animation.
+- (NSTimeInterval)transitionDuration:(nullable id <UIViewControllerContextTransitioning>)transitionContext;</p>
+
+<p>// This method can only  be a nop if the transition is interactive and not a percentDriven interactive transition.
+- (void)animateTransition:(id <UIViewControllerContextTransitioning>)transitionContext;
+<code>
+第一个方法将返回动画的时长
+第二个方法将具体实现动画
+</code>
+//转场过渡的容器view
+UIView *containerView = [transitionContext containerView];
+//FromVC
+UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+UIView *fromView = fromViewController.view;</p>
+
+<p>//ToVC
+UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+UIView *toView = toViewController.view;</p>
+
+<p>NSInteger toVCCount = [toViewController.navigationController.viewControllers indexOfObject:toViewController];
+NSInteger fromVCCount = [fromViewController.navigationController.viewControllers indexOfObject:fromViewController];
+if (toVCCount &gt; fromVCCount) {
+   //push
+    [containerView addSubview:fromView];
+    [containerView addSubview:toView];
+}
+else{
+  //pop
+    [containerView addSubview:toView];
+    [containerView addSubview:fromView];
+}</p>
+
+<p>[UIView animateWithDuration:[self transitionDuration:transitionContext] animations:<sup>{</sup>
+        //具体的动画实现</p>
+
+<p>} completion:<sup>BOOL finished</sup> {
+        BOOL wasCancelled = [transitionContext transitionWasCancelled];
+        //设置transitionContext通知系统动画执行完毕
+        [transitionContext completeTransition:!wasCancelled];
+}];
+```
+实现酷狗的转场动画
+分别创建两个类继承自NSObject，遵循<UIViewControllerAnimatedTransitioning>协议，来实现push和pop的动画效果</p>
+
+<p>1.push动画,将将push的view做仿射变换
+```
+- (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext;</p>
+
+<p>//转场过渡的容器view
+UIView *containerView = [transitionContext containerView];
+//ToVC
+UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+UIView *toView = toViewController.view;
+[containerView addSubview:toView];</p>
+
+<p>//将toView绕原点旋转45度
+toView.transform = 
+```
+2.pop动画同理</p>
+
+<h4>3.交互式转场动画</h4>
+
+<p><UINavigationControllerDelegate>实现其代理方法</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">- (nullable id &lt;UIViewControllerInteractiveTransitioning&gt;)navigationController:(UINavigationController *)navigationController
+                          interactionControllerForAnimationController:(id &lt;UIViewControllerAnimatedTransitioning&gt;) animationController
+</code></pre></figure>
+<p>实现这个方法，系统转场时，就会知道当前是否有交互式的转场，有便执行交互转场，无则执行普通自定义的转场动画
+<code>UIPercentDrivenInteractiveTransition</code>类是系统定义的，他遵循<code>UIViewControllerInteractiveTransitioning</code>协议
+此类提供了了以下方法
+```
+// These methods should be called by the gesture recognizer or some other logic
+// to drive the interaction. This style of interaction controller should only be
+// used with an animator that implements a CA style transition in the animator&#39;s
+// animateTransition: method. If this type of interaction controller is
+// specified, the animateTransition: method must ensure to call the
+// UIViewControllerTransitionParameters completeTransition: method. The other
+// interactive methods on UIViewControllerContextTransitioning should NOT be
+// called. If there is an interruptible animator, these methods will either scrub or continue 
+// the transition in the forward or reverse directions.</p>
+
+<ul>
+<li>(void)updateInteractiveTransition:(CGFloat)percentComplete;</li>
+<li>(void)cancelInteractiveTransition;</li>
+<li>(void)finishInteractiveTransition;
+```
+根据pop时传递的手势信息来计算滑动百分比，从而完成交互动画和取消动画</li>
+</ul>
+
+    </div>
+</div>
+
+<style type="text/css">
+    .ds-thread {
+        max-width: 680px;
+        margin: auto;
+    }
+</style>
+
+<!-- 多说评论框 start -->
+<!-- <div class="ds-thread" data-thread-key="/2018/03/%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E5%B0%8F%E8%AE%B0/" data-title=转场动画小记 data-url=https://www.sohod.cn/2018/03/%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E5%B0%8F%E8%AE%B0/></div> -->
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+// var duoshuoQuery = {short_name:"wnglmng"};
+//     (function() {
+//         var ds = document.createElement('script');
+//         ds.type = 'text/javascript';ds.async = true;
+//         ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+//         ds.charset = 'UTF-8';
+//         (document.getElementsByTagName('head')[0]
+//          || document.getElementsByTagName('body')[0]).appendChild(ds);
+//     })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+<div class="related_posts-container" style="max-width: 790px;">
+    <p class="related_posts-header">RELATED ARTICLES</p>
+
+    <div layout="rows center-spread">
+
+        
+        
+        
+            <a href="/2018/01/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/">
+                <div class="card card--article not-visible">
+                    <div class="card-body">
+                        <div class="card-title card-title--articleIfNoImage">iOS直播项目总结</div>
+                        <p class="card-description card-description--clamp-14">“学学直播”</p>
+                        <p class="card-description card-article-preview">
+                            直播流媒体介绍视频流传输使用的是RTMP协议（类似于socket，基于TCP）TMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP流媒体开发:网络层(socket或st)负责传输，协议层(rtmp或hls)负责网络打包，封装层(flv、ts)负责编解码数据的封装，编码层(h.264和aac)负责图像，音频压缩。  用于对象,视频,音频的传输.这个协议建立在TCP协议或者轮询HTTP协议之上.HLS:由Apple公司定义的用于实时流传输的协议,HLS基于HTTP协议实现，传输内容包括两部分，一是M3U8描述文件，二是TS媒体文件。可实现流媒体的直播和点播，主要应用在iOS系统HLS与RTMP对比:HLS主要是延时比较大，RTM...
+                        </p>
+                        <p></p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-footer-wrapper" layout="row bottom-left">
+                            <div class="card-type is-notShownIfHover">2018-01-07</div>
+                            <div class="card-tag is-notShownIfHover">@HuYong</div>
+                            <div class="card-tag is-shownIfHover">
+                                
+                                    iOS &nbsp;&nbsp;
+                                
+                            </div>
+                            <div class="card-logo is-shownIfHover" self="right"></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        
+        
+        
+
+        
+
+    </div>
+</div>
+
+
+    </div>
+    <div id="footer" layout="rows center-left">
+    <div id="end-mark">
+        <div class="end-mark-icon"></div>
+        <p class="copyright">JackHu's Blog © 2017&nbsp;&nbsp;·&nbsp;&nbsp;愿你出走半生，归来仍是少年</p>
+    </div>
+    <div id="footer-links" self="right">
+        <ul>
+            <!-- <a href="#"><li class="wechat" target="_blank"></li></a> -->
+            <a href="mailto:huyong229@163.com" target="_blank"><li class="mail"></li></a>
+            <a href="http://weibo.com/huyong668" target="_blank"><li class="weibo"></li></a>
+            <a href="https://github.com/https://github.com" target="_blank"><li class="github"></li></a>
+        </ul>
+    </div>
+</div>
+
+</body>
+<!--   Core JS Files   -->
+<script src="//cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/mixitup/2.1.11/jquery.mixitup.min.js"></script>
+<script src="/assets/js/main.js"></script>
+
+</html>
