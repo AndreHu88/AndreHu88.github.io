@@ -9,7 +9,10 @@ post-card-type: article
 published:	true
 ---
 ### 直播流媒体介绍
-直播，音乐播放demo https://github.com/AndreHu88/iOS_Live
+直播，音乐播放demo
+
+ https://github.com/AndreHu88/iOS_Live
+
 视频流传输使用的是RTMP协议（类似于socket，基于TCP）
 RTMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP
 
@@ -53,15 +56,122 @@ videoToolbox是苹果的一个硬解码的框架，提供实现压缩，解压�
 
 ##### H.264的详解
 这篇blog详解:http://www.samirchen.com/video-concept/
+
+##### 编码H.264
+1.初始化VideoToolbox
+
+```
+- (void)setupVideoToolbox{
+    
+    dispatch_sync(_encodeQueue, ^{
+        
+        [self setupFileHandle];
+        
+        int width = 720, height = 1280;
+        OSStatus status = VTCompressionSessionCreate(NULL, width, height, kCMVideoCodecType_H264, NULL, NULL, NULL, encodingComplectionCallback, (__bridge void *)(self), &_encodingSession);
+        DLog(@"status code is %d",(int)status);
+        if (status != 0) {
+            DLog(@"create H264 session error");
+            return ;
+        }
+        
+        //设置实时编码，避免延迟
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_RealTime, kCFBooleanTrue);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_AutoLevel);
+        
+        //设置关键帧间隔（）关键字间隔越小越清晰，数值越大压缩率越高
+        int frameInterval = 1;
+        CFNumberRef frameIntervalRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &frameInterval);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_MaxKeyFrameInterval, frameIntervalRef);
+        
+        //设置期望帧率
+        int fps = 30;
+        CFNumberRef fpsRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &fps);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ExpectedFrameRate, fpsRef);
+        
+        //设置码率，均值，单位是byte
+        int bitRate = width * height * 3 * 4 * 8;
+        CFNumberRef bitRateRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &bitRate);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_AverageBitRate, bitRateRef);
+        
+        //设置码率上限，单位是bps,如果不设置默认会以很低的码率编码，导致编码出来的视频很模糊
+        int bitRateMax = width * height * 3 * 4;
+        CFNumberRef bitRateMaxRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &bitRateMax);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_DataRateLimits, bitRateMaxRef);
+        
+        //准备编码
+        VTCompressionSessionPrepareToEncodeFrames(_encodingSession);
+        
+    });
+}
+
+- (void)setupFileHandle{
+    
+    //创建文件，初始化fileHandle;
+    NSString *file = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"test.h264"];
+    [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
+    [[NSFileManager defaultManager] createFileAtPath:file contents:nil attributes:nil];
+    _fileHandle = [NSFileHandle fileHandleForWritingAtPath:file];
+}
+```
+2.sampleBuffer回调处理
+
+```
+- (void)videoEncodeWithSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+    
+    dispatch_sync(_encodeQueue, ^{
+        
+        // CVPixelBufferRef 编码前图像数据结构
+        // 利用给定的接口函数CMSampleBufferGetImageBuffer从中提取出CVPixelBufferRef
+        CVImageBufferRef imageBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
+        // 帧时间 如果不设置导致时间轴过长
+        CMTime presentationTimeStamp = CMTimeMake(_frameID++, 1000);
+        //flags 0 表示同步解码
+        VTEncodeInfoFlags flags;
+        OSStatus status = VTCompressionSessionEncodeFrame(_encodingSession, imageBuffer, presentationTimeStamp, kCMTimeInvalid, NULL, NULL, &flags);
+        DLog(@"status code is %d",(int)status);
+        if (status == noErr) {
+            DLog(@"H264 VTCompressionSessionEncodeFrame success");
+        }
+        else{
+            DLog(@"H264: VTCompressionSessionEncodeFrame failed with %d", (int)status);
+            if (!_encodingSession) return;
+            VTCompressionSessionInvalidate(_encodingSession);
+            //释放资源
+            CFRelease(_encodingSession);
+            _encodingSession = NULL;
+        }
+    });
+    
+}
+```
+
+3.对VideoToolbox的编码回调
+
+```
+//每压缩一次都异步的调用此方法
+void encodingComplectionCallback(void * CM_NULLABLE outputCallbackRefCon,
+                               void * CM_NULLABLE sourceFrameRefCon,
+                               OSStatus status,
+                               VTEncodeInfoFlags infoFlags,
+                               CM_NULLABLE CMSampleBufferRef sampleBuffer ){
+
+}
+```
+
+
 ##### 音视频同步详解
 播放速度标准量有以下三种
+
 - **将视频同步到音频上**，就是以音频的播放速度为基准来同步视频。视频比音频播放慢了，加快其播放速度；快了，则延迟播放。
 - **将音频同步到视频上**，就是以视频的播放速度为基准来同步音频。
 - **将视频和音频同步外部的时钟上**，选择一个外部时钟为基准，视频和音频的播放速度都以该时钟为标准
 
 视频和音频的同步过程是一个你等我赶的过程，快了则等待，慢了就加快速度。这就需要一个量来判断（和选择基准比较），到底是播放的快了还是慢了，或者正以同步的速度播放。在音视频的包中都含有DTS(decode time stamp)，告诉解码器packet的解码顺序 和 PTS(presentation time stamp)，从packet解码出来的数据的显示顺序。
+
 对于音频来说，DTS和PTS是相同的，也就是解码顺序和显示顺序一致
 视频的编码比音频复杂，DTS和PTS会不同。视频在编码后会得到三种不同的帧
-- I帧  关键帧，包含了一帧的完整数据，解码时只需要本帧的数据，不需要参考其他帧。
-- P帧 P是向前搜索，该帧的数据不完全的，解码时需要参考其前一帧的数据。
-- B帧 B是双向搜索，解码这种类型的帧是最复杂，不但需要参考其一帧的数据，还需要其后一帧的数据。
+
+- **I帧  关键帧**，包含了一帧的完整数据，解码时只需要本帧的数据，不需要参考其他帧。
+- **P帧 P是向前搜索**，该帧的数据不完全的，解码时需要参考其前一帧的数据。
+- **B帧 B是双向搜索**，解码这种类型的帧是最复杂，不但需要参考其一帧的数据，还需要其后一帧的数据。

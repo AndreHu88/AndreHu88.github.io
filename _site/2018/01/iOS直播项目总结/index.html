@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="keywords" content="JackHu,胡勇，上海胡勇，湖北胡勇，胡勇，武职胡勇，胡勇iOS，iOS胡勇，风车大战骑士，愿你出走半生，归来认识少年,huyong229,huyong">
+    <meta name="keywords" content="JackHu,胡勇，上海胡勇，湖北胡勇，胡勇，武职胡勇，胡勇iOS，iOS胡勇，风车大战骑士，愿你出走半生，归来认识少年,huyong229,huyong,soho,sohod,www.sohod.cn">
     <meta name="description" content="JackHu,胡勇，上海胡勇，湖北胡勇，胡勇iOS，武职胡勇，iOS胡勇，风车大战骑士，愿你出走半生，归来认识少年,huyong229,huyong">
     <meta name="baidu-site-verification" content="Tx3XRZC7p0" />
     <link rel="apple-touch-icon" sizes="110x90" href="/assets/images/logo.png">
@@ -15,7 +15,7 @@
     <meta property="og:url" content="/">
     <meta property="og:title" content="iOS直播项目总结">
     <meta property="og:type" content="article">
-    <meta property="og:description" content="直播流媒体介绍直播，音乐播放demo https://github.com/AndreHu88/iOS_Live视频流传输使用的是RTMP协议（类似于socket，基于TCP）RTMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP">
+    <meta property="og:description" content="直播流媒体介绍直播，音乐播放demo">
 
     <!--   Core CSS Files   -->
     <link href="//cdn.bootcss.com/flex-layout-attribute/1.0.3/css/flex-layout-attribute.min.css" rel="stylesheet">
@@ -23,13 +23,14 @@
 
     <!-- Canonical SEO -->
     <link rel="canonical" href="https://www.sohod.cn/2018/01/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/">
-    <link rel="alternate" type="application/rss+xml" title="JackHu的一片天地" href="https://www.sohod.cn/feed.xml">
+    <link rel="alternate" type="application/rss+xml" title="Jack Hu的一片天地" href="https://www.sohod.cn/feed.xml">
+    <embed src="/assets/music/Ladies of the New Century.mp3" hidden="true" autostart="true" loop="true">
 </head>
 
 <body>
     <div id="nav" layout="row top-left">
     <div self="left">
-        <a href="/"><div class="logo logo-isNotVisIfMobile">JackHu的一片天地</div></a>
+        <a href="/"><div class="logo logo-isNotVisIfMobile">&nbsp&nbsp生活不止眼前的苟且，还有以后的。所以，加油吧，少年</div></a>
         <a href="/"><div class="logo logo-isVisIfMobile"></div></a>
     </div>
     <div class="nav-isNotVisIfMobile">
@@ -62,8 +63,11 @@
     <div class="container--text">
         <h3>直播流媒体介绍</h3>
 
-<p>直播，音乐播放demo <a href="https://github.com/AndreHu88/iOS_Live">https://github.com/AndreHu88/iOS_Live</a>
-视频流传输使用的是RTMP协议（类似于socket，基于TCP）
+<p>直播，音乐播放demo</p>
+
+<p><a href="https://github.com/AndreHu88/iOS_Live">https://github.com/AndreHu88/iOS_Live</a></p>
+
+<p>视频流传输使用的是RTMP协议（类似于socket，基于TCP）
 RTMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP</p>
 
 <p>流媒体开发:网络层(socket或st)负责传输，协议层(rtmp或hls)负责网络打包，封装层(flv、ts)负责编解码数据的封装，编码层(h.264和aac)负责图像，音频压缩。
@@ -119,19 +123,121 @@ HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低</
 
 <p>这篇blog详解:<a href="http://www.samirchen.com/video-concept/">http://www.samirchen.com/video-concept/</a></p>
 
+<h5>编码H.264</h5>
+
+<p>1.初始化VideoToolbox</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">- (void)setupVideoToolbox{
+
+    dispatch_sync(_encodeQueue, ^{
+
+        [self setupFileHandle];
+
+        int width = 720, height = 1280;
+        OSStatus status = VTCompressionSessionCreate(NULL, width, height, kCMVideoCodecType_H264, NULL, NULL, NULL, encodingComplectionCallback, (__bridge void *)(self), &amp;_encodingSession);
+        DLog(@&quot;status code is %d&quot;,(int)status);
+        if (status != 0) {
+            DLog(@&quot;create H264 session error&quot;);
+            return ;
+        }
+
+        //设置实时编码，避免延迟
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_RealTime, kCFBooleanTrue);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_AutoLevel);
+
+        //设置关键帧间隔（）关键字间隔越小越清晰，数值越大压缩率越高
+        int frameInterval = 1;
+        CFNumberRef frameIntervalRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;frameInterval);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_MaxKeyFrameInterval, frameIntervalRef);
+
+        //设置期望帧率
+        int fps = 30;
+        CFNumberRef fpsRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;fps);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ExpectedFrameRate, fpsRef);
+
+        //设置码率，均值，单位是byte
+        int bitRate = width * height * 3 * 4 * 8;
+        CFNumberRef bitRateRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;bitRate);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_AverageBitRate, bitRateRef);
+
+        //设置码率上限，单位是bps,如果不设置默认会以很低的码率编码，导致编码出来的视频很模糊
+        int bitRateMax = width * height * 3 * 4;
+        CFNumberRef bitRateMaxRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;bitRateMax);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_DataRateLimits, bitRateMaxRef);
+
+        //准备编码
+        VTCompressionSessionPrepareToEncodeFrames(_encodingSession);
+
+    });
+}
+
+- (void)setupFileHandle{
+
+    //创建文件，初始化fileHandle;
+    NSString *file = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@&quot;test.h264&quot;];
+    [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
+    [[NSFileManager defaultManager] createFileAtPath:file contents:nil attributes:nil];
+    _fileHandle = [NSFileHandle fileHandleForWritingAtPath:file];
+}
+</code></pre></figure>
+<p>2.sampleBuffer回调处理</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">- (void)videoEncodeWithSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+
+    dispatch_sync(_encodeQueue, ^{
+
+        // CVPixelBufferRef 编码前图像数据结构
+        // 利用给定的接口函数CMSampleBufferGetImageBuffer从中提取出CVPixelBufferRef
+        CVImageBufferRef imageBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
+        // 帧时间 如果不设置导致时间轴过长
+        CMTime presentationTimeStamp = CMTimeMake(_frameID++, 1000);
+        //flags 0 表示同步解码
+        VTEncodeInfoFlags flags;
+        OSStatus status = VTCompressionSessionEncodeFrame(_encodingSession, imageBuffer, presentationTimeStamp, kCMTimeInvalid, NULL, NULL, &amp;flags);
+        DLog(@&quot;status code is %d&quot;,(int)status);
+        if (status == noErr) {
+            DLog(@&quot;H264 VTCompressionSessionEncodeFrame success&quot;);
+        }
+        else{
+            DLog(@&quot;H264: VTCompressionSessionEncodeFrame failed with %d&quot;, (int)status);
+            if (!_encodingSession) return;
+            VTCompressionSessionInvalidate(_encodingSession);
+            //释放资源
+            CFRelease(_encodingSession);
+            _encodingSession = NULL;
+        }
+    });
+
+}
+</code></pre></figure>
+<p>3.对VideoToolbox的编码回调</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">//每压缩一次都异步的调用此方法
+void encodingComplectionCallback(void * CM_NULLABLE outputCallbackRefCon,
+                               void * CM_NULLABLE sourceFrameRefCon,
+                               OSStatus status,
+                               VTEncodeInfoFlags infoFlags,
+                               CM_NULLABLE CMSampleBufferRef sampleBuffer ){
+
+}
+</code></pre></figure>
 <h5>音视频同步详解</h5>
 
-<p>播放速度标准量有以下三种
-- <strong>将视频同步到音频上</strong>，就是以音频的播放速度为基准来同步视频。视频比音频播放慢了，加快其播放速度；快了，则延迟播放。
-- <strong>将音频同步到视频上</strong>，就是以视频的播放速度为基准来同步音频。
-- <strong>将视频和音频同步外部的时钟上</strong>，选择一个外部时钟为基准，视频和音频的播放速度都以该时钟为标准</p>
+<p>播放速度标准量有以下三种</p>
 
-<p>视频和音频的同步过程是一个你等我赶的过程，快了则等待，慢了就加快速度。这就需要一个量来判断（和选择基准比较），到底是播放的快了还是慢了，或者正以同步的速度播放。在音视频的包中都含有DTS(decode time stamp)，告诉解码器packet的解码顺序 和 PTS(presentation time stamp)，从packet解码出来的数据的显示顺序。
-对于音频来说，DTS和PTS是相同的，也就是解码顺序和显示顺序一致
-视频的编码比音频复杂，DTS和PTS会不同。视频在编码后会得到三种不同的帧
-- I帧  关键帧，包含了一帧的完整数据，解码时只需要本帧的数据，不需要参考其他帧。
-- P帧 P是向前搜索，该帧的数据不完全的，解码时需要参考其前一帧的数据。
-- B帧 B是双向搜索，解码这种类型的帧是最复杂，不但需要参考其一帧的数据，还需要其后一帧的数据。</p>
+<ul>
+<li><strong>将视频同步到音频上</strong>，就是以音频的播放速度为基准来同步视频。视频比音频播放慢了，加快其播放速度；快了，则延迟播放。</li>
+<li><strong>将音频同步到视频上</strong>，就是以视频的播放速度为基准来同步音频。</li>
+<li><strong>将视频和音频同步外部的时钟上</strong>，选择一个外部时钟为基准，视频和音频的播放速度都以该时钟为标准</li>
+</ul>
+
+<p>视频和音频的同步过程是一个你等我赶的过程，快了则等待，慢了就加快速度。这就需要一个量来判断（和选择基准比较），到底是播放的快了还是慢了，或者正以同步的速度播放。在音视频的包中都含有DTS(decode time stamp)，告诉解码器packet的解码顺序 和 PTS(presentation time stamp)，从packet解码出来的数据的显示顺序。</p>
+
+<p>对于音频来说，DTS和PTS是相同的，也就是解码顺序和显示顺序一致
+视频的编码比音频复杂，DTS和PTS会不同。视频在编码后会得到三种不同的帧</p>
+
+<ul>
+<li><strong>I帧  关键帧</strong>，包含了一帧的完整数据，解码时只需要本帧的数据，不需要参考其他帧。</li>
+<li><strong>P帧 P是向前搜索</strong>，该帧的数据不完全的，解码时需要参考其前一帧的数据。</li>
+<li><strong>B帧 B是双向搜索</strong>，解码这种类型的帧是最复杂，不但需要参考其一帧的数据，还需要其后一帧的数据。</li>
+</ul>
 
     </div>
 </div>
@@ -206,7 +312,7 @@ HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低</
                         <div class="card-title card-title--articleIfNoImage">转场动画小记</div>
                         <p class="card-description card-description--clamp-14">“总结转场”</p>
                         <p class="card-description card-article-preview">
-                            ####1.简单push动画和present动画```[self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@""];[self.navigationController pushViewController:[] animated:NO];[self.view.window.layer addAnimation:[self presentAnimation] forKey:nil];[self presentViewController:second animated:NO completion:nil]; //系统的API- (void)addAnimation:(CAAnima...
+                            ### 1. 简单push动画和present动画```[self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@""];[self.navigationController pushViewController:[] animated:NO];[self.view.window.layer addAnimation:[self presentAnimation] forKey:nil];[self presentViewController:second animated:NO completion:nil]; //系统的API- (void)addAnimation:(CAAnim...
                         </p>
                         <p></p>
                     </div>
@@ -236,7 +342,7 @@ HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低</
     <div id="footer" layout="rows center-left">
     <div id="end-mark">
         <div class="end-mark-icon"></div>
-        <p class="copyright">JackHu's Blog © 2017&nbsp;&nbsp;·&nbsp;&nbsp;愿你出走半生，归来仍是少年</p>
+        <p class="copyright">Jack Hu's Blog © 2017 - 2018&nbsp;&nbsp;·&nbsp;&nbsp;愿你出走半生，归来仍是少年</p>
     </div>
     <div id="footer-links" self="right">
         <ul>

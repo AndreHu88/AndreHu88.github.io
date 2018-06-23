@@ -4,7 +4,7 @@ var getUrlParam = function(name) {
 };
 var videoUrl = getUrlParam('url');
 if (!videoUrl) {
-    videoUrl = 'http://www.iqiyi.com/v_19rrn8h3xg.html?fc=8b62d5327a54411b#vfrm=19-9-0-1';
+    videoUrl = 'https://www.mgtv.com/b/320148/4359749.html?fpa=se';
 }
 $("#videoIframe").attr('src', 'https://api.47ks.com/webcloud/?v=' + videoUrl);
 

@@ -4,18 +4,18 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="keywords" content="JackHu,胡勇，上海胡勇，湖北胡勇，胡勇，武职胡勇，胡勇iOS，iOS胡勇，风车大战骑士，愿你出走半生，归来认识少年,huyong229,huyong">
+    <meta name="keywords" content="JackHu,胡勇，上海胡勇，湖北胡勇，胡勇，武职胡勇，胡勇iOS，iOS胡勇，风车大战骑士，愿你出走半生，归来认识少年,huyong229,huyong,soho,sohod,www.sohod.cn">
     <meta name="description" content="JackHu,胡勇，上海胡勇，湖北胡勇，胡勇iOS，武职胡勇，iOS胡勇，风车大战骑士，愿你出走半生，归来认识少年,huyong229,huyong">
     <meta name="baidu-site-verification" content="Tx3XRZC7p0" />
     <link rel="apple-touch-icon" sizes="110x90" href="/assets/images/logo.png">
     <link rel="icon" type="image/png" href="/assets/images/logo.png">
 
-    <title>工作和学习中常用的各种命令总结</title>
+    <title>常用Linux命令总结</title>
 
     <meta property="og:url" content="/">
-    <meta property="og:title" content="工作和学习中常用的各种命令总结">
+    <meta property="og:title" content="常用Linux命令总结">
     <meta property="og:type" content="article">
-    <meta property="og:description" content="常用的终端命令太多，有时候经常会忘记，或者记错。所以来篇博客记录下">
+    <meta property="og:description" content="有些命令有时会忘记或记错，来篇blog记录下">
 
     <!--   Core CSS Files   -->
     <link href="//cdn.bootcss.com/flex-layout-attribute/1.0.3/css/flex-layout-attribute.min.css" rel="stylesheet">
@@ -23,13 +23,14 @@
 
     <!-- Canonical SEO -->
     <link rel="canonical" href="https://www.sohod.cn/2017/12/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/">
-    <link rel="alternate" type="application/rss+xml" title="JackHu的一片天地" href="https://www.sohod.cn/feed.xml">
+    <link rel="alternate" type="application/rss+xml" title="Jack Hu的一片天地" href="https://www.sohod.cn/feed.xml">
+    <embed src="/assets/music/Ladies of the New Century.mp3" hidden="true" autostart="true" loop="true">
 </head>
 
 <body>
     <div id="nav" layout="row top-left">
     <div self="left">
-        <a href="/"><div class="logo logo-isNotVisIfMobile">JackHu的一片天地</div></a>
+        <a href="/"><div class="logo logo-isNotVisIfMobile">&nbsp&nbsp生活不止眼前的苟且，还有以后的。所以，加油吧，少年</div></a>
         <a href="/"><div class="logo logo-isVisIfMobile"></div></a>
     </div>
     <div class="nav-isNotVisIfMobile">
@@ -52,7 +53,7 @@
 
     <div id="content">
         <div class="container container--header">
-    <h1 class="h1--home-title">工作和学习中常用的各种命令总结</h1>
+    <h1 class="h1--home-title">常用Linux命令总结</h1>
     <p>terminal命令</p>
 </div>
 
@@ -60,34 +61,95 @@
 
 <div class="page-wrapper">
     <div class="container--text">
-        <h3>常用的终端命令太多，有时候经常会忘记，或者记错。所以来篇博客记录下</h3>
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">ls path 列出文件
-ls -l 详细信息
-ls -a 包括隐藏文件
-</code></pre></figure><figure class="highlight"><pre><code class="language-shell" data-lang="shell">rm 参数 文件 
-rm -rf 递归和强制
-rm -rf/ 删除系统的所有文件，勿使用
-</code></pre></figure>
-<p>在某一个路径下，如果想显示当前的路径:<code>pwd</code>,如果想在finder中打开<code>open .</code></p>
+        <h3>有些命令有时会忘记或记错，来篇blog记录下</h3>
 
-<p><strong>Apache</strong>的操作，Mac系统自带Apache，apachectl命令</p>
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">cd /ect/apache2     配置文件
+<blockquote>
+<p>ls显示文件</p>
+</blockquote>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">ls -a 显示所有文件包括隐藏文件
+ls -l 显示文件属性，包括大小，日期，符号连接，是否可读写及是否可执行
+ls -lh 显示文件的大小，以容易理解的格式印出文件大小 (例如 1K 234M2G)
+ls -lt 显示文件，按照修改时间排序
+</code></pre></figure>
+<blockquote>
+<p>rm删除文件</p>
+</blockquote>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">rm file　删除某一个文件
+rm -f file 删除时候不进行提示。可以于r参数配合使用
+rm -r 就是向下递归，不管有多少级目录，一并删除
+rm -f 就是直接强行删除，不作任何提示的意思
+rm -rf dir　删除当前目录下叫dir的整个目录
+</code></pre></figure>
+<blockquote>
+<p>系统 用户</p>
+</blockquote>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">w 当前登录用户的详细信息
+who 显示登录用户
+date 显示当前时间
+cal  显示当月日历
+pwd  显示当前路径
+open .   可以在finder中打开当前文件夹(Mac)
+bash .sh 运行脚本
+</code></pre></figure>
+<blockquote>
+<p>网络相关</p>
+</blockquote>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">ifconfig 获取本机IP
+netstat 显示网络状态
+nslookup 域名检查排错
+netstat -an  查看网络端口信息
+netstat -nr 查看路由表信息，比route快
+</code></pre></figure>
+<blockquote>
+<p>关机操作</p>
+</blockquote>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">reboot　  重新启动计算机
+shutdown -r now  重新启动计算机，停止服务后重新启动计算机
+shutdown -h now  关闭计算机，停止服务后再关闭系统
+halt   关闭计算机
+一般用shutdown -r now,在重启系统是，关闭相关服务，shutdown -h now也是如此。
+</code></pre></figure>
+<blockquote>
+<p>chown 改变文件或目录的所有者</p>
+</blockquote>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">chown user1 /dir　将/dir目录设置为user1所有
+chown -R user1.user1 /dir　将/dir目录下所有文件和目录，设置为user1所有,组为user1。-R递归到下面的每个文件和目录
+</code></pre></figure>
+<blockquote>
+<p>chmod 改变用户的权限</p>
+</blockquote>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">chmod a+x file　将file文件设置为可执行，脚本类文件一定要这样设置一个，否则得用bash file才能执行
+chmod 666 file　将文件file设置为可读写
+chmod 750 file 将文件file设置为，所有者为完全权限，同组可以读和执行，其他无权限
+</code></pre></figure>
+<blockquote>
+<p>mac下执行shell脚本</p>
+</blockquote>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">./name.sh
+如果执行报没有权限，chmod 777 name.sh
+bash name.sh
+</code></pre></figure>
+<blockquote>
+<p>apache     Linux自带Apache</p>
+</blockquote>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">cd /ect/apache2     配置文件
 cd /usr/bin         程序
 cd /Library/WebServer/Documents     默认根目录
 sudo apachectl -k start     开启Apache服务
 sudo apachectl -k restart   重启Apache服务
 sudo apachectl -k stop      关闭Apache服务
 </code></pre></figure>
-<p>mysql的操作(linux)</p>
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">service mysql start  开启MySQL服务
-</code></pre></figure>
-<p>mysql的操作(Mac)，在Mac下MySQL的安装目录在<code>/usr/local/mysql/bin/mysql</code>下</p>
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">alias mysql=/usr/local/mysql/bin/mysql
+<blockquote>
+<p>mysql的操作</p>
+</blockquote>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">service mysql start  开启MySQL服务
+usr/local/mysql/bin/mysql   默认安装目录
+alias mysql=/usr/local/mysql/bin/mysql
 alias mysqladmin=/usr/local/mysql/bin/mysqladmin
 export PATH=${PATH}:/usr/local/mysql/bin  添加用户环境变量 .bash_profile
-</code></pre></figure>
-<p>如果在Mac上使用HomeBrew安装</p>
-<figure class="highlight"><pre><code class="language-text" data-lang="text">mysql.server  {start|stop|restart|reload|force-reload|status}  [ MySQL server options
+
+//如果用HomeBrew安装
+mysql.server  {start|stop|restart|reload|force-reload|status}  [ MySQL server options
 </code></pre></figure>
     </div>
 </div>
@@ -100,7 +162,7 @@ export PATH=${PATH}:/usr/local/mysql/bin  添加用户环境变量 .bash_profile
 </style>
 
 <!-- 多说评论框 start -->
-<!-- <div class="ds-thread" data-thread-key="/2017/12/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/" data-title=工作和学习中常用的各种命令总结 data-url=https://www.sohod.cn/2017/12/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/></div> -->
+<!-- <div class="ds-thread" data-thread-key="/2017/12/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/" data-title=常用Linux命令总结 data-url=https://www.sohod.cn/2017/12/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/></div> -->
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -192,7 +254,7 @@ export PATH=${PATH}:/usr/local/mysql/bin  添加用户环境变量 .bash_profile
     <div id="footer" layout="rows center-left">
     <div id="end-mark">
         <div class="end-mark-icon"></div>
-        <p class="copyright">JackHu's Blog © 2017&nbsp;&nbsp;·&nbsp;&nbsp;愿你出走半生，归来仍是少年</p>
+        <p class="copyright">Jack Hu's Blog © 2017 - 2018&nbsp;&nbsp;·&nbsp;&nbsp;愿你出走半生，归来仍是少年</p>
     </div>
     <div id="footer-links" self="right">
         <ul>

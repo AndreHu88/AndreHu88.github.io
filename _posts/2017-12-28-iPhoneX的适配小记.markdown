@@ -68,7 +68,8 @@ viewWillLayoutSubviews
 ```
 
 总结来看，总体变化有：
-1.状态栏由20pt变成44pt，所以导航栏从64pt变为88pt
-2.底部多出了34pt的home indicator的边距
+
+- 1.状态栏由20pt变成44pt，所以导航栏从64pt变为88pt
+- 2.底部多出了34pt的home indicator的边距
 
 更多的适配细节还是见[苹果人机交互指南网站](https://developer.apple.com/cn/ios/update-apps-for-iphone-x/)

@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="keywords" content="JackHu,胡勇，上海胡勇，湖北胡勇，胡勇，武职胡勇，胡勇iOS，iOS胡勇，风车大战骑士，愿你出走半生，归来认识少年,huyong229,huyong">
+    <meta name="keywords" content="JackHu,胡勇，上海胡勇，湖北胡勇，胡勇，武职胡勇，胡勇iOS，iOS胡勇，风车大战骑士，愿你出走半生，归来认识少年,huyong229,huyong,soho,sohod,www.sohod.cn">
     <meta name="description" content="JackHu,胡勇，上海胡勇，湖北胡勇，胡勇iOS，武职胡勇，iOS胡勇，风车大战骑士，愿你出走半生，归来认识少年,huyong229,huyong">
     <meta name="baidu-site-verification" content="Tx3XRZC7p0" />
     <link rel="apple-touch-icon" sizes="110x90" href="/assets/images/logo.png">
@@ -23,13 +23,14 @@
 
     <!-- Canonical SEO -->
     <link rel="canonical" href="https://www.sohod.cn/2017/12/iPhoneX%E7%9A%84%E9%80%82%E9%85%8D%E5%B0%8F%E8%AE%B0/">
-    <link rel="alternate" type="application/rss+xml" title="JackHu的一片天地" href="https://www.sohod.cn/feed.xml">
+    <link rel="alternate" type="application/rss+xml" title="Jack Hu的一片天地" href="https://www.sohod.cn/feed.xml">
+    <embed src="/assets/music/Ladies of the New Century.mp3" hidden="true" autostart="true" loop="true">
 </head>
 
 <body>
     <div id="nav" layout="row top-left">
     <div self="left">
-        <a href="/"><div class="logo logo-isNotVisIfMobile">JackHu的一片天地</div></a>
+        <a href="/"><div class="logo logo-isNotVisIfMobile">&nbsp&nbsp生活不止眼前的苟且，还有以后的。所以，加油吧，少年</div></a>
         <a href="/"><div class="logo logo-isVisIfMobile"></div></a>
     </div>
     <div class="nav-isNotVisIfMobile">
@@ -105,9 +106,12 @@ viewWillLayoutSubviews
 /** 是否为iphoneX */
 #define IS_IPHONE_X         ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )812 ) &lt; DBL_EPSILON )
 </code></pre></figure>
-<p>总结来看，总体变化有：
-1.状态栏由20pt变成44pt，所以导航栏从64pt变为88pt
-2.底部多出了34pt的home indicator的边距</p>
+<p>总结来看，总体变化有：</p>
+
+<ul>
+<li>1.状态栏由20pt变成44pt，所以导航栏从64pt变为88pt</li>
+<li>2.底部多出了34pt的home indicator的边距</li>
+</ul>
 
 <p>更多的适配细节还是见<a href="https://developer.apple.com/cn/ios/update-apps-for-iphone-x/">苹果人机交互指南网站</a></p>
 
@@ -149,10 +153,10 @@ viewWillLayoutSubviews
             <a href="/2017/12/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/">
                 <div class="card card--article not-visible">
                     <div class="card-body">
-                        <div class="card-title card-title--articleIfNoImage">工作和学习中常用的各种命令总结</div>
+                        <div class="card-title card-title--articleIfNoImage">常用Linux命令总结</div>
                         <p class="card-description card-description--clamp-14">“terminal命令”</p>
                         <p class="card-description card-article-preview">
-                            常用的终端命令太多，有时候经常会忘记，或者记错。所以来篇博客记录下ls path 列出文件ls -l 详细信息ls -a 包括隐藏文件rm 参数 文件 rm -rf 递归和强制rm -rf/ 删除系统的所有文件，勿使用在某一个路径下，如果想显示当前的路径:pwd,如果想在finder中打开open .Apache的操作，Mac系统自带Apache，apachectl命令cd /ect/apache2     配置文件cd /usr/bin         程序cd /Library/WebServer/Documents     默认根目录sudo apachectl -k start     开启Apache服务sudo apachectl -k restart   重启Apache...
+                            有些命令有时会忘记或记错，来篇blog记录下ls显示文件ls -a 显示所有文件包括隐藏文件ls -l 显示文件属性，包括大小，日期，符号连接，是否可读写及是否可执行ls -lh 显示文件的大小，以容易理解的格式印出文件大小 (例如 1K 234M2G)ls -lt 显示文件，按照修改时间排序rm删除文件rm file　删除某一个文件rm -f file 删除时候不进行提示。可以于r参数配合使用rm -r 就是向下递归，不管有多少级目录，一并删除rm -f 就是直接强行删除，不作任何提示的意思rm -rf dir　删除当前目录下叫dir的整个目录系统 用户w 当前登录用户的详细信息who 显示登录用户date 显示当前时间cal  显示当月日历pwd  显示当前路径open .   可...
                         </p>
                         <p></p>
                     </div>
@@ -162,7 +166,7 @@ viewWillLayoutSubviews
                             <div class="card-tag is-notShownIfHover">@HuYong</div>
                             <div class="card-tag is-shownIfHover">
                                 
-                                    iOS &nbsp;&nbsp;
+                                    Linux &nbsp;&nbsp;
                                 
                             </div>
                             <div class="card-logo is-shownIfHover" self="right"></div>
@@ -213,7 +217,7 @@ viewWillLayoutSubviews
     <div id="footer" layout="rows center-left">
     <div id="end-mark">
         <div class="end-mark-icon"></div>
-        <p class="copyright">JackHu's Blog © 2017&nbsp;&nbsp;·&nbsp;&nbsp;愿你出走半生，归来仍是少年</p>
+        <p class="copyright">Jack Hu's Blog © 2017 - 2018&nbsp;&nbsp;·&nbsp;&nbsp;愿你出走半生，归来仍是少年</p>
     </div>
     <div id="footer-links" self="right">
         <ul>
