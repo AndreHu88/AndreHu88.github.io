@@ -19,4 +19,21 @@
             <a href="/videos">Videos</a>
         </div>
     </div>
+
+    <audio style="display:none; height: 0" id="bg-music" preload="auto" src="/assets/music/bg.mp3" loop="loop"></audio>
 </div>
+
+<script type="text/javascript"> 
+
+document.addEventListener('DOMContentLoaded', function () {
+    function audioAutoPlay() {
+        var audio = document.getElementById('bg-music');
+            audio.play();
+        document.addEventListener("WeixinJSBridgeReady", function () {
+            audio.play();
+        }, false);
+    }
+    audioAutoPlay();
+});
+
+</script>
