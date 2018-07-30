@@ -10,19 +10,19 @@
     <link rel="apple-touch-icon" sizes="110x90" href="/assets/images/logo.png">
     <link rel="icon" type="image/png" href="/assets/images/logo.png">
 
-    <title>二叉树笔记</title>
+    <title>OC向Swift转型</title>
 
     <meta property="og:url" content="/">
-    <meta property="og:title" content="二叉树笔记">
+    <meta property="og:title" content="OC向Swift转型">
     <meta property="og:type" content="article">
-    <meta property="og:description" content="“树”：一种非线性的存储结构，具有“一对多”关系的元素的集合n(n &gt;= 0)个结点的有限集合，n=0时是一棵空树，对于一棵非空树具有以下特性">
+    <meta property="og:description" content="swift已经推出了好几年了，目前的swift4已经相当成熟了。所以对于iOS开发者来说，使用swift来开发iOS的项目已经是势在必行了。swift相对OC的优势Swift容易阅读，语法和文件结构简易化。Swift更易于维护，文件分离后结构更清晰。Swift更加安全，它是类型安全的语言。Swift代码更少，简洁...">
 
     <!--   Core CSS Files   -->
     <link href="//cdn.bootcss.com/flex-layout-attribute/1.0.3/css/flex-layout-attribute.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
 
     <!-- Canonical SEO -->
-    <link rel="canonical" href="https://www.sohod.cn/2018/06/%E4%BA%8C%E5%8F%89%E6%A0%91/">
+    <link rel="canonical" href="https://www.sohod.cn/2018/07/OC%E6%92%B0%E5%86%99swift/">
     <link rel="alternate" type="application/rss+xml" title="Jack Hu的一片天地" href="https://www.sohod.cn/feed.xml">
 </head>
 
@@ -72,59 +72,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <div id="content">
         <div class="container container--header">
-    <h1 class="h1--home-title">二叉树笔记</h1>
-    <p>树形结构中最重要的一种</p>
+    <h1 class="h1--home-title">OC向Swift转型</h1>
+    <p>swift入门总结</p>
 </div>
 
         <link rel="stylesheet" type="text/css" href="/assets/css/article.css">
 
 <div class="page-wrapper">
     <div class="container--text">
-        <h4>“树”：一种非线性的存储结构，具有“一对多”关系的元素的集合</h4>
+        <h4>swift已经推出了好几年了，目前的swift4已经相当成熟了。所以对于iOS开发者来说，使用swift来开发iOS的项目已经是势在必行了。</h4>
 
-<p>n(n &gt;= 0)个结点的有限集合，n=0时是一棵空树，对于一棵非空树具有以下特性</p>
-
-<ul>
-<li>有且仅有一个根节点(ROOT)</li>
-<li>当n&gt;1时，其余的结点可分为m(m&gt;0)个互不相交的有限集，其中每个集合本身也是一棵树，称为根的子树</li>
-</ul>
-
-<p><center>
-    <img src="http://data.biancheng.net/uploads/allimg/170830/2-1FS0094003158.png" alt = "树" style="width:80%" />
-</center></p>
-
-<h4>“树”  基本术语</h4>
+<h4>swift相对OC的优势</h4>
 
 <ul>
-<li>结点： 树结构存储的每一个数据元素称为结点
- 度： 一个结点拥有的子树数(degree)  一棵树中的最大的度数为该树的度</li>
-<li>叶子结点：  度数为0的结点(终端结点)
- 开始结点：    根结点
- 分支结点：  度数不为0的结点(非终端结点)<br>
- 层次：    从根开始算起，根为第一层，其余结点的层次等于其双亲结点的层数+1</li>
-<li>深度(高度)：树种结点的最大层次
- 有序树：   树中结点的各子树从左至右依次有序且不能交换</li>
+<li>Swift容易阅读，语法和文件结构简易化。</li>
+<li>Swift更易于维护，文件分离后结构更清晰。</li>
+<li>Swift更加安全，它是类型安全的语言。</li>
+<li>Swift代码更少，简洁的语法，可以省去大量冗余代码</li>
+<li>Swift速度更快，运算性能更高。</li>
 </ul>
-
-<h4>二叉树</h4>
-
-<p>每个结点至多只有两棵子树，或者是空集，或者一个根结点及两颗互不相交的分别作为这个根的左子树，右子树组成</p>
-
-<h4>二叉树性质</h4>
-
-<ol>
-<li>二叉树中，第 i 层最多有2<sup>i-1个结点。</sup></li>
-<li>如果二叉树的深度为 K，那么此二叉树最多有2^K-1个结点。</li>
-<li>二叉树中，终端结点数（叶子结点数）为 n0，度为 2 的结点数为 n2，则n0 = n2 + 1。</li>
-</ol>
-
-<p><center>
-    <img src="http://data.biancheng.net/uploads/allimg/170830/2-1FS0103951Y1.png" alt = "二叉树" style="width:50%" />
-</center></p>
-
-<h4>完全二叉树特有的性质</h4>
-
-<p>n个结点的完全二叉树的深度为log<sub>2</sub>b+1</p>
 
     </div>
 </div>
@@ -137,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </style>
 
 <!-- 多说评论框 start -->
-<!-- <div class="ds-thread" data-thread-key="/2018/06/%E4%BA%8C%E5%8F%89%E6%A0%91/" data-title=二叉树笔记 data-url=https://www.sohod.cn/2018/06/%E4%BA%8C%E5%8F%89%E6%A0%91/></div> -->
+<!-- <div class="ds-thread" data-thread-key="/2018/07/OC%E6%92%B0%E5%86%99swift/" data-title=OC向Swift转型 data-url=https://www.sohod.cn/2018/07/OC%E6%92%B0%E5%86%99swift/></div> -->
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -161,55 +127,23 @@ document.addEventListener('DOMContentLoaded', function () {
         
         
         
-        
-            <a href="/2018/06/%E6%99%93%E4%B9%A6%E9%A6%86%E4%B9%8B%E8%A1%8C/">
-                <div class="card card--article not-visible" >
-                    <div class="card-body">
-                        <div class="card-title">晓书馆之行</div>
-                        <div class="card-description card-description--clamp-0">
-                            自晓说三月份有一期高晓松讲它的书馆已经开馆了，一直想去看看它的书馆。毕竟他的晓说也是看了好几年了，基本上一期不落，还是挺佩服他的。多才多艺，满腹经纶，简直就是个移动的百科全书。昨天就专门去了位于杭州良渚晓书馆，一探究竟。从杭州东站直接做地铁到二号线良渚，然后直奔目的地。因为晓书馆馆内只能容纳三百人，所以需提前预约。来到门口，报预约的手机号可查到个人信息，即可入馆。负责门禁的貌似是个学生志愿者...
-                        </div>
-                    </div>
-                    <div class="card-hero">
-                        <div class="card-image card-image--size-185" data-url="https://upload-images.jianshu.io/upload_images/4499332-1517fa3eaea90d3f.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"></div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="card-footer-wrapper" layout="row bottom-left">
-                            <div class="card-type is-notShownIfHover">2018-06-17</div>
-                            <div class="card-tag is-notShownIfHover">@HuYong</div>
-                            <div class="card-tag is-shownIfHover">
-                                
-                                    生活随笔 &nbsp;&nbsp;
-                                
-                            </div>
-                            <div class="card-logo is-shownIfHover" self="right"></div>
-                        </div>
-                    </div>
-                 </div>
-            </a>
-        
-        
-
-        
-        
-        
-            <a href="/2018/07/OC%E6%92%B0%E5%86%99swift/">
+            <a href="/2018/06/%E4%BA%8C%E5%8F%89%E6%A0%91/">
                 <div class="card card--article not-visible">
                     <div class="card-body">
-                        <div class="card-title card-title--articleIfNoImage">OC向Swift转型</div>
-                        <p class="card-description card-description--clamp-14">“swift入门总结”</p>
+                        <div class="card-title card-title--articleIfNoImage">二叉树笔记</div>
+                        <p class="card-description card-description--clamp-14">“树形结构中最重要的一种”</p>
                         <p class="card-description card-article-preview">
-                            #### swift已经推出了好几年了，目前的swift4已经相当成熟了。所以对于iOS开发者来说，使用swift来开发iOS的项目已经是势在必行了。#### swift相对OC的优势* Swift容易阅读，语法和文件结构简易化。* Swift更易于维护，文件分离后结构更清晰。* Swift更加安全，它是类型安全的语言。* Swift代码更少，简洁的语法，可以省去大量冗余代码* Swift速度更快，运算性能更高。
+                            “树”：一种非线性的存储结构，具有“一对多”关系的元素的集合n(n &gt;= 0)个结点的有限集合，n=0时是一棵空树，对于一棵非空树具有以下特性有且仅有一个根节点(ROOT)当n&gt;1时，其余的结点可分为m(m&gt;0)个互不相交的有限集，其中每个集合本身也是一棵树，称为根的子树    “树”  基本术语结点： 树结构存储的每一个数据元素称为结点 度： 一个结点拥有的子树数(degree)  一棵树中的最大的度数为该树的度叶子结点：  度数为0的结点(终端结点) 开始结点：    根结点 分支结点：  度数不为0的结点(非终端结点) 层次：    从根开始算起，根为第一层，其余结点的层次等于其双亲结点的层数+1深度(高度)：树种结点的最大层次 有序树：   树中结点的各子树从...
                         </p>
                         <p></p>
                     </div>
                     <div class="card-footer">
                         <div class="card-footer-wrapper" layout="row bottom-left">
-                            <div class="card-type is-notShownIfHover">2018-07-22</div>
+                            <div class="card-type is-notShownIfHover">2018-06-24</div>
                             <div class="card-tag is-notShownIfHover">@HuYong</div>
                             <div class="card-tag is-shownIfHover">
                                 
-                                    iOS &nbsp;&nbsp;
+                                    数据结构 &nbsp;&nbsp;
                                 
                             </div>
                             <div class="card-logo is-shownIfHover" self="right"></div>
@@ -219,6 +153,8 @@ document.addEventListener('DOMContentLoaded', function () {
             </a>
         
         
+        
+
         
 
     </div>

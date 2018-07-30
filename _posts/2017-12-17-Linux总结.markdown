@@ -7,7 +7,6 @@ date:           2017-12-27
 tags:           Linux
 post-card-type: article
 ---
-### 有些命令有时会忘记或记错，来篇blog记录下
 
 > ls显示文件
 
