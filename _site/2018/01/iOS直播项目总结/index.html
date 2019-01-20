@@ -145,7 +145,7 @@ HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低</
 <h5>编码H.264</h5>
 
 <p>1.初始化VideoToolbox</p>
-<figure class="highlight"><pre><code class="language-text" data-lang="text">- (void)setupVideoToolbox{
+<div class="highlight"><pre><code class="language-" data-lang="">- (void)setupVideoToolbox{
 
     dispatch_sync(_encodeQueue, ^{
 
@@ -153,9 +153,9 @@ HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低</
 
         int width = 720, height = 1280;
         OSStatus status = VTCompressionSessionCreate(NULL, width, height, kCMVideoCodecType_H264, NULL, NULL, NULL, encodingComplectionCallback, (__bridge void *)(self), &amp;_encodingSession);
-        DLog(@&quot;status code is %d&quot;,(int)status);
+        DLog(@"status code is %d",(int)status);
         if (status != 0) {
-            DLog(@&quot;create H264 session error&quot;);
+            DLog(@"create H264 session error");
             return ;
         }
 
@@ -192,14 +192,14 @@ HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低</
 - (void)setupFileHandle{
 
     //创建文件，初始化fileHandle;
-    NSString *file = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@&quot;test.h264&quot;];
+    NSString *file = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"test.h264"];
     [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
     [[NSFileManager defaultManager] createFileAtPath:file contents:nil attributes:nil];
     _fileHandle = [NSFileHandle fileHandleForWritingAtPath:file];
 }
-</code></pre></figure>
+</code></pre></div>
 <p>2.sampleBuffer回调处理</p>
-<figure class="highlight"><pre><code class="language-text" data-lang="text">- (void)videoEncodeWithSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+<div class="highlight"><pre><code class="language-" data-lang="">- (void)videoEncodeWithSampleBuffer:(CMSampleBufferRef)sampleBuffer{
 
     dispatch_sync(_encodeQueue, ^{
 
@@ -211,12 +211,12 @@ HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低</
         //flags 0 表示同步解码
         VTEncodeInfoFlags flags;
         OSStatus status = VTCompressionSessionEncodeFrame(_encodingSession, imageBuffer, presentationTimeStamp, kCMTimeInvalid, NULL, NULL, &amp;flags);
-        DLog(@&quot;status code is %d&quot;,(int)status);
+        DLog(@"status code is %d",(int)status);
         if (status == noErr) {
-            DLog(@&quot;H264 VTCompressionSessionEncodeFrame success&quot;);
+            DLog(@"H264 VTCompressionSessionEncodeFrame success");
         }
         else{
-            DLog(@&quot;H264: VTCompressionSessionEncodeFrame failed with %d&quot;, (int)status);
+            DLog(@"H264: VTCompressionSessionEncodeFrame failed with %d", (int)status);
             if (!_encodingSession) return;
             VTCompressionSessionInvalidate(_encodingSession);
             //释放资源
@@ -226,9 +226,9 @@ HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低</
     });
 
 }
-</code></pre></figure>
+</code></pre></div>
 <p>3.对VideoToolbox的编码回调</p>
-<figure class="highlight"><pre><code class="language-text" data-lang="text">//每压缩一次都异步的调用此方法
+<div class="highlight"><pre><code class="language-" data-lang="">//每压缩一次都异步的调用此方法
 void encodingComplectionCallback(void * CM_NULLABLE outputCallbackRefCon,
                                void * CM_NULLABLE sourceFrameRefCon,
                                OSStatus status,
@@ -236,7 +236,7 @@ void encodingComplectionCallback(void * CM_NULLABLE outputCallbackRefCon,
                                CM_NULLABLE CMSampleBufferRef sampleBuffer ){
 
 }
-</code></pre></figure>
+</code></pre></div>
 <h5>音视频同步详解</h5>
 
 <p>播放速度标准量有以下三种</p>
