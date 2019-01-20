@@ -15,7 +15,7 @@
     <meta property="og:url" content="/">
     <meta property="og:title" content="转场动画小记">
     <meta property="og:type" content="article">
-    <meta property="og:description" content="1. 简单push动画和present动画[self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@""];[self.navigationController pushViewController:[] ani...">
+    <meta property="og:description" content="1. 简单push动画和present动画```[self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@””];[self.navigationController pushViewController:[] ...">
 
     <!--   Core CSS Files   -->
     <link href="//cdn.bootcss.com/flex-layout-attribute/1.0.3/css/flex-layout-attribute.min.css" rel="stylesheet">
@@ -80,8 +80,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <div class="page-wrapper">
     <div class="container--text">
-        <h3>1. 简单push动画和present动画</h3>
-<div class="highlight"><pre><code class="language-" data-lang="">[self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@""];
+        <h3 id="1-简单push动画和present动画">1. 简单push动画和present动画</h3>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@""];
 [self.navigationController pushViewController:[] animated:NO];
 
 [self.view.window.layer addAnimation:[self presentAnimation] forKey:nil];
@@ -89,13 +89,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 //系统的API
 - (void)addAnimation:(CAAnimation *)anim forKey:(nullable NSString *)key;
-</code></pre></div>
+</code></pre></div></div>
 <p>自定义push动画，然后在push时添加到navigationController中
 CATransition -&gt; CAAnimation -&gt; NSObject</p>
-<div class="highlight"><pre><code class="language-" data-lang="">    CATransition *transition = [CATransition animation];
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    CATransition *transition = [CATransition animation];
     transition.duration = 0.6;
     transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
-
+    
     //动画类型，一下是系统API的介绍
     /* The name of the transition. Current legal transition types include
      * `fade', `moveIn', `push' and `reveal'. Defaults to `fade'. */
@@ -111,25 +112,27 @@ CATransition -&gt; CAAnimation -&gt; NSObject</p>
      cameraIrisHollowClose  相机镜头关闭效果
      cameraIrisHollowOpen   相机镜头打开效果
      */
-</code></pre></div>
+</code></pre></div></div>
 <p>最后push或present页面就可以完成动画</p>
 
-<h3>2.非交互式转场动画</h3>
-
+<h3 id="2非交互式转场动画">2.非交互式转场动画</h3>
 <ul>
-<li>1.需要当前的navigationController遵循<UINavigationControllerDelegate>并实现其代理方法</li>
+  <li>1.需要当前的navigationController遵循<UINavigationControllerDelegate>并实现其代理方法</UINavigationControllerDelegate></li>
 </ul>
-<div class="highlight"><pre><code class="language-" data-lang="">//可以在此代理方法中判断当前是push还是pop
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//可以在此代理方法中判断当前是push还是pop
 -  (nullable id &lt;UIViewControllerAnimatedTransitioning&gt;)navigationController:(UINavigationController *)navigationController
                                    animationControllerForOperation:(UINavigationControllerOperation)operation
                                                 fromViewController:(UIViewController *)fromVC
                                                   toViewController:(UIViewController *)toVC 
-</code></pre></div>
+</code></pre></div></div>
+
 <ul>
-<li>2.我们需要在代理方法中返回一个UIViewControllerAnimatedTransitioning对象，于是我们创建一个类继承自NSObject，遵循<UIViewControllerAnimatedTransitioning>协议，并实现其代理方法
-代理方法主要有以下2个</li>
+  <li>2.我们需要在代理方法中返回一个UIViewControllerAnimatedTransitioning对象，于是我们创建一个类继承自NSObject，遵循<UIViewControllerAnimatedTransitioning>协议，并实现其代理方法
+代理方法主要有以下2个</UIViewControllerAnimatedTransitioning></li>
 </ul>
-<div class="highlight"><pre><code class="language-" data-lang="">// This is used for percent driven interactive transitions, as well as for
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// This is used for percent driven interactive transitions, as well as for
 // container controllers that have companion animations that might need to
 // synchronize with the main animation.
 //返回动画的时长
@@ -138,7 +141,9 @@ CATransition -&gt; CAAnimation -&gt; NSObject</p>
 // This method can only  be a nop if the transition is interactive and not a percentDriven interactive transition.
 //实现具体的动画
 - (void)animateTransition:(id &lt;UIViewControllerContextTransitioning&gt;)transitionContext;
-</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">//转场过渡的容器view
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//转场过渡的容器view
 UIView *containerView = [transitionContext containerView];
 //FromVC
 UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
@@ -169,15 +174,16 @@ else{
         //设置transitionContext通知系统动画执行完毕
         [transitionContext completeTransition:!wasCancelled];
 }];
-</code></pre></div>
-<h5>实现酷狗的转场动画</h5>
+</code></pre></div></div>
 
-<p><em>分别创建两个类继承自NSObject，遵循<UIViewControllerAnimatedTransitioning>协议，来实现push和pop的动画效果</em></p>
+<h5 id="实现酷狗的转场动画">实现酷狗的转场动画</h5>
+<p>*分别创建两个类继承自NSObject，遵循<UIViewControllerAnimatedTransitioning>协议，来实现push和pop的动画效果*</UIViewControllerAnimatedTransitioning></p>
 
 <ul>
-<li>1.push动画,将将push的view做仿射变换</li>
+  <li>1.push动画,将将push的view做仿射变换</li>
 </ul>
-<div class="highlight"><pre><code class="language-" data-lang="">- (void)animateTransition:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext;
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)animateTransition:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext;
 
 //转场过渡的容器view
 UIView *containerView = [transitionContext containerView];
@@ -188,19 +194,23 @@ UIView *toView = toViewController.view;
 
 //将toView绕原点旋转45度
 toView.transform = 
-</code></pre></div>
+</code></pre></div></div>
 <ul>
-<li>2.pop动画同理</li>
-<li>3.交互式转场动画
-<UINavigationControllerDelegate>实现其代理方法</li>
+  <li>2.pop动画同理</li>
+  <li>3.交互式转场动画</li>
 </ul>
-<div class="highlight"><pre><code class="language-" data-lang="">- (nullable id &lt;UIViewControllerInteractiveTransitioning&gt;)navigationController:(UINavigationController *)navigationController
-                          interactionControllerForAnimationController:(id &lt;UIViewControllerAnimatedTransitioning&gt;) animationController
-</code></pre></div>
-<p>实现这个方法，系统转场时，就会知道当前是否有交互式的转场，有便执行交互转场，无则执行普通自定义的转场动画
-<code>UIPercentDrivenInteractiveTransition</code>类是系统定义的，他遵循<code>UIViewControllerInteractiveTransitioning</code>协议
-此类提供了了以下方法</p>
-<div class="highlight"><pre><code class="language-" data-lang="">// These methods should be called by the gesture recognizer or some other logic
+<UINavigationControllerDelegate>实现其代理方法
+
+```
+- (nullable id <UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
+                          interactionControllerForAnimationController:(id <UIViewControllerAnimatedTransitioning>) animationController
+```
+实现这个方法，系统转场时，就会知道当前是否有交互式的转场，有便执行交互转场，无则执行普通自定义的转场动画
+```UIPercentDrivenInteractiveTransition```类是系统定义的，他遵循```UIViewControllerInteractiveTransitioning```协议
+此类提供了了以下方法
+
+```
+// These methods should be called by the gesture recognizer or some other logic
 // to drive the interaction. This style of interaction controller should only be
 // used with an animator that implements a CA style transition in the animator's
 // animateTransition: method. If this type of interaction controller is
@@ -213,8 +223,11 @@ toView.transform =
 - (void)updateInteractiveTransition:(CGFloat)percentComplete;
 - (void)cancelInteractiveTransition;
 - (void)finishInteractiveTransition;
-</code></pre></div>
-<p>根据pop时传递的手势信息来计算滑动百分比，从而完成交互动画和取消动画</p>
+```
+根据pop时传递的手势信息来计算滑动百分比，从而完成交互动画和取消动画
+
+
+</UIViewControllerAnimatedTransitioning></UIViewControllerInteractiveTransitioning></UINavigationControllerDelegate>
 
     </div>
 </div>
