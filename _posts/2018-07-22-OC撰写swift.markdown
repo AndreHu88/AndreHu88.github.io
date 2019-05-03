@@ -1,6 +1,6 @@
 ---
 layout:         post
-title:         	OC向Swift转型
+title:         	转型Swift
 subtitle:       swift入门总结
 card-image:  
 date:           2018-07-22
@@ -9,12 +9,16 @@ post-card-type: article
 published:	true
 ---
 
-#### swift已经推出了好几年了，目前的swift4已经相当成熟了。所以对于iOS开发者来说，使用swift来开发iOS的项目已经是势在必行了。
+
+
 #### swift相对OC的优势
+
 * Swift容易阅读，语法和文件结构简易化。
 * Swift更易于维护，文件分离后结构更清晰。
 * Swift更加安全，它是类型安全的语言。
 * Swift代码更少，简洁的语法，可以省去大量冗余代码
 * Swift速度更快，运算性能更高。
+* Swift是面向协议的语言
+
 
 
