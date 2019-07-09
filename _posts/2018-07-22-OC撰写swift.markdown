@@ -1,7 +1,7 @@
 ---
 layout:         post
-title:         	转型Swift
-subtitle:       swift入门总结
+title:         	转战Swift
+subtitle:       Swift VS OC
 card-image:  
 date:           2018-07-22
 tags:           iOS
@@ -19,6 +19,17 @@ published:	true
 * Swift代码更少，简洁的语法，可以省去大量冗余代码
 * Swift速度更快，运算性能更高。
 * Swift是面向协议的语言
+* swift 用户自己创建的Class，不需要Import， 只需Import第三方即可
+
+
+#### swift相对OC的劣势
+* Swift没有OC的Runtime特性
+* OC可以和C++混编
+
+#### swift总结
+1. swift严格区分类型， Int 和 CGFloat 不可进行运算，必须转化为同一类型
+2. swift可选类型使用非常多， 在可选类型进行强制取值时，一定要判空，否则会抛异常， 区分? 和！在解包时可以使用  ```  if let```  和  ```guard ```
+3. swift引用了区间运算符 ```... ``` 和 ```..<```
 
 
 
