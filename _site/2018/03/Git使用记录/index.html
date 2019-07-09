@@ -15,14 +15,14 @@
     <meta property="og:url" content="/">
     <meta property="og:title" content="Git使用记录">
     <meta property="og:type" content="article">
-    <meta property="og:description" content="Git日常操作大全创建新仓库git init">
+    <meta property="og:description" content="Git创建提交创建新仓库git init">
 
     <!--   Core CSS Files   -->
     <link href="//cdn.bootcss.com/flex-layout-attribute/1.0.3/css/flex-layout-attribute.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
 
     <!-- Canonical SEO -->
-    <link rel="canonical" href="http://localhost:4000/2019/03/GIt%E6%93%8D%E4%BD%9C%E8%AE%B0%E5%BD%95/">
+    <link rel="canonical" href="http://localhost:4000/2018/03/Git%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/">
     <link rel="alternate" type="application/rss+xml" title="Jack Hu的一片天地" href="http://localhost:4000/feed.xml">
 </head>
 
@@ -73,14 +73,14 @@ document.addEventListener('DOMContentLoaded', function () {
     <div id="content">
         <div class="container container--header">
     <h1 class="h1--home-title">Git使用记录</h1>
-    <p>swift入门总结</p>
+    <p>git日常操作命令记录</p>
 </div>
 
         <link rel="stylesheet" type="text/css" href="/assets/css/article.css">
 
 <div class="page-wrapper">
     <div class="container--text">
-        <h4 id="git日常操作大全">Git日常操作大全</h4>
+        <h4 id="git创建提交">Git创建提交</h4>
 <p>创建新仓库
 <code class="highlighter-rouge">git init</code></p>
 
@@ -97,22 +97,72 @@ document.addEventListener('DOMContentLoaded', function () {
 <p>提交到远程仓库
 <code class="highlighter-rouge">git push origin &lt;branch name&gt;</code></p>
 
+<hr />
+
 <h4 id="git分支">Git分支</h4>
+
 <blockquote>
   <p>分支是用来将特性开发绝缘开来的。在你创建仓库的时候，master 是“默认的”。在其他分支上进行开发，完成后再将它们合并到主分支上。</p>
 </blockquote>
 
-<p>创建并切换到Dev分支
-<code class="highlighter-rouge">git checkout -b Dev</code></p>
+<p>创建并切换到Dev分支</p>
 
-<p>切换回主分支:
-<code class="highlighter-rouge">git checkout master</code></p>
+<p><code class="highlighter-rouge">git checkout -b Dev</code></p>
 
-<p>删除Dev分支
-<code class="highlighter-rouge">git branch -d Dev</code></p>
+<p>切换回主分支:</p>
 
-<p>查看分支
-<code class="highlighter-rouge">git branch</code></p>
+<p><code class="highlighter-rouge">git checkout master</code></p>
+
+<p>删除Dev分支</p>
+
+<p><code class="highlighter-rouge">git branch -d Dev</code></p>
+
+<p>拉取远程Dev分支</p>
+
+<p><code class="highlighter-rouge">git fetch origin Dev</code></p>
+
+<p>拉取远程dev分支，并创建本地dev分支</p>
+
+<p><code class="highlighter-rouge">git checkout -b dev origin/dev</code></p>
+
+<p>把某个分支的内容拉取到本地</p>
+
+<p><code class="highlighter-rouge">git pull origin Dev</code></p>
+
+<p>查看分支</p>
+
+<p><code class="highlighter-rouge">git branch</code></p>
+
+<hr />
+<h4 id="git-tag">Git Tag</h4>
+<blockquote>
+  <p>tag是git版本库的一个标记，指向某个commit的指针
+tag主要用于发布版本的管理，一个版本发布之后，我们可以为git打上 v.1.0.1 v.1.0.2 …这样的标签</p>
+</blockquote>
+
+<p>查看标签</p>
+
+<p><code class="highlighter-rouge">git tag</code></p>
+
+<p>创建本地Tag</p>
+
+<p><code class="highlighter-rouge">git tag &lt;tagName&gt;</code></p>
+
+<p>创建Tag到远程仓库</p>
+
+<p><code class="highlighter-rouge">git push origin &lt;tagName&gt;</code></p>
+
+<p><code class="highlighter-rouge">git push origin --tags</code></p>
+
+<p>本地 tag 的删除：</p>
+
+<p><code class="highlighter-rouge">git tag -d &lt;tagName&gt;</code></p>
+
+<p>远程 tag 的删除：</p>
+
+<p><code class="highlighter-rouge">git push origin :&lt;tagName&gt;</code></p>
+
+<hr />
 
 <h4 id="版本回退">版本回退</h4>
 <blockquote>
@@ -127,6 +177,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <p>Git的版本回退速度非常快，因为Git在内部有个指向当前版本的HEAD指针，当你回退版本的时候，Git仅仅是把HEAD从指向旧的版本</p>
 
 <p>Git提供了一个命令<code class="highlighter-rouge">git reflog</code>用来记录你的每一次命令</p>
+
+<hr />
 
 <h4 id="git更新与合并">Git更新与合并</h4>
 <p>更新你的本地仓库至最新改动
@@ -144,7 +196,7 @@ git pull</p>
 </style>
 
 <!-- 多说评论框 start -->
-<!-- <div class="ds-thread" data-thread-key="/2019/03/GIt%E6%93%8D%E4%BD%9C%E8%AE%B0%E5%BD%95/" data-title=Git使用记录 data-url=http://localhost:4000/2019/03/GIt%E6%93%8D%E4%BD%9C%E8%AE%B0%E5%BD%95/></div> -->
+<!-- <div class="ds-thread" data-thread-key="/2018/03/Git%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/" data-title=Git使用记录 data-url=http://localhost:4000/2018/03/Git%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/></div> -->
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -168,19 +220,19 @@ git pull</p>
         
         
         
-            <a href="/2018/07/OC%E6%92%B0%E5%86%99swift/">
+            <a href="/2018/01/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/">
                 <div class="card card--article not-visible">
                     <div class="card-body">
-                        <div class="card-title card-title--articleIfNoImage">转型Swift</div>
-                        <p class="card-description card-description--clamp-14">“swift入门总结”</p>
+                        <div class="card-title card-title--articleIfNoImage">iOS直播项目总结</div>
+                        <p class="card-description card-description--clamp-14">“直播”</p>
                         <p class="card-description card-article-preview">
-                            swift相对OC的优势  Swift容易阅读，语法和文件结构简易化。  Swift更易于维护，文件分离后结构更清晰。  Swift更加安全，它是类型安全的语言。  Swift代码更少，简洁的语法，可以省去大量冗余代码  Swift速度更快，运算性能更高。  Swift是面向协议的语言
+                            直播流媒体介绍直播，音乐播放demohttps://github.com/AndreHu88/iOS_Live视频流传输使用的是RTMP协议（类似于socket，基于TCP）RTMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP流媒体开发:网络层(socket或st)负责传输，协议层(rtmp或hls)负责网络打包，封装层(flv、ts)负责编解码数据的封装，编码层(h.264和aac)负责图像，音频压缩。用于对象,视频,音频的传输.这个协议建立在TCP协议或者轮询HTTP协议之上.HLS:由Apple公司定义的用于实时流传输的协议,HLS基于HTTP协议实现，传输内容包括两部分，一是M3U8描述文件，二是TS媒体文件。可实...
                         </p>
                         <p></p>
                     </div>
                     <div class="card-footer">
                         <div class="card-footer-wrapper" layout="row bottom-left">
-                            <div class="card-type is-notShownIfHover">2018-07-22</div>
+                            <div class="card-type is-notShownIfHover">2018-01-07</div>
                             <div class="card-tag is-notShownIfHover">@HuYong</div>
                             <div class="card-tag is-shownIfHover">
                                 
@@ -196,6 +248,35 @@ git pull</p>
         
         
 
+        
+        
+        
+            <a href="/2018/03/%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E5%B0%8F%E8%AE%B0/">
+                <div class="card card--article not-visible">
+                    <div class="card-body">
+                        <div class="card-title card-title--articleIfNoImage">转场动画小记</div>
+                        <p class="card-description card-description--clamp-14">“总结转场”</p>
+                        <p class="card-description card-article-preview">
+                            ### 1. 简单push动画和present动画```[self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@""];[self.navigationController pushViewController:[] animated:NO];[self.view.window.layer addAnimation:[self presentAnimation] forKey:nil];[self presentViewController:second animated:NO completion:nil]; //系统的API- (void)addAnimation:(CAAnim...
+                        </p>
+                        <p></p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-footer-wrapper" layout="row bottom-left">
+                            <div class="card-type is-notShownIfHover">2018-03-17</div>
+                            <div class="card-tag is-notShownIfHover">@HuYong</div>
+                            <div class="card-tag is-shownIfHover">
+                                
+                                    iOS &nbsp;&nbsp;
+                                
+                            </div>
+                            <div class="card-logo is-shownIfHover" self="right"></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        
+        
         
 
     </div>

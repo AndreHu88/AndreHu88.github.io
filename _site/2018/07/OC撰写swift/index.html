@@ -10,10 +10,10 @@
     <link rel="apple-touch-icon" sizes="110x90" href="/assets/images/logo.png">
     <link rel="icon" type="image/png" href="/assets/images/logo.png">
 
-    <title>转型Swift</title>
+    <title>转战Swift</title>
 
     <meta property="og:url" content="/">
-    <meta property="og:title" content="转型Swift">
+    <meta property="og:title" content="转战Swift">
     <meta property="og:type" content="article">
     <meta property="og:description" content="swift相对OC的优势">
 
@@ -72,8 +72,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <div id="content">
         <div class="container container--header">
-    <h1 class="h1--home-title">转型Swift</h1>
-    <p>swift入门总结</p>
+    <h1 class="h1--home-title">转战Swift</h1>
+    <p>Swift VS OC</p>
 </div>
 
         <link rel="stylesheet" type="text/css" href="/assets/css/article.css">
@@ -89,7 +89,21 @@ document.addEventListener('DOMContentLoaded', function () {
   <li>Swift代码更少，简洁的语法，可以省去大量冗余代码</li>
   <li>Swift速度更快，运算性能更高。</li>
   <li>Swift是面向协议的语言</li>
+  <li>swift 用户自己创建的Class，不需要Import， 只需Import第三方即可</li>
 </ul>
+
+<h4 id="swift相对oc的劣势">swift相对OC的劣势</h4>
+<ul>
+  <li>Swift没有OC的Runtime特性</li>
+  <li>OC可以和C++混编</li>
+</ul>
+
+<h4 id="swift总结">swift总结</h4>
+<ol>
+  <li>swift严格区分类型， Int 和 CGFloat 不可进行运算，必须转化为同一类型</li>
+  <li>swift可选类型使用非常多， 在可选类型进行强制取值时，一定要判空，否则会抛异常， 区分? 和！在解包时可以使用  <code class="highlighter-rouge"> if let</code>  和  <code class="highlighter-rouge">guard</code></li>
+  <li>swift引用了区间运算符 <code class="highlighter-rouge">...</code> 和 <code class="highlighter-rouge">..&lt;</code></li>
+</ol>
 
 
     </div>
@@ -103,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </style>
 
 <!-- 多说评论框 start -->
-<!-- <div class="ds-thread" data-thread-key="/2018/07/OC%E6%92%B0%E5%86%99swift/" data-title=转型Swift data-url=http://localhost:4000/2018/07/OC%E6%92%B0%E5%86%99swift/></div> -->
+<!-- <div class="ds-thread" data-thread-key="/2018/07/OC%E6%92%B0%E5%86%99swift/" data-title=转战Swift data-url=http://localhost:4000/2018/07/OC%E6%92%B0%E5%86%99swift/></div> -->
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -155,35 +169,6 @@ document.addEventListener('DOMContentLoaded', function () {
         
         
 
-        
-        
-        
-            <a href="/2019/03/GIt%E6%93%8D%E4%BD%9C%E8%AE%B0%E5%BD%95/">
-                <div class="card card--article not-visible">
-                    <div class="card-body">
-                        <div class="card-title card-title--articleIfNoImage">Git使用记录</div>
-                        <p class="card-description card-description--clamp-14">“swift入门总结”</p>
-                        <p class="card-description card-article-preview">
-                            #### Git日常操作大全创建新仓库`git init`添加文件`git add ``git add *`提交文件`git commit -m "commit info"`添加远程仓库`git remote add origin `提交到远程仓库`git push origin `#### Git分支 > 分支是用来将特性开发绝缘开来的。在你创建仓库的时候，master 是“默认的”。在其他分支上进行开发，完成后再将它们合并到主分支上。 创建并切换到Dev分支`git checkout -b Dev`切换回主分支:`git checkout master`删除Dev分支`git branch -d Dev`查看分支`git branch`#### 版本回退> Git必须知道当前版本是...
-                        </p>
-                        <p></p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="card-footer-wrapper" layout="row bottom-left">
-                            <div class="card-type is-notShownIfHover">2019-03-03</div>
-                            <div class="card-tag is-notShownIfHover">@HuYong</div>
-                            <div class="card-tag is-shownIfHover">
-                                
-                                    Git &nbsp;&nbsp;
-                                
-                            </div>
-                            <div class="card-logo is-shownIfHover" self="right"></div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        
-        
         
 
     </div>

@@ -1,17 +1,16 @@
 ---
 layout:         post
-title:         	Git使用记录
-subtitle:       swift入门总结
+title:          Git使用记录
+subtitle:       git日常操作命令记录
 card-image:  
-date:           2019-03-03
+date:           2018-03-03
 tags:           Git
 post-card-type: article
 published:	true
 ---
 
 
-
-#### Git日常操作大全
+#### Git创建提交
 创建新仓库
 `git init`
 
@@ -28,20 +27,70 @@ published:	true
 提交到远程仓库
 `git push origin <branch name>`
 
+
+-------
+
+
 #### Git分支
- > 分支是用来将特性开发绝缘开来的。在你创建仓库的时候，master 是“默认的”。在其他分支上进行开发，完成后再将它们合并到主分支上。
+
+>  分支是用来将特性开发绝缘开来的。在你创建仓库的时候，master 是“默认的”。在其他分支上进行开发，完成后再将它们合并到主分支上。
 
  创建并切换到Dev分支
+ 
 `git checkout -b Dev`
 
 切换回主分支:
+
 `git checkout master`
 
 删除Dev分支
+
 `git branch -d Dev`
 
+拉取远程Dev分支
+
+`git fetch origin Dev`
+
+拉取远程dev分支，并创建本地dev分支
+
+`git checkout -b dev origin/dev`
+
+把某个分支的内容拉取到本地
+
+`git pull origin Dev`
+
 查看分支
+
 `git branch`
+
+-------
+#### Git Tag
+> tag是git版本库的一个标记，指向某个commit的指针
+> tag主要用于发布版本的管理，一个版本发布之后，我们可以为git打上 v.1.0.1 v.1.0.2 ...这样的标签
+
+查看标签
+
+`git tag`
+
+创建本地Tag
+
+`git tag <tagName>`
+
+创建Tag到远程仓库
+
+`git push origin <tagName>`
+
+`git push origin --tags`
+
+本地 tag 的删除：
+
+`git tag -d <tagName>`
+
+远程 tag 的删除：
+
+`git push origin :<tagName>`
+
+-------
 
 #### 版本回退
 > Git必须知道当前版本是哪个版本，在Git中，用HEAD表示当前版本，也就是最新的提交ID ，上一个版本就是HEAD\^，上上一个版本就是HEAD\^\^，当然往上100个版本写100个\^比较容易数不过来，所以写成HEAD~100
@@ -55,7 +104,7 @@ Git的版本回退速度非常快，因为Git在内部有个指向当前版本�
 
 Git提供了一个命令`git reflog`用来记录你的每一次命令
 
-
+-------
 
 #### Git更新与合并
 更新你的本地仓库至最新改动
