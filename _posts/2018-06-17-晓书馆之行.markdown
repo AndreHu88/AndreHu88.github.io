@@ -1,12 +1,10 @@
 ---
 layout:         post
-title:         	晓书馆之行
-subtitle:       随笔
-card-image:  https://upload-images.jianshu.io/upload_images/4499332-1517fa3eaea90d3f.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240
+title:          晓书馆之行
 date:           2018-06-17
-tags:           生活随笔
-post-card-type: image
-published:	true
+tags:           [随笔]
+categories:
+comments: true
 ---
 
   自晓说三月份有一期高晓松讲它的书馆已经开馆了，一直想去看看它的书馆。毕竟他的晓说也是看了好几年了，基本上一期不落，还是挺佩服他的。多才多艺，满腹经纶，简直就是个移动的百科全书。昨天就专门去了位于杭州良渚晓书馆，一探究竟。从杭州东站直接做地铁到二号线良渚，然后直奔目的地。

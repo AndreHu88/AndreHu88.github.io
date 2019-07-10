@@ -1,29 +1,31 @@
-<div id="nav" layout="row top-left">
-    <div self="left">
-        <a href="/"><div class="logo logo-isNotVisIfMobile">&nbsp&nbsp生活不止眼前的苟且，还有以后的。所以，加油吧，少年</div></a>
-        <a href="/"><div class="logo logo-isVisIfMobile"></div></a>
+<div class="wrapper-sidebar">
+  <header class="sidebar clearfix">
+    <div class="site-info">
+      {% if site.avatar %}
+        <a href="{{ site.baseurl }}/" class="site-avatar"><img src="{{ site.avatar }}" /></a>
+      {% endif %} 
+      <h1 class="site-name"><a href="{{ site.baseurl }}/">{{ site.name }}</a></h1>
+      <p class="site-description">{{ site.description }}</p>
     </div>
-    <div class="nav-isNotVisIfMobile">
-        <div class="item">
-            <a href="/tags">Tags</a>
-        </div>
-        <div class="item">
-            <a href="/videos">Videos</a>
-        </div>
-    </div>
-    <div class="nav-isVisIfMobile">
-        <div class="item">
-            <a href="/tags">Tags</a>
-        </div>
-        <div class="item">
-            <a href="/videos">Videos</a>
-        </div>
-    </div>
+  </header>
 
-    <!--
-        <audio style="display:none; height: 0" id="bg-music" preload="auto" src="/assets/music/bg.mp3" loop="loop"></audio>
-     -->
-    
+  <div class="navlist">
+    <nav>
+      {% for nav in site.navigation %}
+      {% if nav.url contains 'http://' or nav.url contains 'https://' %}
+      <a href="{{ nav.url }}">{{ nav.name }}</a>
+      {% else %}
+      <a href="{{ site.baseurl }}{{ nav.url }}">{{ nav.name }}</a>
+      {% endif %}
+      {% endfor %}
+    </nav>
+  </div>
+
+  <div class="wrapper-footer-desktop">
+    <footer class="footer">
+      {% include footer.html %}
+    </footer>
+  </div>
 </div>
 
 <script type="text/javascript"> 

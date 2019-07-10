@@ -1,0 +1,834 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-07-10T17:14:20+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Jack Hu</title><subtitle>生活不止眼前的苟且，还有诗和远方</subtitle><entry><title type="html">转战Swift</title><link href="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/" rel="alternate" type="text/html" title="转战Swift" /><published>2018-07-22T00:00:00+08:00</published><updated>2018-07-22T00:00:00+08:00</updated><id>http://localhost:4000/OC%E6%92%B0%E5%86%99swift</id><content type="html" xml:base="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/">&lt;h4 id=&quot;swift相对oc的优势&quot;&gt;swift相对OC的优势&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Swift容易阅读，语法和文件结构简易化。&lt;/li&gt;
+  &lt;li&gt;Swift更易于维护，文件分离后结构更清晰。&lt;/li&gt;
+  &lt;li&gt;Swift更加安全，它是类型安全的语言。&lt;/li&gt;
+  &lt;li&gt;Swift代码更少，简洁的语法，可以省去大量冗余代码&lt;/li&gt;
+  &lt;li&gt;Swift速度更快，运算性能更高。&lt;/li&gt;
+  &lt;li&gt;Swift是面向协议的语言&lt;/li&gt;
+  &lt;li&gt;swift 用户自己创建的Class，不需要Import， 只需Import第三方即可&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;swift相对oc的劣势&quot;&gt;swift相对OC的劣势&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Swift没有OC的Runtime特性&lt;/li&gt;
+  &lt;li&gt;OC可以和C++混编&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;swift总结&quot;&gt;swift总结&lt;/h4&gt;
+&lt;ol&gt;
+  &lt;li&gt;swift严格区分类型， Int 和 CGFloat 不可进行运算，必须转化为同一类型&lt;/li&gt;
+  &lt;li&gt;swift可选类型使用非常多， 在可选类型进行强制取值时，一定要判空，否则会抛异常， 区分? 和！在解包时可以使用  &lt;code class=&quot;highlighter-rouge&quot;&gt; if let&lt;/code&gt;  和  &lt;code class=&quot;highlighter-rouge&quot;&gt;guard&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;swift引用了区间运算符 &lt;code class=&quot;highlighter-rouge&quot;&gt;...&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;..&amp;lt;&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><author><name></name></author><category term="iOS" /><category term="Swift" /><summary type="html">swift相对OC的优势 Swift容易阅读，语法和文件结构简易化。 Swift更易于维护，文件分离后结构更清晰。 Swift更加安全，它是类型安全的语言。 Swift代码更少，简洁的语法，可以省去大量冗余代码 Swift速度更快，运算性能更高。 Swift是面向协议的语言 swift 用户自己创建的Class，不需要Import， 只需Import第三方即可 swift相对OC的劣势 Swift没有OC的Runtime特性 OC可以和C++混编 swift总结 swift严格区分类型， Int 和 CGFloat 不可进行运算，必须转化为同一类型 swift可选类型使用非常多， 在可选类型进行强制取值时，一定要判空，否则会抛异常， 区分? 和！在解包时可以使用 if let 和 guard swift引用了区间运算符 ... 和 ..&amp;lt;</summary></entry><entry><title type="html">二叉树笔记</title><link href="http://localhost:4000/%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="alternate" type="text/html" title="二叉树笔记" /><published>2018-06-24T00:00:00+08:00</published><updated>2018-06-24T00:00:00+08:00</updated><id>http://localhost:4000/%E4%BA%8C%E5%8F%89%E6%A0%91</id><content type="html" xml:base="http://localhost:4000/%E4%BA%8C%E5%8F%89%E6%A0%91/">&lt;h4 id=&quot;树一种非线性的存储结构具有一对多关系的元素的集合&quot;&gt;“树”：一种非线性的存储结构，具有“一对多”关系的元素的集合&lt;/h4&gt;
+&lt;p&gt;n(n &amp;gt;= 0)个结点的有限集合，n=0时是一棵空树，对于一棵非空树具有以下特性&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;有且仅有一个根节点(ROOT)&lt;/li&gt;
+  &lt;li&gt;当n&amp;gt;1时，其余的结点可分为m(m&amp;gt;0)个互不相交的有限集，其中每个集合本身也是一棵树，称为根的子树&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;center&gt;
+	&lt;img src=&quot;http://data.biancheng.net/uploads/allimg/170830/2-1FS0094003158.png&quot; alt=&quot;树&quot; style=&quot;width:80%&quot; /&gt;
+&lt;/center&gt;
+&lt;h4 id=&quot;树--基本术语&quot;&gt;“树”  基本术语&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;结点：	树结构存储的每一个数据元素称为结点
+   度：	一个结点拥有的子树数(degree)  一棵树中的最大的度数为该树的度&lt;/li&gt;
+  &lt;li&gt;叶子结点：  度数为0的结点(终端结点)
+   开始结点：	根结点
+   分支结点：  度数不为0的结点(非终端结点)	
+   层次：	  从根开始算起，根为第一层，其余结点的层次等于其双亲结点的层数+1&lt;/li&gt;
+  &lt;li&gt;深度(高度)：树种结点的最大层次
+   有序树：	树中结点的各子树从左至右依次有序且不能交换&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;二叉树&quot;&gt;二叉树&lt;/h4&gt;
+&lt;p&gt;每个结点至多只有两棵子树，或者是空集，或者一个根结点及两颗互不相交的分别作为这个根的左子树，右子树组成&lt;/p&gt;
+&lt;h4 id=&quot;二叉树性质&quot;&gt;二叉树性质&lt;/h4&gt;
+&lt;ol&gt;
+  &lt;li&gt;二叉树中，第 i 层最多有2^i-1个结点。&lt;/li&gt;
+  &lt;li&gt;如果二叉树的深度为 K，那么此二叉树最多有2\^K-1个结点。&lt;/li&gt;
+  &lt;li&gt;二叉树中，终端结点数（叶子结点数）为 n0，度为 2 的结点数为 n2，则n0 = n2 + 1。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;center&gt;
+	&lt;img src=&quot;http://data.biancheng.net/uploads/allimg/170830/2-1FS0103951Y1.png&quot; alt=&quot;二叉树&quot; style=&quot;width:50%&quot; /&gt;
+&lt;/center&gt;
+
+&lt;h4 id=&quot;完全二叉树特有的性质&quot;&gt;完全二叉树特有的性质&lt;/h4&gt;
+&lt;p&gt;n个结点的完全二叉树的深度为log&lt;sub&gt;2&lt;/sub&gt;b+1&lt;/p&gt;</content><author><name></name></author><category term="数据结构" /><summary type="html">“树”：一种非线性的存储结构，具有“一对多”关系的元素的集合 n(n &amp;gt;= 0)个结点的有限集合，n=0时是一棵空树，对于一棵非空树具有以下特性 有且仅有一个根节点(ROOT) 当n&amp;gt;1时，其余的结点可分为m(m&amp;gt;0)个互不相交的有限集，其中每个集合本身也是一棵树，称为根的子树 “树” 基本术语 结点： 树结构存储的每一个数据元素称为结点 度： 一个结点拥有的子树数(degree) 一棵树中的最大的度数为该树的度 叶子结点： 度数为0的结点(终端结点) 开始结点： 根结点 分支结点： 度数不为0的结点(非终端结点) 层次： 从根开始算起，根为第一层，其余结点的层次等于其双亲结点的层数+1 深度(高度)：树种结点的最大层次 有序树： 树中结点的各子树从左至右依次有序且不能交换 二叉树 每个结点至多只有两棵子树，或者是空集，或者一个根结点及两颗互不相交的分别作为这个根的左子树，右子树组成 二叉树性质 二叉树中，第 i 层最多有2^i-1个结点。 如果二叉树的深度为 K，那么此二叉树最多有2\^K-1个结点。 二叉树中，终端结点数（叶子结点数）为 n0，度为 2 的结点数为 n2，则n0 = n2 + 1。 完全二叉树特有的性质 n个结点的完全二叉树的深度为log2b+1</summary></entry><entry><title type="html">晓书馆之行</title><link href="http://localhost:4000/%E6%99%93%E4%B9%A6%E9%A6%86%E4%B9%8B%E8%A1%8C/" rel="alternate" type="text/html" title="晓书馆之行" /><published>2018-06-17T00:00:00+08:00</published><updated>2018-06-17T00:00:00+08:00</updated><id>http://localhost:4000/%E6%99%93%E4%B9%A6%E9%A6%86%E4%B9%8B%E8%A1%8C</id><content type="html" xml:base="http://localhost:4000/%E6%99%93%E4%B9%A6%E9%A6%86%E4%B9%8B%E8%A1%8C/">&lt;p&gt;自晓说三月份有一期高晓松讲它的书馆已经开馆了，一直想去看看它的书馆。毕竟他的晓说也是看了好几年了，基本上一期不落，还是挺佩服他的。多才多艺，满腹经纶，简直就是个移动的百科全书。昨天就专门去了位于杭州良渚晓书馆，一探究竟。从杭州东站直接做地铁到二号线良渚，然后直奔目的地。&lt;/p&gt;
+
+&lt;p&gt;因为晓书馆馆内只能容纳三百人，所以需提前预约。来到门口，报预约的手机号可查到个人信息，即可入馆。负责门禁的貌似是个学生志愿者，说话很客气。进入到馆内，位于门口的左边便是一个服务台，有一个在看书工作人员，时不时抬头看看。在服务台旁边有一面有一面书柜，全是高晓松自己的书(下图二)，上面摆满了晓说，鱼羊野史。在书柜的对面的一个柱子上，刻了“晓书馆”的logo(下图一)&lt;/p&gt;
+&lt;figure class=&quot;half&quot;&gt;
+    &lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-1517fa3eaea90d3f.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;书馆正门&quot; style=&quot;width:45%&quot; /&gt;
+     &amp;gt;
+    &lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-240e542b4a198b1b.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;书馆后面的小道&quot; style=&quot;width:45%&quot; /&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;进入书馆内，先大概转了一圈。在服务台旁边发现了一面留言墙，仔细看了下上面的留言。感觉很有意思，大概写留言的应该都是和我一样爱看晓说的吧，有给自己留的，也有给朋友留的，还有有祝福的留言，还有的在留言板上讲起来故事，还有一些灵魂画手画上了“矮大紧”，有种莫名的喜感，但感觉还是挺有才的。密密麻麻的留言贴了很多。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-d48c82fcb9ab83d5.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;留言墙&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在书馆共分两层，大多数书集中在一楼，书架上放的书还有挺多的，各个种类的都有。放眼看去，书柜很高，大约有四五米的样子，如果想拿上面的书还是挺麻烦的。书柜旁边放了一些椅子，可供读者使用。书馆的尽头是一面玻璃墙，墙面有很多书桌和凳子。玻璃墙外便是一个水池，水池外面是一片绿油油的樱树，如果是三四月份，樱花盛开的时候那将会很漂亮。 二楼的书主要是一些儿童图书。由于是周末，二楼的很多人直接用坐垫坐在地上看书，也还有一些小朋友在玩耍。&lt;/p&gt;
+
+&lt;figure class=&quot;half&quot;&gt;
+    &lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-db065c7a43b63c2a.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;书馆内&quot; style=&quot;width:45%&quot; /&gt;
+     &amp;gt;
+    &lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-5145af777ccff467.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;书馆后面的小道&quot; style=&quot;width:45%&quot; /&gt;
+&lt;/figure&gt;</content><author><name></name></author><category term="随笔" /><summary type="html">自晓说三月份有一期高晓松讲它的书馆已经开馆了，一直想去看看它的书馆。毕竟他的晓说也是看了好几年了，基本上一期不落，还是挺佩服他的。多才多艺，满腹经纶，简直就是个移动的百科全书。昨天就专门去了位于杭州良渚晓书馆，一探究竟。从杭州东站直接做地铁到二号线良渚，然后直奔目的地。 因为晓书馆馆内只能容纳三百人，所以需提前预约。来到门口，报预约的手机号可查到个人信息，即可入馆。负责门禁的貌似是个学生志愿者，说话很客气。进入到馆内，位于门口的左边便是一个服务台，有一个在看书工作人员，时不时抬头看看。在服务台旁边有一面有一面书柜，全是高晓松自己的书(下图二)，上面摆满了晓说，鱼羊野史。在书柜的对面的一个柱子上，刻了“晓书馆”的logo(下图一) &amp;gt; 进入书馆内，先大概转了一圈。在服务台旁边发现了一面留言墙，仔细看了下上面的留言。感觉很有意思，大概写留言的应该都是和我一样爱看晓说的吧，有给自己留的，也有给朋友留的，还有有祝福的留言，还有的在留言板上讲起来故事，还有一些灵魂画手画上了“矮大紧”，有种莫名的喜感，但感觉还是挺有才的。密密麻麻的留言贴了很多。 在书馆共分两层，大多数书集中在一楼，书架上放的书还有挺多的，各个种类的都有。放眼看去，书柜很高，大约有四五米的样子，如果想拿上面的书还是挺麻烦的。书柜旁边放了一些椅子，可供读者使用。书馆的尽头是一面玻璃墙，墙面有很多书桌和凳子。玻璃墙外便是一个水池，水池外面是一片绿油油的樱树，如果是三四月份，樱花盛开的时候那将会很漂亮。 二楼的书主要是一些儿童图书。由于是周末，二楼的很多人直接用坐垫坐在地上看书，也还有一些小朋友在玩耍。 &amp;gt;</summary></entry><entry><title type="html">转场动画小记</title><link href="http://localhost:4000/%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E5%B0%8F%E8%AE%B0/" rel="alternate" type="text/html" title="转场动画小记" /><published>2018-03-17T00:00:00+08:00</published><updated>2018-03-17T00:00:00+08:00</updated><id>http://localhost:4000/%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E5%B0%8F%E8%AE%B0</id><content type="html" xml:base="http://localhost:4000/%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E5%B0%8F%E8%AE%B0/">&lt;h3 id=&quot;1-简单push动画和present动画&quot;&gt;1. 简单push动画和present动画&lt;/h3&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@&quot;&quot;];
+[self.navigationController pushViewController:[] animated:NO];
+
+[self.view.window.layer addAnimation:[self presentAnimation] forKey:nil];
+[self presentViewController:second animated:NO completion:nil]; 
+
+//系统的API
+- (void)addAnimation:(CAAnimation *)anim forKey:(nullable NSString *)key;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;自定义push动画，然后在push时添加到navigationController中
+CATransition -&amp;gt; CAAnimation -&amp;gt; NSObject&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    CATransition *transition = [CATransition animation];
+    transition.duration = 0.6;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
+    
+    //动画类型，一下是系统API的介绍
+    /* The name of the transition. Current legal transition types include
+     * `fade', `moveIn', `push' and `reveal'. Defaults to `fade'. */
+    transition.type = @&quot;&quot;;
+
+    /*私有API
+     cube                   立方体效果
+     pageCurl               向上翻一页
+     pageUnCurl             向下翻一页
+     rippleEffect           水滴波动效果
+     suckEffect             变成小布块飞走的感觉
+     oglFlip                上下翻转
+     cameraIrisHollowClose  相机镜头关闭效果
+     cameraIrisHollowOpen   相机镜头打开效果
+     */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;最后push或present页面就可以完成动画&lt;/p&gt;
+
+&lt;h3 id=&quot;2非交互式转场动画&quot;&gt;2.非交互式转场动画&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;1.需要当前的navigationController遵循&lt;UINavigationControllerDelegate&gt;并实现其代理方法&lt;/UINavigationControllerDelegate&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//可以在此代理方法中判断当前是push还是pop
+-  (nullable id &amp;lt;UIViewControllerAnimatedTransitioning&amp;gt;)navigationController:(UINavigationController *)navigationController
+                                   animationControllerForOperation:(UINavigationControllerOperation)operation
+                                                fromViewController:(UIViewController *)fromVC
+                                                  toViewController:(UIViewController *)toVC 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;2.我们需要在代理方法中返回一个UIViewControllerAnimatedTransitioning对象，于是我们创建一个类继承自NSObject，遵循&lt;UIViewControllerAnimatedTransitioning&gt;协议，并实现其代理方法
+代理方法主要有以下2个&lt;/UIViewControllerAnimatedTransitioning&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// This is used for percent driven interactive transitions, as well as for
+// container controllers that have companion animations that might need to
+// synchronize with the main animation.
+//返回动画的时长
+- (NSTimeInterval)transitionDuration:(nullable id &amp;lt;UIViewControllerContextTransitioning&amp;gt;)transitionContext;
+
+// This method can only  be a nop if the transition is interactive and not a percentDriven interactive transition.
+//实现具体的动画
+- (void)animateTransition:(id &amp;lt;UIViewControllerContextTransitioning&amp;gt;)transitionContext;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//转场过渡的容器view
+UIView *containerView = [transitionContext containerView];
+//FromVC
+UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+UIView *fromView = fromViewController.view;
+
+//ToVC
+UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+UIView *toView = toViewController.view;
+
+NSInteger toVCCount = [toViewController.navigationController.viewControllers indexOfObject:toViewController];
+NSInteger fromVCCount = [fromViewController.navigationController.viewControllers indexOfObject:fromViewController];
+if (toVCCount &amp;gt; fromVCCount) {
+   //push
+    [containerView addSubview:fromView];
+    [containerView addSubview:toView];
+}
+else{
+  //pop
+    [containerView addSubview:toView];
+    [containerView addSubview:fromView];
+}
+
+[UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+        //具体的动画实现
+
+  } completion:^(BOOL finished) {
+        BOOL wasCancelled = [transitionContext transitionWasCancelled];
+        //设置transitionContext通知系统动画执行完毕
+        [transitionContext completeTransition:!wasCancelled];
+}];
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;实现酷狗的转场动画&quot;&gt;实现酷狗的转场动画&lt;/h5&gt;
+&lt;p&gt;*分别创建两个类继承自NSObject，遵循&lt;UIViewControllerAnimatedTransitioning&gt;协议，来实现push和pop的动画效果*&lt;/UIViewControllerAnimatedTransitioning&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1.push动画,将将push的view做仿射变换&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)animateTransition:(id&amp;lt;UIViewControllerContextTransitioning&amp;gt;)transitionContext;
+
+//转场过渡的容器view
+UIView *containerView = [transitionContext containerView];
+//ToVC
+UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+UIView *toView = toViewController.view;
+[containerView addSubview:toView];
+
+//将toView绕原点旋转45度
+toView.transform = 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;2.pop动画同理&lt;/li&gt;
+  &lt;li&gt;3.交互式转场动画&lt;/li&gt;
+&lt;/ul&gt;
+&lt;UINavigationControllerDelegate&gt;实现其代理方法
+
+```
+- (nullable id &lt;UIViewControllerInteractiveTransitioning&gt;)navigationController:(UINavigationController *)navigationController
+                          interactionControllerForAnimationController:(id &lt;UIViewControllerAnimatedTransitioning&gt;) animationController
+```
+实现这个方法，系统转场时，就会知道当前是否有交互式的转场，有便执行交互转场，无则执行普通自定义的转场动画
+```UIPercentDrivenInteractiveTransition```类是系统定义的，他遵循```UIViewControllerInteractiveTransitioning```协议
+此类提供了了以下方法
+
+```
+// These methods should be called by the gesture recognizer or some other logic
+// to drive the interaction. This style of interaction controller should only be
+// used with an animator that implements a CA style transition in the animator's
+// animateTransition: method. If this type of interaction controller is
+// specified, the animateTransition: method must ensure to call the
+// UIViewControllerTransitionParameters completeTransition: method. The other
+// interactive methods on UIViewControllerContextTransitioning should NOT be
+// called. If there is an interruptible animator, these methods will either scrub or continue 
+// the transition in the forward or reverse directions.
+
+- (void)updateInteractiveTransition:(CGFloat)percentComplete;
+- (void)cancelInteractiveTransition;
+- (void)finishInteractiveTransition;
+```
+根据pop时传递的手势信息来计算滑动百分比，从而完成交互动画和取消动画
+
+
+&lt;/UIViewControllerAnimatedTransitioning&gt;&lt;/UIViewControllerInteractiveTransitioning&gt;&lt;/UINavigationControllerDelegate&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">1. 简单push动画和present动画 [self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@&quot;&quot;]; [self.navigationController pushViewController:[] animated:NO]; [self.view.window.layer addAnimation:[self presentAnimation] forKey:nil]; [self presentViewController:second animated:NO completion:nil]; //系统的API - (void)addAnimation:(CAAnimation *)anim forKey:(nullable NSString *)key; 自定义push动画，然后在push时添加到navigationController中 CATransition -&amp;gt; CAAnimation -&amp;gt; NSObject CATransition *transition = [CATransition animation]; transition.duration = 0.6; transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]; //动画类型，一下是系统API的介绍 /* The name of the transition. Current legal transition types include * `fade', `moveIn', `push' and `reveal'. Defaults to `fade'. */ transition.type = @&quot;&quot;; /*私有API cube 立方体效果 pageCurl 向上翻一页 pageUnCurl 向下翻一页 rippleEffect 水滴波动效果 suckEffect 变成小布块飞走的感觉 oglFlip 上下翻转 cameraIrisHollowClose 相机镜头关闭效果 cameraIrisHollowOpen 相机镜头打开效果 */ 最后push或present页面就可以完成动画 2.非交互式转场动画 1.需要当前的navigationController遵循并实现其代理方法 //可以在此代理方法中判断当前是push还是pop - (nullable id &amp;lt;UIViewControllerAnimatedTransitioning&amp;gt;)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC 2.我们需要在代理方法中返回一个UIViewControllerAnimatedTransitioning对象，于是我们创建一个类继承自NSObject，遵循协议，并实现其代理方法 代理方法主要有以下2个 // This is used for percent driven interactive transitions, as well as for // container controllers that have companion animations that might need to // synchronize with the main animation. //返回动画的时长 - (NSTimeInterval)transitionDuration:(nullable id &amp;lt;UIViewControllerContextTransitioning&amp;gt;)transitionContext; // This method can only be a nop if the transition is interactive and not a percentDriven interactive transition. //实现具体的动画 - (void)animateTransition:(id &amp;lt;UIViewControllerContextTransitioning&amp;gt;)transitionContext; //转场过渡的容器view UIView *containerView = [transitionContext containerView]; //FromVC UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey]; UIView *fromView = fromViewController.view; //ToVC UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey]; UIView *toView = toViewController.view; NSInteger toVCCount = [toViewController.navigationController.viewControllers indexOfObject:toViewController]; NSInteger fromVCCount = [fromViewController.navigationController.viewControllers indexOfObject:fromViewController]; if (toVCCount &amp;gt; fromVCCount) { //push [containerView addSubview:fromView]; [containerView addSubview:toView]; } else{ //pop [containerView addSubview:toView]; [containerView addSubview:fromView]; } [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{ //具体的动画实现 } completion:^(BOOL finished) { BOOL wasCancelled = [transitionContext transitionWasCancelled]; //设置transitionContext通知系统动画执行完毕 [transitionContext completeTransition:!wasCancelled]; }]; 实现酷狗的转场动画 *分别创建两个类继承自NSObject，遵循协议，来实现push和pop的动画效果* 1.push动画,将将push的view做仿射变换 - (void)animateTransition:(id&amp;lt;UIViewControllerContextTransitioning&amp;gt;)transitionContext; //转场过渡的容器view UIView *containerView = [transitionContext containerView]; //ToVC UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey]; UIView *toView = toViewController.view; [containerView addSubview:toView]; //将toView绕原点旋转45度 toView.transform = 2.pop动画同理 3.交互式转场动画 实现其代理方法 ``` - (nullable id )navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id ) animationController ``` 实现这个方法，系统转场时，就会知道当前是否有交互式的转场，有便执行交互转场，无则执行普通自定义的转场动画 ```UIPercentDrivenInteractiveTransition```类是系统定义的，他遵循```UIViewControllerInteractiveTransitioning```协议 此类提供了了以下方法 ``` // These methods should be called by the gesture recognizer or some other logic // to drive the interaction. This style of interaction controller should only be // used with an animator that implements a CA style transition in the animator's // animateTransition: method. If this type of interaction controller is // specified, the animateTransition: method must ensure to call the // UIViewControllerTransitionParameters completeTransition: method. The other // interactive methods on UIViewControllerContextTransitioning should NOT be // called. If there is an interruptible animator, these methods will either scrub or continue // the transition in the forward or reverse directions. - (void)updateInteractiveTransition:(CGFloat)percentComplete; - (void)cancelInteractiveTransition; - (void)finishInteractiveTransition; ``` 根据pop时传递的手势信息来计算滑动百分比，从而完成交互动画和取消动画</summary></entry><entry><title type="html">Git使用记录</title><link href="http://localhost:4000/Git%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/" rel="alternate" type="text/html" title="Git使用记录" /><published>2018-03-03T00:00:00+08:00</published><updated>2018-03-03T00:00:00+08:00</updated><id>http://localhost:4000/Git%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95</id><content type="html" xml:base="http://localhost:4000/Git%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/">&lt;h4 id=&quot;git创建提交&quot;&gt;Git创建提交&lt;/h4&gt;
+
+&lt;p&gt;创建新仓库
+&lt;code class=&quot;highlighter-rouge&quot;&gt;git init&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;添加文件
+&lt;code class=&quot;highlighter-rouge&quot;&gt;git add &amp;lt;filename&amp;gt;&lt;/code&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;git add *&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;提交文件
+&lt;code class=&quot;highlighter-rouge&quot;&gt;git commit -m &quot;commit info&quot;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;添加远程仓库
+&lt;code class=&quot;highlighter-rouge&quot;&gt;git remote add origin &amp;lt;server&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;提交到远程仓库
+&lt;code class=&quot;highlighter-rouge&quot;&gt;git push origin &amp;lt;branch name&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;git分支&quot;&gt;Git分支&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;分支是用来将特性开发绝缘开来的。在你创建仓库的时候，master 是“默认的”。在其他分支上进行开发，完成后再将它们合并到主分支上。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;创建并切换到Dev分支&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git checkout -b Dev&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;切换回主分支:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git checkout master&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;删除Dev分支&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git branch -d Dev&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;拉取远程Dev分支&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git fetch origin Dev&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;拉取远程dev分支，并创建本地dev分支&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git checkout -b dev origin/dev&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;把某个分支的内容拉取到本地&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git pull origin Dev&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;查看分支&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git branch&lt;/code&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h4 id=&quot;git-tag&quot;&gt;Git Tag&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;tag是git版本库的一个标记，指向某个commit的指针
+tag主要用于发布版本的管理，一个版本发布之后，我们可以为git打上 v.1.0.1 v.1.0.2 …这样的标签&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;查看标签&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git tag&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;创建本地Tag&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git tag &amp;lt;tagName&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;创建Tag到远程仓库&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git push origin &amp;lt;tagName&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git push origin --tags&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;本地 tag 的删除：&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git tag -d &amp;lt;tagName&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;远程 tag 的删除：&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git push origin :&amp;lt;tagName&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;版本回退&quot;&gt;版本回退&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Git必须知道当前版本是哪个版本，在Git中，用HEAD表示当前版本，也就是最新的提交ID ，上一个版本就是HEAD\^，上上一个版本就是HEAD\^\^，当然往上100个版本写100个\^比较容易数不过来，所以写成HEAD~100&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;回退到上一个版本
+&lt;code class=&quot;highlighter-rouge&quot;&gt;git reset --hard HEAD^&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;我们可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;git log&lt;/code&gt;查看版本库的状态&lt;/p&gt;
+
+&lt;p&gt;Git的版本回退速度非常快，因为Git在内部有个指向当前版本的HEAD指针，当你回退版本的时候，Git仅仅是把HEAD从指向旧的版本&lt;/p&gt;
+
+&lt;p&gt;Git提供了一个命令&lt;code class=&quot;highlighter-rouge&quot;&gt;git reflog&lt;/code&gt;用来记录你的每一次命令&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;git更新与合并&quot;&gt;Git更新与合并&lt;/h4&gt;
+&lt;p&gt;更新你的本地仓库至最新改动
+git pull&lt;/p&gt;</content><author><name></name></author><category term="Git" /><summary type="html">Git创建提交 创建新仓库 git init 添加文件 git add &amp;lt;filename&amp;gt; git add * 提交文件 git commit -m &quot;commit info&quot; 添加远程仓库 git remote add origin &amp;lt;server&amp;gt; 提交到远程仓库 git push origin &amp;lt;branch name&amp;gt;</summary></entry><entry><title type="html">iOS直播项目总结</title><link href="http://localhost:4000/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="iOS直播项目总结" /><published>2018-01-07T00:00:00+08:00</published><updated>2018-01-07T00:00:00+08:00</updated><id>http://localhost:4000/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/">&lt;h4 id=&quot;直播流媒体介绍&quot;&gt;直播流媒体介绍&lt;/h4&gt;
+
+&lt;p&gt;直播，音乐播放demo&lt;/p&gt;
+
+&lt;p&gt;https://github.com/AndreHu88/iOS_Live&lt;/p&gt;
+
+&lt;p&gt;视频流传输使用的是RTMP协议（类似于socket，基于TCP）
+RTMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP&lt;/p&gt;
+
+&lt;p&gt;流媒体开发:网络层(socket或st)负责传输，协议层(rtmp或hls)负责网络打包，封装层(flv、ts)负责编解码数据的封装，编码层(h.264和aac)负责图像，音频压缩。
+用于对象,视频,音频的传输.这个协议建立在TCP协议或者轮询HTTP协议之上.&lt;/p&gt;
+
+&lt;p&gt;HLS:由Apple公司定义的用于实时流传输的协议,HLS基于HTTP协议实现，传输内容包括两部分，一是M3U8描述文件，二是TS媒体文件。可实现流媒体的直播和点播，主要应用在iOS系统
+HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低&lt;/p&gt;
+
+&lt;p&gt;下图是直播的完整图解
+&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/4499332-a5920ba5063faae1.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;播放网络视频需要以下几步依赖ffmpeg框架&quot;&gt;播放网络视频需要以下几步（依赖FFmpeg框架）&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;将数据解协议&lt;/li&gt;
+  &lt;li&gt;解封装&lt;/li&gt;
+  &lt;li&gt;解码音视频&lt;/li&gt;
+  &lt;li&gt;音视频同步&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;播放本地视频不需要解协议直接解封装&quot;&gt;播放本地视频不需要解协议，直接解封装&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;解协议&lt;/strong&gt;
+解协议就是将流媒体协议上的数据解析为相应的封装格式数据，流媒体一般是RTMP协议传输，这些协议在传输音视频数据的同时也可以传输一些指令数据（播放，停止，暂停，网络状态的描述） ，解协议会去掉信令数据，只保留音视频数据。采用RTMP协议通过解协议后，输入FLV的流&lt;/p&gt;
+
+    &lt;p&gt;FFMpeg会根据相关协议的特性，本机与服务器建立连接，获取流数据&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;解封装&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;将封装的视频数据分离成音频和视频编码数据，常见的封装的格式有MP4，MKV, RMVB, FLV, AVI等。它的作用就是将已压缩的视频数据和音频数据按照一定的格式放在一起。FLV格式经过解封装后，可以得到H.264的视频编码数据和aac的音频编码数据，一般称为“packet”&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;解码音视频&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;解码就是将音视频压缩编码数据解码成非压缩的音视频的原始数据，解码是最复杂最重要的一个环节，通过解码压缩的视频数据被输出成非压缩的颜色数据。目前常用的音频编码方式是aac,mp3,视频编码格式是H.264,H.265。分析源数据的音视频信息，分别设置对应的音频解码器，视频编码器。对packet分别进行解码后，音频解码获得的数据是PCM（Pulse Code Modulation，脉冲编码调制）采样数据，一般称为“sample”。视频解码获得的数据是一幅YUV或RGB图像数据，一般称为“picture”&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;音视频同步&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;音视频解码是两个独立的线程，获取到的音视频是分开的。理想情况下，音视频按照自己的固有频率渲染输出能达到音视频同步的效果，但是在现实中，断网、弱网、丢帧、缓冲、音视频不同的解码耗时等情况都会妨碍实现同步，很难达到预期效果。 通过音视频同步调整后，将同步解码出来的音频，视频数据，同步给显卡和声卡播放出来。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;videotoolboxframework硬编码&quot;&gt;VideoToolbox.framework(硬编码)&lt;/h4&gt;
+&lt;p&gt;videoToolbox是苹果的一个硬解码的框架，提供实现压缩，解压缩服务，并存储在缓冲区corevideo像素栅格图像格式之中。这些服务以会话对象的形式提供（压缩、解压，和像素传输），应用程序不需要直接访问硬件编码器和解码器相关内容，硬件编解码这块的质量有一定保证，可以优先使用硬编解码，和软解码FFmpeg可以互补&lt;/p&gt;
+
+&lt;h5 id=&quot;h264的详解&quot;&gt;H.264的详解&lt;/h5&gt;
+&lt;p&gt;这篇blog详解:http://www.samirchen.com/video-concept/&lt;/p&gt;
+
+&lt;h5 id=&quot;编码h264&quot;&gt;编码H.264&lt;/h5&gt;
+&lt;p&gt;1.初始化VideoToolbox&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)setupVideoToolbox{
+    
+    dispatch_sync(_encodeQueue, ^{
+        
+        [self setupFileHandle];
+        
+        int width = 720, height = 1280;
+        OSStatus status = VTCompressionSessionCreate(NULL, width, height, kCMVideoCodecType_H264, NULL, NULL, NULL, encodingComplectionCallback, (__bridge void *)(self), &amp;amp;_encodingSession);
+        DLog(@&quot;status code is %d&quot;,(int)status);
+        if (status != 0) {
+            DLog(@&quot;create H264 session error&quot;);
+            return ;
+        }
+        
+        //设置实时编码，避免延迟
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_RealTime, kCFBooleanTrue);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_AutoLevel);
+        
+        //设置关键帧间隔（）关键字间隔越小越清晰，数值越大压缩率越高
+        int frameInterval = 1;
+        CFNumberRef frameIntervalRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;amp;frameInterval);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_MaxKeyFrameInterval, frameIntervalRef);
+        
+        //设置期望帧率
+        int fps = 30;
+        CFNumberRef fpsRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;amp;fps);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ExpectedFrameRate, fpsRef);
+        
+        //设置码率，均值，单位是byte
+        int bitRate = width * height * 3 * 4 * 8;
+        CFNumberRef bitRateRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;amp;bitRate);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_AverageBitRate, bitRateRef);
+        
+        //设置码率上限，单位是bps,如果不设置默认会以很低的码率编码，导致编码出来的视频很模糊
+        int bitRateMax = width * height * 3 * 4;
+        CFNumberRef bitRateMaxRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;amp;bitRateMax);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_DataRateLimits, bitRateMaxRef);
+        
+        //准备编码
+        VTCompressionSessionPrepareToEncodeFrames(_encodingSession);
+        
+    });
+}
+
+- (void)setupFileHandle{
+    
+    //创建文件，初始化fileHandle;
+    NSString *file = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@&quot;test.h264&quot;];
+    [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
+    [[NSFileManager defaultManager] createFileAtPath:file contents:nil attributes:nil];
+    _fileHandle = [NSFileHandle fileHandleForWritingAtPath:file];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;2.sampleBuffer回调处理&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)videoEncodeWithSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+    
+    dispatch_sync(_encodeQueue, ^{
+        
+        // CVPixelBufferRef 编码前图像数据结构
+        // 利用给定的接口函数CMSampleBufferGetImageBuffer从中提取出CVPixelBufferRef
+        CVImageBufferRef imageBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
+        // 帧时间 如果不设置导致时间轴过长
+        CMTime presentationTimeStamp = CMTimeMake(_frameID++, 1000);
+        //flags 0 表示同步解码
+        VTEncodeInfoFlags flags;
+        OSStatus status = VTCompressionSessionEncodeFrame(_encodingSession, imageBuffer, presentationTimeStamp, kCMTimeInvalid, NULL, NULL, &amp;amp;flags);
+        DLog(@&quot;status code is %d&quot;,(int)status);
+        if (status == noErr) {
+            DLog(@&quot;H264 VTCompressionSessionEncodeFrame success&quot;);
+        }
+        else{
+            DLog(@&quot;H264: VTCompressionSessionEncodeFrame failed with %d&quot;, (int)status);
+            if (!_encodingSession) return;
+            VTCompressionSessionInvalidate(_encodingSession);
+            //释放资源
+            CFRelease(_encodingSession);
+            _encodingSession = NULL;
+        }
+    });
+    
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;3.对VideoToolbox的编码回调&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//每压缩一次都异步的调用此方法
+void encodingComplectionCallback(void * CM_NULLABLE outputCallbackRefCon,
+                               void * CM_NULLABLE sourceFrameRefCon,
+                               OSStatus status,
+                               VTEncodeInfoFlags infoFlags,
+                               CM_NULLABLE CMSampleBufferRef sampleBuffer ){
+
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;音视频同步详解&quot;&gt;音视频同步详解&lt;/h5&gt;
+&lt;p&gt;播放速度标准量有以下三种&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;将视频同步到音频上&lt;/strong&gt;，就是以音频的播放速度为基准来同步视频。视频比音频播放慢了，加快其播放速度；快了，则延迟播放。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;将音频同步到视频上&lt;/strong&gt;，就是以视频的播放速度为基准来同步音频。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;将视频和音频同步外部的时钟上&lt;/strong&gt;，选择一个外部时钟为基准，视频和音频的播放速度都以该时钟为标准&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;视频和音频的同步过程是一个你等我赶的过程，快了则等待，慢了就加快速度。这就需要一个量来判断（和选择基准比较），到底是播放的快了还是慢了，或者正以同步的速度播放。在音视频的包中都含有DTS(decode time stamp)，告诉解码器packet的解码顺序 和 PTS(presentation time stamp)，从packet解码出来的数据的显示顺序。&lt;/p&gt;
+
+&lt;p&gt;对于音频来说，DTS和PTS是相同的，也就是解码顺序和显示顺序一致
+视频的编码比音频复杂，DTS和PTS会不同。视频在编码后会得到三种不同的帧&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;I帧  关键帧&lt;/strong&gt;，包含了一帧的完整数据，解码时只需要本帧的数据，不需要参考其他帧。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;P帧 P是向前搜索&lt;/strong&gt;，该帧的数据不完全的，解码时需要参考其前一帧的数据。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;B帧 B是双向搜索&lt;/strong&gt;，解码这种类型的帧是最复杂，不但需要参考其一帧的数据，还需要其后一帧的数据。&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">直播流媒体介绍 直播，音乐播放demo https://github.com/AndreHu88/iOS_Live 视频流传输使用的是RTMP协议（类似于socket，基于TCP） RTMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP 流媒体开发:网络层(socket或st)负责传输，协议层(rtmp或hls)负责网络打包，封装层(flv、ts)负责编解码数据的封装，编码层(h.264和aac)负责图像，音频压缩。 用于对象,视频,音频的传输.这个协议建立在TCP协议或者轮询HTTP协议之上. HLS:由Apple公司定义的用于实时流传输的协议,HLS基于HTTP协议实现，传输内容包括两部分，一是M3U8描述文件，二是TS媒体文件。可实现流媒体的直播和点播，主要应用在iOS系统 HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低 下图是直播的完整图解 播放网络视频需要以下几步（依赖FFmpeg框架） 将数据解协议 解封装 解码音视频 音视频同步 播放本地视频不需要解协议，直接解封装 解协议 解协议就是将流媒体协议上的数据解析为相应的封装格式数据，流媒体一般是RTMP协议传输，这些协议在传输音视频数据的同时也可以传输一些指令数据（播放，停止，暂停，网络状态的描述） ，解协议会去掉信令数据，只保留音视频数据。采用RTMP协议通过解协议后，输入FLV的流 FFMpeg会根据相关协议的特性，本机与服务器建立连接，获取流数据 解封装 将封装的视频数据分离成音频和视频编码数据，常见的封装的格式有MP4，MKV, RMVB, FLV, AVI等。它的作用就是将已压缩的视频数据和音频数据按照一定的格式放在一起。FLV格式经过解封装后，可以得到H.264的视频编码数据和aac的音频编码数据，一般称为“packet” 解码音视频 解码就是将音视频压缩编码数据解码成非压缩的音视频的原始数据，解码是最复杂最重要的一个环节，通过解码压缩的视频数据被输出成非压缩的颜色数据。目前常用的音频编码方式是aac,mp3,视频编码格式是H.264,H.265。分析源数据的音视频信息，分别设置对应的音频解码器，视频编码器。对packet分别进行解码后，音频解码获得的数据是PCM（Pulse Code Modulation，脉冲编码调制）采样数据，一般称为“sample”。视频解码获得的数据是一幅YUV或RGB图像数据，一般称为“picture” 音视频同步 音视频解码是两个独立的线程，获取到的音视频是分开的。理想情况下，音视频按照自己的固有频率渲染输出能达到音视频同步的效果，但是在现实中，断网、弱网、丢帧、缓冲、音视频不同的解码耗时等情况都会妨碍实现同步，很难达到预期效果。 通过音视频同步调整后，将同步解码出来的音频，视频数据，同步给显卡和声卡播放出来。 VideoToolbox.framework(硬编码) videoToolbox是苹果的一个硬解码的框架，提供实现压缩，解压缩服务，并存储在缓冲区corevideo像素栅格图像格式之中。这些服务以会话对象的形式提供（压缩、解压，和像素传输），应用程序不需要直接访问硬件编码器和解码器相关内容，硬件编解码这块的质量有一定保证，可以优先使用硬编解码，和软解码FFmpeg可以互补 H.264的详解 这篇blog详解:http://www.samirchen.com/video-concept/ 编码H.264 1.初始化VideoToolbox - (void)setupVideoToolbox{ dispatch_sync(_encodeQueue, ^{ [self setupFileHandle]; int width = 720, height = 1280; OSStatus status = VTCompressionSessionCreate(NULL, width, height, kCMVideoCodecType_H264, NULL, NULL, NULL, encodingComplectionCallback, (__bridge void *)(self), &amp;amp;_encodingSession); DLog(@&quot;status code is %d&quot;,(int)status); if (status != 0) { DLog(@&quot;create H264 session error&quot;); return ; } //设置实时编码，避免延迟 VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_RealTime, kCFBooleanTrue); VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_AutoLevel); //设置关键帧间隔（）关键字间隔越小越清晰，数值越大压缩率越高 int frameInterval = 1; CFNumberRef frameIntervalRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;amp;frameInterval); VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_MaxKeyFrameInterval, frameIntervalRef); //设置期望帧率 int fps = 30; CFNumberRef fpsRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;amp;fps); VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ExpectedFrameRate, fpsRef); //设置码率，均值，单位是byte int bitRate = width * height * 3 * 4 * 8; CFNumberRef bitRateRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;amp;bitRate); VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_AverageBitRate, bitRateRef); //设置码率上限，单位是bps,如果不设置默认会以很低的码率编码，导致编码出来的视频很模糊 int bitRateMax = width * height * 3 * 4; CFNumberRef bitRateMaxRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;amp;bitRateMax); VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_DataRateLimits, bitRateMaxRef); //准备编码 VTCompressionSessionPrepareToEncodeFrames(_encodingSession); }); } - (void)setupFileHandle{ //创建文件，初始化fileHandle; NSString *file = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@&quot;test.h264&quot;]; [[NSFileManager defaultManager] removeItemAtPath:file error:nil]; [[NSFileManager defaultManager] createFileAtPath:file contents:nil attributes:nil]; _fileHandle = [NSFileHandle fileHandleForWritingAtPath:file]; } 2.sampleBuffer回调处理 - (void)videoEncodeWithSampleBuffer:(CMSampleBufferRef)sampleBuffer{ dispatch_sync(_encodeQueue, ^{ // CVPixelBufferRef 编码前图像数据结构 // 利用给定的接口函数CMSampleBufferGetImageBuffer从中提取出CVPixelBufferRef CVImageBufferRef imageBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer); // 帧时间 如果不设置导致时间轴过长 CMTime presentationTimeStamp = CMTimeMake(_frameID++, 1000); //flags 0 表示同步解码 VTEncodeInfoFlags flags; OSStatus status = VTCompressionSessionEncodeFrame(_encodingSession, imageBuffer, presentationTimeStamp, kCMTimeInvalid, NULL, NULL, &amp;amp;flags); DLog(@&quot;status code is %d&quot;,(int)status); if (status == noErr) { DLog(@&quot;H264 VTCompressionSessionEncodeFrame success&quot;); } else{ DLog(@&quot;H264: VTCompressionSessionEncodeFrame failed with %d&quot;, (int)status); if (!_encodingSession) return; VTCompressionSessionInvalidate(_encodingSession); //释放资源 CFRelease(_encodingSession); _encodingSession = NULL; } }); } 3.对VideoToolbox的编码回调 //每压缩一次都异步的调用此方法 void encodingComplectionCallback(void * CM_NULLABLE outputCallbackRefCon, void * CM_NULLABLE sourceFrameRefCon, OSStatus status, VTEncodeInfoFlags infoFlags, CM_NULLABLE CMSampleBufferRef sampleBuffer ){ } 音视频同步详解 播放速度标准量有以下三种 将视频同步到音频上，就是以音频的播放速度为基准来同步视频。视频比音频播放慢了，加快其播放速度；快了，则延迟播放。 将音频同步到视频上，就是以视频的播放速度为基准来同步音频。 将视频和音频同步外部的时钟上，选择一个外部时钟为基准，视频和音频的播放速度都以该时钟为标准 视频和音频的同步过程是一个你等我赶的过程，快了则等待，慢了就加快速度。这就需要一个量来判断（和选择基准比较），到底是播放的快了还是慢了，或者正以同步的速度播放。在音视频的包中都含有DTS(decode time stamp)，告诉解码器packet的解码顺序 和 PTS(presentation time stamp)，从packet解码出来的数据的显示顺序。 对于音频来说，DTS和PTS是相同的，也就是解码顺序和显示顺序一致 视频的编码比音频复杂，DTS和PTS会不同。视频在编码后会得到三种不同的帧 I帧 关键帧，包含了一帧的完整数据，解码时只需要本帧的数据，不需要参考其他帧。 P帧 P是向前搜索，该帧的数据不完全的，解码时需要参考其前一帧的数据。 B帧 B是双向搜索，解码这种类型的帧是最复杂，不但需要参考其一帧的数据，还需要其后一帧的数据。</summary></entry><entry><title type="html">iPhoneX的适配问题</title><link href="http://localhost:4000/iPhoneX%E7%9A%84%E9%80%82%E9%85%8D%E5%B0%8F%E8%AE%B0/" rel="alternate" type="text/html" title="iPhoneX的适配问题" /><published>2017-12-28T00:00:00+08:00</published><updated>2017-12-28T00:00:00+08:00</updated><id>http://localhost:4000/iPhoneX%E7%9A%84%E9%80%82%E9%85%8D%E5%B0%8F%E8%AE%B0</id><content type="html" xml:base="http://localhost:4000/iPhoneX%E7%9A%84%E9%80%82%E9%85%8D%E5%B0%8F%E8%AE%B0/">&lt;h3 id=&quot;记录一次iphone-x的适配过程做个总结&quot;&gt;记录一次iPhone X的适配过程，做个总结&lt;/h3&gt;
+
+&lt;p&gt;自iOS11后，苹果推出&lt;code class=&quot;highlighter-rouge&quot;&gt;iPhone X&lt;/code&gt;。由于&lt;code class=&quot;highlighter-rouge&quot;&gt;iPhoneX&lt;/code&gt;的尺寸，外观不太常规，所以适配自然就不太一样。而且iOS11后，有些API做了些改变。&lt;/p&gt;
+
+&lt;p&gt;在Xcode中，我打印了&lt;code class=&quot;highlighter-rouge&quot;&gt;iPhone X&lt;/code&gt;的一些尺寸信息&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;StatusBarHeight:44.000000
+TabBarHeight:83.000000
+NavHeight:44.000000
+ScreenHeight:812.000000
+frame: [0, 0, 375, 812]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;再次打印&lt;code class=&quot;highlighter-rouge&quot;&gt;Phone7&lt;/code&gt;的尺寸信息&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;StatusBarHeight:20.000000
+TabBarHeight:49.000000
+NavHeight:44.000000
+frame: [0, 0, 375, 667]
+ScreenHeight:667.000000
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;首先要在launchImage中加入iPhone X的启动页，大小为1125*2436，再次启动APP发现可以全屏显示了。
+&lt;img src=&quot;https://developer.apple.com/ios/update-apps-for-iphone-x/images/illustrations/checklist-safe-area-portrait.svg&quot; alt=&quot;launchImage&quot; /&gt;
+&lt;img src=&quot;https://developer.apple.com/ios/update-apps-for-iphone-x/images/illustrations/checklist-safe-area-landscape.svg&quot; alt=&quot;launchImage&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在开发中尽量把我们的内容放到图中的safeArea中&lt;/p&gt;
+
+&lt;p&gt;在iOS11中增加了几个新的API。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;viewSafeAreaInsetsDidChange
+UIView增加了safeAreaInsets属性
+ViewController增加了additionalSafeAreaInsets属性
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;经过几次实验发现，&lt;code class=&quot;highlighter-rouge&quot;&gt;viewSafeAreaInsetsDidChange&lt;/code&gt;在TabBar的VC不会调用此方法，在非TabBar的Controller会调用此方法，方法的调用顺序如下&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;viewDidLoad
+viewWillAppear
+viewSafeAreaInsetsDidChange
+viewWillLayoutSubviews
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;只有在调用了&lt;code class=&quot;highlighter-rouge&quot;&gt;viewSafeAreaInsetsDidChange&lt;/code&gt;后才能获取到&lt;code class=&quot;highlighter-rouge&quot;&gt;UIEdgeInsets&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;在iOS11后我们要更改部分宏的定义&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;/** 底部安全区高度 */
+#define KSafeAreaBottom_Height  (KSCREEN_HEIGHT == 812.0 ? 34 : 0)
+/** tabBar高度 */
+#define KTABBAR_HEIGHT      [[UIApplication sharedApplication] statusBarFrame].size.height &amp;gt; 20 ? 83 : 49
+/** 是否为iphoneX */
+#define IS_IPHONE_X         ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )812 ) &amp;lt; DBL_EPSILON )
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;总结来看，总体变化有：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1.状态栏由20pt变成44pt，所以导航栏从64pt变为88pt&lt;/li&gt;
+  &lt;li&gt;2.底部多出了34pt的home indicator的边距&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;更多的适配细节还是见&lt;a href=&quot;https://developer.apple.com/cn/ios/update-apps-for-iphone-x/&quot;&gt;苹果人机交互指南网站&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">记录一次iPhone X的适配过程，做个总结 自iOS11后，苹果推出iPhone X。由于iPhoneX的尺寸，外观不太常规，所以适配自然就不太一样。而且iOS11后，有些API做了些改变。 在Xcode中，我打印了iPhone X的一些尺寸信息 StatusBarHeight:44.000000 TabBarHeight:83.000000 NavHeight:44.000000 ScreenHeight:812.000000 frame: [0, 0, 375, 812] 再次打印Phone7的尺寸信息 StatusBarHeight:20.000000 TabBarHeight:49.000000 NavHeight:44.000000 frame: [0, 0, 375, 667] ScreenHeight:667.000000 首先要在launchImage中加入iPhone X的启动页，大小为1125*2436，再次启动APP发现可以全屏显示了。 在开发中尽量把我们的内容放到图中的safeArea中 在iOS11中增加了几个新的API。 viewSafeAreaInsetsDidChange UIView增加了safeAreaInsets属性 ViewController增加了additionalSafeAreaInsets属性 经过几次实验发现，viewSafeAreaInsetsDidChange在TabBar的VC不会调用此方法，在非TabBar的Controller会调用此方法，方法的调用顺序如下 viewDidLoad viewWillAppear viewSafeAreaInsetsDidChange viewWillLayoutSubviews 只有在调用了viewSafeAreaInsetsDidChange后才能获取到UIEdgeInsets 在iOS11后我们要更改部分宏的定义 /** 底部安全区高度 */ #define KSafeAreaBottom_Height (KSCREEN_HEIGHT == 812.0 ? 34 : 0) /** tabBar高度 */ #define KTABBAR_HEIGHT [[UIApplication sharedApplication] statusBarFrame].size.height &amp;gt; 20 ? 83 : 49 /** 是否为iphoneX */ #define IS_IPHONE_X ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )812 ) &amp;lt; DBL_EPSILON ) 总结来看，总体变化有： 1.状态栏由20pt变成44pt，所以导航栏从64pt变为88pt 2.底部多出了34pt的home indicator的边距 更多的适配细节还是见苹果人机交互指南网站</summary></entry><entry><title type="html">Linux命令总结</title><link href="http://localhost:4000/Linux%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="Linux命令总结" /><published>2017-12-27T00:00:00+08:00</published><updated>2017-12-27T00:00:00+08:00</updated><id>http://localhost:4000/Linux%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/Linux%E6%80%BB%E7%BB%93/">&lt;blockquote&gt;
+  &lt;p&gt;ls显示文件&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ls -a 显示所有文件包括隐藏文件
+ls -l 显示文件属性，包括大小，日期，符号连接，是否可读写及是否可执行
+ls -lh 显示文件的大小，以容易理解的格式印出文件大小 (例如 1K 234M2G)
+ls -lt 显示文件，按照修改时间排序
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;rm删除文件&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rm file　删除某一个文件
+rm -f file 删除时候不进行提示。可以于r参数配合使用
+rm -r 就是向下递归，不管有多少级目录，一并删除
+rm -f 就是直接强行删除，不作任何提示的意思
+rm -rf dir　删除当前目录下叫dir的整个目录
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;系统 用户&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;w 当前登录用户的详细信息
+who 显示登录用户
+date 显示当前时间
+cal  显示当月日历
+pwd  显示当前路径
+open .   可以在finder中打开当前文件夹(Mac)
+bash .sh 运行脚本
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;网络相关&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ifconfig 获取本机IP
+netstat 显示网络状态
+nslookup 域名检查排错
+netstat -an  查看网络端口信息
+netstat -nr 查看路由表信息，比route快
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;关机操作&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;reboot　  重新启动计算机
+shutdown -r now  重新启动计算机，停止服务后重新启动计算机
+shutdown -h now  关闭计算机，停止服务后再关闭系统
+halt   关闭计算机
+一般用shutdown -r now,在重启系统是，关闭相关服务，shutdown -h now也是如此。
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;chown 改变文件或目录的所有者&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chown user1 /dir　将/dir目录设置为user1所有
+chown -R user1.user1 /dir　将/dir目录下所有文件和目录，设置为user1所有,组为user1。-R递归到下面的每个文件和目录
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;chmod 改变用户的权限&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chmod a+x file　将file文件设置为可执行，脚本类文件一定要这样设置一个，否则得用bash file才能执行
+chmod 666 file　将文件file设置为可读写
+chmod 750 file 将文件file设置为，所有者为完全权限，同组可以读和执行，其他无权限
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;mac下执行shell脚本&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./name.sh
+如果执行报没有权限，chmod 777 name.sh
+bash name.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;apache	 Linux自带Apache&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd /ect/apache2		配置文件
+cd /usr/bin			程序
+cd /Library/WebServer/Documents		默认根目录
+sudo apachectl -k start 	开启Apache服务
+sudo apachectl -k restart 	重启Apache服务
+sudo apachectl -k stop	 	关闭Apache服务
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;mysql的操作&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;service mysql start  开启MySQL服务
+usr/local/mysql/bin/mysql	默认安装目录
+alias mysql=/usr/local/mysql/bin/mysql
+alias mysqladmin=/usr/local/mysql/bin/mysqladmin
+export PATH=${PATH}:/usr/local/mysql/bin  添加用户环境变量 .bash_profile
+
+//如果用HomeBrew安装
+mysql.server  {start|stop|restart|reload|force-reload|status}  [ MySQL server options
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;jekyll&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bundle exec jekyll serve 		本地编译并开启服务
+//单张图片居中
+&amp;lt;center&amp;gt;
+	&amp;lt;img src=&quot;xxxxx.jpg&quot; alt = &quot;树&quot; style=&quot;width:80%&quot; /&amp;gt;
+&amp;lt;/center&amp;gt;
+
+//两张图片并排
+&amp;lt;figure class=&quot;half&quot;&amp;gt;
+    &amp;lt;img src=&quot;http://xxx.jpg&quot;&amp;gt;
+    &amp;lt;img src=&quot;http://yyy.jpg&quot;&amp;gt;
+&amp;lt;/figure&amp;gt;
+
+//三张图片并排
+&amp;lt;figure class=&quot;third&quot;&amp;gt;
+    &amp;lt;img src=&quot;http://xxx.jpg&quot;&amp;gt;
+    &amp;lt;img src=&quot;http://yyy.jpg&quot;&amp;gt;
+    &amp;lt;img src=&quot;http://zzz.jpg&quot;&amp;gt;
+&amp;lt;/figure&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;markdown&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# 这是 H1
+## 这是 H2
+###### 这是 H6
+&amp;gt; 区块引用
+* + -  无序列表
+数字.   有序列表
+*** --- 分割线
+[This link](http://example.net/) 链接
+**  ** 加粗
+![Alt text](/path/to/img.jpg) 图片
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="Linux" /><summary type="html">ls显示文件 ls -a 显示所有文件包括隐藏文件 ls -l 显示文件属性，包括大小，日期，符号连接，是否可读写及是否可执行 ls -lh 显示文件的大小，以容易理解的格式印出文件大小 (例如 1K 234M2G) ls -lt 显示文件，按照修改时间排序 rm删除文件 rm file　删除某一个文件 rm -f file 删除时候不进行提示。可以于r参数配合使用 rm -r 就是向下递归，不管有多少级目录，一并删除 rm -f 就是直接强行删除，不作任何提示的意思 rm -rf dir　删除当前目录下叫dir的整个目录 系统 用户 w 当前登录用户的详细信息 who 显示登录用户 date 显示当前时间 cal 显示当月日历 pwd 显示当前路径 open . 可以在finder中打开当前文件夹(Mac) bash .sh 运行脚本 网络相关 ifconfig 获取本机IP netstat 显示网络状态 nslookup 域名检查排错 netstat -an 查看网络端口信息 netstat -nr 查看路由表信息，比route快 关机操作 reboot　 重新启动计算机 shutdown -r now 重新启动计算机，停止服务后重新启动计算机 shutdown -h now 关闭计算机，停止服务后再关闭系统 halt 关闭计算机 一般用shutdown -r now,在重启系统是，关闭相关服务，shutdown -h now也是如此。 chown 改变文件或目录的所有者 chown user1 /dir　将/dir目录设置为user1所有 chown -R user1.user1 /dir　将/dir目录下所有文件和目录，设置为user1所有,组为user1。-R递归到下面的每个文件和目录 chmod 改变用户的权限 chmod a+x file　将file文件设置为可执行，脚本类文件一定要这样设置一个，否则得用bash file才能执行 chmod 666 file　将文件file设置为可读写 chmod 750 file 将文件file设置为，所有者为完全权限，同组可以读和执行，其他无权限 mac下执行shell脚本 ./name.sh 如果执行报没有权限，chmod 777 name.sh bash name.sh apache Linux自带Apache cd /ect/apache2 配置文件 cd /usr/bin 程序 cd /Library/WebServer/Documents 默认根目录 sudo apachectl -k start 开启Apache服务 sudo apachectl -k restart 重启Apache服务 sudo apachectl -k stop 关闭Apache服务 mysql的操作 service mysql start 开启MySQL服务 usr/local/mysql/bin/mysql 默认安装目录 alias mysql=/usr/local/mysql/bin/mysql alias mysqladmin=/usr/local/mysql/bin/mysqladmin export PATH=${PATH}:/usr/local/mysql/bin 添加用户环境变量 .bash_profile //如果用HomeBrew安装 mysql.server {start|stop|restart|reload|force-reload|status} [ MySQL server options jekyll bundle exec jekyll serve 本地编译并开启服务 //单张图片居中 &amp;lt;center&amp;gt; &amp;lt;img src=&quot;xxxxx.jpg&quot; alt = &quot;树&quot; style=&quot;width:80%&quot; /&amp;gt; &amp;lt;/center&amp;gt; //两张图片并排 &amp;lt;figure class=&quot;half&quot;&amp;gt; &amp;lt;img src=&quot;http://xxx.jpg&quot;&amp;gt; &amp;lt;img src=&quot;http://yyy.jpg&quot;&amp;gt; &amp;lt;/figure&amp;gt; //三张图片并排 &amp;lt;figure class=&quot;third&quot;&amp;gt; &amp;lt;img src=&quot;http://xxx.jpg&quot;&amp;gt; &amp;lt;img src=&quot;http://yyy.jpg&quot;&amp;gt; &amp;lt;img src=&quot;http://zzz.jpg&quot;&amp;gt; &amp;lt;/figure&amp;gt; markdown ``` 这是 H1 这是 H2 这是 H6 区块引用 无序列表 数字. 有序列表 ***</summary></entry><entry><title type="html">objcRuntime小记</title><link href="http://localhost:4000/objcRuntme/" rel="alternate" type="text/html" title="objcRuntime小记" /><published>2017-11-25T00:00:00+08:00</published><updated>2017-11-25T00:00:00+08:00</updated><id>http://localhost:4000/objcRuntme</id><content type="html" xml:base="http://localhost:4000/objcRuntme/">&lt;p&gt;最近在学习objc的底层runtime知识，学到这块时就做个小笔记，做个总结。刚好最近也搭建了自己的博客，就以此作为个人博客的开篇吧&lt;/p&gt;
+
+&lt;p&gt;###什么是runtime&lt;/p&gt;
+
+&lt;p&gt;我们知道高级编程语言要想成为可执行文件的过程：高级语言 -&amp;gt; 汇编语言 -&amp;gt; 机器语言。机器语言是计算机唯一能识别的语言。所以从OC代码到最后的可执行文件的过程大概有：OC -&amp;gt; C - &amp;gt;编译(汇编) -&amp;gt; 可执行文件 。从OC到C的过程就是由runtime来实现。通俗的将runtime就是把面向对象的类转变为面向过程的结构体&lt;/p&gt;
+
+&lt;p&gt;我们导入&lt;code class=&quot;highlighter-rouge&quot;&gt;import &amp;lt;objc/runtime.h&amp;gt;&lt;/code&gt;，查看runtime.h的头文件，会发现以下代码&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;/// Represents an instance of a class.
+struct objc_object {
+    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;/// An opaque type that represents an Objective-C class.
+typedef struct objc_class *Class;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;struct objc_class {
+    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
+
+#if !__OBJC2__
+    Class _Nullable super_class                              OBJC2_UNAVAILABLE;
+    const char * _Nonnull name                               OBJC2_UNAVAILABLE;
+    long version                                             OBJC2_UNAVAILABLE;
+    long info                                                OBJC2_UNAVAILABLE;
+    long instance_size                                       OBJC2_UNAVAILABLE;
+    struct objc_ivar_list * _Nullable ivars                  OBJC2_UNAVAILABLE;
+    struct objc_method_list * _Nullable * _Nullable methodLists                    OBJC2_UNAVAILABLE;
+    struct objc_cache * _Nonnull cache                       OBJC2_UNAVAILABLE;
+    struct objc_protocol_list * _Nullable protocols          OBJC2_UNAVAILABLE;
+#endif
+
+} OBJC2_UNAVAILABLE;
+/* Use `Class` instead of `struct objc_class *` */
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;通过这个代码发现，我们创建的对象其实就是一个objc_object的结构体，这个结构体只有一个成员变量(Class的isa指针)，Classs是一个结构体指针，指向objc_class。而objc的&lt;code class=&quot;highlighter-rouge&quot;&gt;类对象&lt;/code&gt;就是一个&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_class&lt;/code&gt;的结构体,这个结构体存放的数据被称为&lt;code class=&quot;highlighter-rouge&quot;&gt;元数据(metadata)&lt;/code&gt;该结构体的第一个成员变量也是&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针，这样就说明了类本身也是一个对象，我们趁为类对象。类对象的&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针指向的对象是&lt;code class=&quot;highlighter-rouge&quot;&gt;元类&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;objc函数调用总结&quot;&gt;objc函数调用总结&lt;/h3&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Objective-C是动态语言，编译时并不决定函数的调用，通俗的讲，所有的类型声明都是给编译器看的。OC的函数调用实际上就是向一个objc对象(或者Class)&lt;strong&gt;发消息&lt;/strong&gt;，发消息实际上就是沿着它的isa指针寻找真正的函数地址&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;runtime中声明了id和Class的类型，简化如下&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;struct objc_class {
+    struct objc_class *isa;
+};
+struct objc_object {
+    struct objc_class *isa;
+};
+ 
+typedef struct objc_class *Class; //类  (class object)
+typedef struct objc_object *id;   //对象 (instance of class)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在objc中，id代表了一个对象。凡是首地址是*isa的结构体指针，都可以被认为是objc的对象。运行时通过isa指针，可以查找到该对象是属于什么类
+只要一个对象满足下面的结构，就可以对它发消息&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;struct objc_object {
+    Class isa;
+} *id
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5 id=&quot;runtime的运行机制&quot;&gt;runtime的运行机制&lt;/h5&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;我们可以通过clang来重写一个类查看cpp代码&lt;/p&gt;
+  &lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;clang -rewrite-objc ClassName.m
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;//class的实际结构
+struct _class_t {
+	struct _class_t *isa;        //isa指针
+	struct _class_t *superclass; //父类
+	void *cache;
+	void *vtable;
+	struct _class_ro_t *ro;     //Class包含的信息
+};
+
+//Class包含的信息
+struct _class_ro_t {
+	unsigned int flags;
+	unsigned int instanceStart;
+	unsigned int instanceSize;
+	unsigned int reserved;
+	const unsigned char *ivarLayout;
+	const char *name; //类名
+	const struct _method_list_t *baseMethods; //方法列表
+	const struct _objc_protocol_list *baseProtocols;  //协议列表
+	const struct _ivar_list_t *ivars; //ivar列表
+	const unsigned char *weakIvarLayout;
+	const struct _prop_list_t *properties; //属性列表
+};
+
+//Person(meta-class)
+struct _class_t OBJC_METACLASS_$_Person  = {
+	.isa        = &amp;amp;OBJC_METACLASS_$_NSObject,
+	.superclass = &amp;amp;OBJC_METACLASS_$_NSObject,
+	.cache      = (void *)&amp;amp;_objc_empty_cache,
+	.vtable     = (void *)&amp;amp;_objc_empty_vtable,
+	.ro         = &amp;amp;_OBJC_METACLASS_RO_$_Person, //包含了类方法等
+};
+ 
+//Person(Class)
+struct _class_t OBJC_CLASS_$_Person = {
+	.isa        = &amp;amp;OBJC_METACLASS_$_Person,   //此处isa指向meta-class
+	.superclass = &amp;amp;OBJC_CLASS_$_NSObject,
+	.superclass = (void *)&amp;amp;_objc_empty_cache,
+	.vtable     = (void *)&amp;amp;_objc_empty_vtable,
+	.ro         = &amp;amp;_OBJC_CLASS_RO_$_Person,   //包含了实例方法 ivar信息等
+};
+typedef struct objc_object Person;   //定义NyanCat类型
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;所有实例的isa都指向了Class，Class是一个全局变量，其中记录了类名，成员变量，property信息，实例方法列表，协议列表&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;Person *jack = [Person alloc] init];
+[jack walk];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;向jack(instance)发送walk消息时，运行时会通过isa指针查找到Person(class)，Class中保存着本类中定义的实例方法的指针&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;[Person eat];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;向Person发送eat消息时，runtime会通过isa查找到Person(meta-class),这里保存本类定义的类方法的指针&lt;/p&gt;
+
+&lt;p&gt;obj_msgSend()实际上是找到这个函数指针，然后调用它&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">最近在学习objc的底层runtime知识，学到这块时就做个小笔记，做个总结。刚好最近也搭建了自己的博客，就以此作为个人博客的开篇吧 ###什么是runtime 我们知道高级编程语言要想成为可执行文件的过程：高级语言 -&amp;gt; 汇编语言 -&amp;gt; 机器语言。机器语言是计算机唯一能识别的语言。所以从OC代码到最后的可执行文件的过程大概有：OC -&amp;gt; C - &amp;gt;编译(汇编) -&amp;gt; 可执行文件 。从OC到C的过程就是由runtime来实现。通俗的将runtime就是把面向对象的类转变为面向过程的结构体 我们导入import &amp;lt;objc/runtime.h&amp;gt;，查看runtime.h的头文件，会发现以下代码 /// Represents an instance of a class. struct objc_object { Class _Nonnull isa OBJC_ISA_AVAILABILITY; }; /// An opaque type that represents an Objective-C class. typedef struct objc_class *Class; struct objc_class { Class _Nonnull isa OBJC_ISA_AVAILABILITY; #if !__OBJC2__ Class _Nullable super_class OBJC2_UNAVAILABLE; const char * _Nonnull name OBJC2_UNAVAILABLE; long version OBJC2_UNAVAILABLE; long info OBJC2_UNAVAILABLE; long instance_size OBJC2_UNAVAILABLE; struct objc_ivar_list * _Nullable ivars OBJC2_UNAVAILABLE; struct objc_method_list * _Nullable * _Nullable methodLists OBJC2_UNAVAILABLE; struct objc_cache * _Nonnull cache OBJC2_UNAVAILABLE; struct objc_protocol_list * _Nullable protocols OBJC2_UNAVAILABLE; #endif } OBJC2_UNAVAILABLE; /* Use `Class` instead of `struct objc_class *` */ 通过这个代码发现，我们创建的对象其实就是一个objc_object的结构体，这个结构体只有一个成员变量(Class的isa指针)，Classs是一个结构体指针，指向objc_class。而objc的类对象就是一个objc_class的结构体,这个结构体存放的数据被称为元数据(metadata)该结构体的第一个成员变量也是isa指针，这样就说明了类本身也是一个对象，我们趁为类对象。类对象的isa指针指向的对象是元类 objc函数调用总结 Objective-C是动态语言，编译时并不决定函数的调用，通俗的讲，所有的类型声明都是给编译器看的。OC的函数调用实际上就是向一个objc对象(或者Class)发消息，发消息实际上就是沿着它的isa指针寻找真正的函数地址 runtime中声明了id和Class的类型，简化如下 struct objc_class { struct objc_class *isa; }; struct objc_object { struct objc_class *isa; }; typedef struct objc_class *Class; //类 (class object) typedef struct objc_object *id; //对象 (instance of class) 在objc中，id代表了一个对象。凡是首地址是*isa的结构体指针，都可以被认为是objc的对象。运行时通过isa指针，可以查找到该对象是属于什么类 只要一个对象满足下面的结构，就可以对它发消息 struct objc_object { Class isa; } *id runtime的运行机制 我们可以通过clang来重写一个类查看cpp代码 clang -rewrite-objc ClassName.m //class的实际结构 struct _class_t { struct _class_t *isa; //isa指针 struct _class_t *superclass; //父类 void *cache; void *vtable; struct _class_ro_t *ro; //Class包含的信息 }; //Class包含的信息 struct _class_ro_t { unsigned int flags; unsigned int instanceStart; unsigned int instanceSize; unsigned int reserved; const unsigned char *ivarLayout; const char *name; //类名 const struct _method_list_t *baseMethods; //方法列表 const struct _objc_protocol_list *baseProtocols; //协议列表 const struct _ivar_list_t *ivars; //ivar列表 const unsigned char *weakIvarLayout; const struct _prop_list_t *properties; //属性列表 }; //Person(meta-class) struct _class_t OBJC_METACLASS_$_Person = { .isa = &amp;amp;OBJC_METACLASS_$_NSObject, .superclass = &amp;amp;OBJC_METACLASS_$_NSObject, .cache = (void *)&amp;amp;_objc_empty_cache, .vtable = (void *)&amp;amp;_objc_empty_vtable, .ro = &amp;amp;_OBJC_METACLASS_RO_$_Person, //包含了类方法等 }; //Person(Class) struct _class_t OBJC_CLASS_$_Person = { .isa = &amp;amp;OBJC_METACLASS_$_Person, //此处isa指向meta-class .superclass = &amp;amp;OBJC_CLASS_$_NSObject, .superclass = (void *)&amp;amp;_objc_empty_cache, .vtable = (void *)&amp;amp;_objc_empty_vtable, .ro = &amp;amp;_OBJC_CLASS_RO_$_Person, //包含了实例方法 ivar信息等 }; typedef struct objc_object Person; //定义NyanCat类型 所有实例的isa都指向了Class，Class是一个全局变量，其中记录了类名，成员变量，property信息，实例方法列表，协议列表 Person *jack = [Person alloc] init]; [jack walk]; 向jack(instance)发送walk消息时，运行时会通过isa指针查找到Person(class)，Class中保存着本类中定义的实例方法的指针 [Person eat]; 向Person发送eat消息时，runtime会通过isa查找到Person(meta-class),这里保存本类定义的类方法的指针 obj_msgSend()实际上是找到这个函数指针，然后调用它</summary></entry></feed>

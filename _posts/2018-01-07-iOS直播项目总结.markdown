@@ -1,14 +1,16 @@
 ---
+
 layout:         post
 title:          iOS直播项目总结
-subtitle:       直播
-card-image:
 date:           2018-01-07
-tags:           iOS
-post-card-type: article
-published:	true
+tags:           [iOS]
+categories:
+comments: true
+
 ---
-### 直播流媒体介绍
+
+####  直播流媒体介绍
+
 直播，音乐播放demo
 
  https://github.com/AndreHu88/iOS_Live

@@ -1,11 +1,12 @@
 ---
+
 layout:         post
-title:          常用Linux命令总结
-subtitle:       terminal命令
-card-image:
-date:           2017-12-27
-tags:           Linux
-post-card-type: article
+title:          Linux命令总结
+date:            2017-12-27
+tags:           [Linux]
+categories:
+comments: true
+
 ---
 
 > ls显示文件

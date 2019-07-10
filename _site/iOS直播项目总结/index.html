@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>iOS直播项目总结 – Jack Hu – 生活不止眼前的苟且，还有诗和远方</title>
+
+      <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+      <meta name="keywords" content="Jack Hu,胡勇，上海 胡勇，胡勇 iOS，iOS胡勇，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,www.sohod.cn">
+
+    <meta name="description" content="Jack Hu,胡勇，上海 胡勇，胡勇 iOS，iOS胡勇，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,www.sohod.cn">
+
+    
+    <meta name="description" content="直播流媒体介绍
+
+直播，音乐播放demo
+
+https://github.com/AndreHu88/iOS_Live
+
+视频流传输使用的是RTMP协议（类似于socket，基于TCP）
+RTMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP
+
+流媒体开发:网络层(socket或st)负责传输，协议层(rtmp或hls)负责网络打包，封装层(flv、ts)负责编解码数据的封装，编码层(h.264和aac)负责图像，音频压缩。
+用于对象,视频,音频的传输.这个协议建立在TCP协议或者轮询HTTP协议之上.
+
+HLS:由Apple公司定义的用于实时流传输的协议,HLS基于HTTP协议实现，传输内容包括两部分，一是M3U8描述文件，二是TS媒体文件。可实现流媒体的直播和点播，主要应用在iOS系统
+HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低
+
+下图是直播的完整图解
+
+
+播放网络视频需要以下几步（依赖FFmpeg框架）
+
+  将数据解协议
+  解封装
+  解码音视频
+  音视频同步
+
+
+播放本地视频不需要解协议，直接解封装
+
+
+  
+    解协议
+解协议就是将流媒体协议上的数据解析为相应的封装格式数据，流媒体一般是RTMP协议传输，这些协议在传输音视频数据的同时也可以传输一些指令数据（播放，停止，暂停，网络状态的描述） ，解协议会去掉信令数据，只保留音视频数据。采用RTMP协议通过解协议后，输入FLV的流
+
+    FFMpeg会根据相关协议的特性，本机与服务器建立连接，获取流数据
+  
+  
+    解封装
+
+    将封装的视频数据分离成音频和视频编码数据，常见的封装的格式有MP4，MKV, RMVB, FLV, AVI等。它的作用就是将已压缩的视频数据和音频数据按照一定的格式放在一起。FLV格式经过解封装后，可以得到H.264的视频编码数据和aac的音频编码数据，一般称为“packet”
+  
+  
+    解码音视频
+
+    解码就是将音视频压缩编码数据解码成非压缩的音视频的原始数据，解码是最复杂最重要的一个环节，通过解码压缩的视频数据被输出成非压缩的颜色数据。目前常用的音频编码方式是aac,mp3,视频编码格式是H.264,H.265。分析源数据的音视频信息，分别设置对应的音频解码器，视频编码器。对packet分别进行解码后，音频解码获得的数据是PCM（Pulse Code Modulation，脉冲编码调制）采样数据，一般称为“sample”。视频解码获得的数据是一幅YUV或RGB图像数据，一般称为“picture”
+  
+  
+    音视频同步
+
+    音视频解码是两个独立的线程，获取到的音视频是分开的。理想情况下，音视频按照自己的固有频率渲染输出能达到音视频同步的效果，但是在现实中，断网、弱网、丢帧、缓冲、音视频不同的解码耗时等情况都会妨碍实现同步，很难达到预期效果。 通过音视频同步调整后，将同步解码出来的音频，视频数据，同步给显卡和声卡播放出来。
+  
+
+
+VideoToolbox.framework(硬编码)
+videoToolbox是苹果的一个硬解码的框架，提供实现压缩，解压缩服务，并存储在缓冲区corevideo像素栅格图像格式之中。这些服务以会话对象的形式提供（压缩、解压，和像素传输），应用程序不需要直接访问硬件编码器和解码器相关内容，硬件编解码这块的质量有一定保证，可以优先使用硬编解码，和软解码FFmpeg可以互补
+
+H.264的详解
+这篇blog详解:http://www.samirchen.com/video-concept/
+
+编码H.264
+1.初始化VideoToolbox
+
+- (void)setupVideoToolbox{
+    
+    dispatch_sync(_encodeQueue, ^{
+        
+        [self setupFileHandle];
+        
+        int width = 720, height = 1280;
+        OSStatus status = VTCompressionSessionCreate(NULL, width, height, kCMVideoCodecType_H264, NULL, NULL, NULL, encodingComplectionCallback, (__bridge void *)(self), &amp;_encodingSession);
+        DLog(@"status code is %d",(int)status);
+        if (status != 0) {
+            DLog(@"create H264 session error");
+            return ;
+        }
+        
+        //设置实时编码，避免延迟
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_RealTime, kCFBooleanTrue);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_AutoLevel);
+        
+        //设置关键帧间隔（）关键字间隔越小越清晰，数值越大压缩率越高
+        int frameInterval = 1;
+        CFNumberRef frameIntervalRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;frameInterval);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_MaxKeyFrameInterval, frameIntervalRef);
+        
+        //设置期望帧率
+        int fps = 30;
+        CFNumberRef fpsRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;fps);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ExpectedFrameRate, fpsRef);
+        
+        //设置码率，均值，单位是byte
+        int bitRate = width * height * 3 * 4 * 8;
+        CFNumberRef bitRateRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;bitRate);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_AverageBitRate, bitRateRef);
+        
+        //设置码率上限，单位是bps,如果不设置默认会以很低的码率编码，导致编码出来的视频很模糊
+        int bitRateMax = width * height * 3 * 4;
+        CFNumberRef bitRateMaxRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;bitRateMax);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_DataRateLimits, bitRateMaxRef);
+        
+        //准备编码
+        VTCompressionSessionPrepareToEncodeFrames(_encodingSession);
+        
+    });
+}
+
+- (void)setupFileHandle{
+    
+    //创建文件，初始化fileHandle;
+    NSString *file = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"test.h264"];
+    [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
+    [[NSFileManager defaultManager] createFileAtPath:file contents:nil attributes:nil];
+    _fileHandle = [NSFileHandle fileHandleForWritingAtPath:file];
+}
+
+2.sampleBuffer回调处理
+
+- (void)videoEncodeWithSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+    
+    dispatch_sync(_encodeQueue, ^{
+        
+        // CVPixelBufferRef 编码前图像数据结构
+        // 利用给定的接口函数CMSampleBufferGetImageBuffer从中提取出CVPixelBufferRef
+        CVImageBufferRef imageBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
+        // 帧时间 如果不设置导致时间轴过长
+        CMTime presentationTimeStamp = CMTimeMake(_frameID++, 1000);
+        //flags 0 表示同步解码
+        VTEncodeInfoFlags flags;
+        OSStatus status = VTCompressionSessionEncodeFrame(_encodingSession, imageBuffer, presentationTimeStamp, kCMTimeInvalid, NULL, NULL, &amp;flags);
+        DLog(@"status code is %d",(int)status);
+        if (status == noErr) {
+            DLog(@"H264 VTCompressionSessionEncodeFrame success");
+        }
+        else{
+            DLog(@"H264: VTCompressionSessionEncodeFrame failed with %d", (int)status);
+            if (!_encodingSession) return;
+            VTCompressionSessionInvalidate(_encodingSession);
+            //释放资源
+            CFRelease(_encodingSession);
+            _encodingSession = NULL;
+        }
+    });
+    
+}
+
+
+3.对VideoToolbox的编码回调
+
+//每压缩一次都异步的调用此方法
+void encodingComplectionCallback(void * CM_NULLABLE outputCallbackRefCon,
+                               void * CM_NULLABLE sourceFrameRefCon,
+                               OSStatus status,
+                               VTEncodeInfoFlags infoFlags,
+                               CM_NULLABLE CMSampleBufferRef sampleBuffer ){
+
+}
+
+
+音视频同步详解
+播放速度标准量有以下三种
+
+
+  将视频同步到音频上，就是以音频的播放速度为基准来同步视频。视频比音频播放慢了，加快其播放速度；快了，则延迟播放。
+  将音频同步到视频上，就是以视频的播放速度为基准来同步音频。
+  将视频和音频同步外部的时钟上，选择一个外部时钟为基准，视频和音频的播放速度都以该时钟为标准
+
+
+视频和音频的同步过程是一个你等我赶的过程，快了则等待，慢了就加快速度。这就需要一个量来判断（和选择基准比较），到底是播放的快了还是慢了，或者正以同步的速度播放。在音视频的包中都含有DTS(decode time stamp)，告诉解码器packet的解码顺序 和 PTS(presentation time stamp)，从packet解码出来的数据的显示顺序。
+
+对于音频来说，DTS和PTS是相同的，也就是解码顺序和显示顺序一致
+视频的编码比音频复杂，DTS和PTS会不同。视频在编码后会得到三种不同的帧
+
+
+  I帧  关键帧，包含了一帧的完整数据，解码时只需要本帧的数据，不需要参考其他帧。
+  P帧 P是向前搜索，该帧的数据不完全的，解码时需要参考其前一帧的数据。
+  B帧 B是双向搜索，解码这种类型的帧是最复杂，不但需要参考其一帧的数据，还需要其后一帧的数据。
+
+" />
+    <meta property="og:description" content="直播流媒体介绍
+
+直播，音乐播放demo
+
+https://github.com/AndreHu88/iOS_Live
+
+视频流传输使用的是RTMP协议（类似于socket，基于TCP）
+RTMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP
+
+流媒体开发:网络层(socket或st)负责传输，协议层(rtmp或hls)负责网络打包，封装层(flv、ts)负责编解码数据的封装，编码层(h.264和aac)负责图像，音频压缩。
+用于对象,视频,音频的传输.这个协议建立在TCP协议或者轮询HTTP协议之上.
+
+HLS:由Apple公司定义的用于实时流传输的协议,HLS基于HTTP协议实现，传输内容包括两部分，一是M3U8描述文件，二是TS媒体文件。可实现流媒体的直播和点播，主要应用在iOS系统
+HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低
+
+下图是直播的完整图解
+
+
+播放网络视频需要以下几步（依赖FFmpeg框架）
+
+  将数据解协议
+  解封装
+  解码音视频
+  音视频同步
+
+
+播放本地视频不需要解协议，直接解封装
+
+
+  
+    解协议
+解协议就是将流媒体协议上的数据解析为相应的封装格式数据，流媒体一般是RTMP协议传输，这些协议在传输音视频数据的同时也可以传输一些指令数据（播放，停止，暂停，网络状态的描述） ，解协议会去掉信令数据，只保留音视频数据。采用RTMP协议通过解协议后，输入FLV的流
+
+    FFMpeg会根据相关协议的特性，本机与服务器建立连接，获取流数据
+  
+  
+    解封装
+
+    将封装的视频数据分离成音频和视频编码数据，常见的封装的格式有MP4，MKV, RMVB, FLV, AVI等。它的作用就是将已压缩的视频数据和音频数据按照一定的格式放在一起。FLV格式经过解封装后，可以得到H.264的视频编码数据和aac的音频编码数据，一般称为“packet”
+  
+  
+    解码音视频
+
+    解码就是将音视频压缩编码数据解码成非压缩的音视频的原始数据，解码是最复杂最重要的一个环节，通过解码压缩的视频数据被输出成非压缩的颜色数据。目前常用的音频编码方式是aac,mp3,视频编码格式是H.264,H.265。分析源数据的音视频信息，分别设置对应的音频解码器，视频编码器。对packet分别进行解码后，音频解码获得的数据是PCM（Pulse Code Modulation，脉冲编码调制）采样数据，一般称为“sample”。视频解码获得的数据是一幅YUV或RGB图像数据，一般称为“picture”
+  
+  
+    音视频同步
+
+    音视频解码是两个独立的线程，获取到的音视频是分开的。理想情况下，音视频按照自己的固有频率渲染输出能达到音视频同步的效果，但是在现实中，断网、弱网、丢帧、缓冲、音视频不同的解码耗时等情况都会妨碍实现同步，很难达到预期效果。 通过音视频同步调整后，将同步解码出来的音频，视频数据，同步给显卡和声卡播放出来。
+  
+
+
+VideoToolbox.framework(硬编码)
+videoToolbox是苹果的一个硬解码的框架，提供实现压缩，解压缩服务，并存储在缓冲区corevideo像素栅格图像格式之中。这些服务以会话对象的形式提供（压缩、解压，和像素传输），应用程序不需要直接访问硬件编码器和解码器相关内容，硬件编解码这块的质量有一定保证，可以优先使用硬编解码，和软解码FFmpeg可以互补
+
+H.264的详解
+这篇blog详解:http://www.samirchen.com/video-concept/
+
+编码H.264
+1.初始化VideoToolbox
+
+- (void)setupVideoToolbox{
+    
+    dispatch_sync(_encodeQueue, ^{
+        
+        [self setupFileHandle];
+        
+        int width = 720, height = 1280;
+        OSStatus status = VTCompressionSessionCreate(NULL, width, height, kCMVideoCodecType_H264, NULL, NULL, NULL, encodingComplectionCallback, (__bridge void *)(self), &amp;_encodingSession);
+        DLog(@"status code is %d",(int)status);
+        if (status != 0) {
+            DLog(@"create H264 session error");
+            return ;
+        }
+        
+        //设置实时编码，避免延迟
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_RealTime, kCFBooleanTrue);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_AutoLevel);
+        
+        //设置关键帧间隔（）关键字间隔越小越清晰，数值越大压缩率越高
+        int frameInterval = 1;
+        CFNumberRef frameIntervalRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;frameInterval);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_MaxKeyFrameInterval, frameIntervalRef);
+        
+        //设置期望帧率
+        int fps = 30;
+        CFNumberRef fpsRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;fps);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ExpectedFrameRate, fpsRef);
+        
+        //设置码率，均值，单位是byte
+        int bitRate = width * height * 3 * 4 * 8;
+        CFNumberRef bitRateRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;bitRate);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_AverageBitRate, bitRateRef);
+        
+        //设置码率上限，单位是bps,如果不设置默认会以很低的码率编码，导致编码出来的视频很模糊
+        int bitRateMax = width * height * 3 * 4;
+        CFNumberRef bitRateMaxRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;bitRateMax);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_DataRateLimits, bitRateMaxRef);
+        
+        //准备编码
+        VTCompressionSessionPrepareToEncodeFrames(_encodingSession);
+        
+    });
+}
+
+- (void)setupFileHandle{
+    
+    //创建文件，初始化fileHandle;
+    NSString *file = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"test.h264"];
+    [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
+    [[NSFileManager defaultManager] createFileAtPath:file contents:nil attributes:nil];
+    _fileHandle = [NSFileHandle fileHandleForWritingAtPath:file];
+}
+
+2.sampleBuffer回调处理
+
+- (void)videoEncodeWithSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+    
+    dispatch_sync(_encodeQueue, ^{
+        
+        // CVPixelBufferRef 编码前图像数据结构
+        // 利用给定的接口函数CMSampleBufferGetImageBuffer从中提取出CVPixelBufferRef
+        CVImageBufferRef imageBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
+        // 帧时间 如果不设置导致时间轴过长
+        CMTime presentationTimeStamp = CMTimeMake(_frameID++, 1000);
+        //flags 0 表示同步解码
+        VTEncodeInfoFlags flags;
+        OSStatus status = VTCompressionSessionEncodeFrame(_encodingSession, imageBuffer, presentationTimeStamp, kCMTimeInvalid, NULL, NULL, &amp;flags);
+        DLog(@"status code is %d",(int)status);
+        if (status == noErr) {
+            DLog(@"H264 VTCompressionSessionEncodeFrame success");
+        }
+        else{
+            DLog(@"H264: VTCompressionSessionEncodeFrame failed with %d", (int)status);
+            if (!_encodingSession) return;
+            VTCompressionSessionInvalidate(_encodingSession);
+            //释放资源
+            CFRelease(_encodingSession);
+            _encodingSession = NULL;
+        }
+    });
+    
+}
+
+
+3.对VideoToolbox的编码回调
+
+//每压缩一次都异步的调用此方法
+void encodingComplectionCallback(void * CM_NULLABLE outputCallbackRefCon,
+                               void * CM_NULLABLE sourceFrameRefCon,
+                               OSStatus status,
+                               VTEncodeInfoFlags infoFlags,
+                               CM_NULLABLE CMSampleBufferRef sampleBuffer ){
+
+}
+
+
+音视频同步详解
+播放速度标准量有以下三种
+
+
+  将视频同步到音频上，就是以音频的播放速度为基准来同步视频。视频比音频播放慢了，加快其播放速度；快了，则延迟播放。
+  将音频同步到视频上，就是以视频的播放速度为基准来同步音频。
+  将视频和音频同步外部的时钟上，选择一个外部时钟为基准，视频和音频的播放速度都以该时钟为标准
+
+
+视频和音频的同步过程是一个你等我赶的过程，快了则等待，慢了就加快速度。这就需要一个量来判断（和选择基准比较），到底是播放的快了还是慢了，或者正以同步的速度播放。在音视频的包中都含有DTS(decode time stamp)，告诉解码器packet的解码顺序 和 PTS(presentation time stamp)，从packet解码出来的数据的显示顺序。
+
+对于音频来说，DTS和PTS是相同的，也就是解码顺序和显示顺序一致
+视频的编码比音频复杂，DTS和PTS会不同。视频在编码后会得到三种不同的帧
+
+
+  I帧  关键帧，包含了一帧的完整数据，解码时只需要本帧的数据，不需要参考其他帧。
+  P帧 P是向前搜索，该帧的数据不完全的，解码时需要参考其前一帧的数据。
+  B帧 B是双向搜索，解码这种类型的帧是最复杂，不但需要参考其一帧的数据，还需要其后一帧的数据。
+
+" />
+    
+    <meta name="author" content="Jack Hu" />
+
+    
+    <meta property="og:title" content="iOS直播项目总结" />
+    <meta property="twitter:title" content="iOS直播项目总结" />
+
+
+
+    
+  <!-- Async font loading -->
+<script>
+  window.WebFontConfig = {
+      custom: {
+          families: ['Spoqa Han Sans:100,300,400,700'],
+          urls: ['https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css']
+      },
+      timeout: 60000
+  };
+  (function(d) {
+      var wf = d.createElement('script'), s = d.scripts[0];
+      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+      s.parentNode.insertBefore(wf, s);
+  })(document);
+</script>
+
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link rel="stylesheet" type="text/css" href="/style.css" />
+  <link rel="alternate" type="application/rss+xml" title="Jack Hu - 生活不止眼前的苟且，还有诗和远方" href="/feed.xml" />
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/FromEndWorld/LOFFER/master/images/favicon.png">
+  <script src="https://kit.fontawesome.com/56f7faf3f4.js"></script>
+
+
+  <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+
+</head>
+  <body>
+    <div class="wrapper-sidebar">
+  <header class="sidebar clearfix">
+    <div class="site-info">
+      
+        <a href="/" class="site-avatar"><img src="https://avatars3.githubusercontent.com/u/18731383?s=460&v=4" /></a>
+       
+      <h1 class="site-name"><a href="/">Jack Hu</a></h1>
+      <p class="site-description">生活不止眼前的苟且，还有诗和远方</p>
+    </div>
+  </header>
+
+  <div class="navlist">
+    <nav>
+      
+      
+      <a href="/">首页</a>
+      
+      
+      
+      <a href="/archive">归档</a>
+      
+      
+      
+      <a href="/tags">标签</a>
+      
+      
+      
+      <a href="/about">关于</a>
+      
+      
+    </nav>
+  </div>
+
+  <div class="wrapper-footer-desktop">
+    <footer class="footer">
+      <!-- Refer to https://codepen.io/ruandre/pen/howFi -->
+<ul class="svg-icon">
+
+  
+  <li><a href="https://www.weibo.com/风车大战骑士" class="icon-1 weibo" title="Weibo"><svg viewBox="0 0 512 512"><path d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></svg></a></li>
+  
+  
+  
+
+  
+
+  
+  <li><a href="mailto:huyong229@163.com" class="icon-8 email" title="Email"><svg viewBox="0 0 512 512"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></svg><!--[if lt IE 9]><em>Email</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+  <li><a href="https://github.com/AndreHu88" class="icon-13 github" title="GitHub"><svg viewBox="0 0 512 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg><!--[if lt IE 9]><em>GitHub</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</ul>
+
+
+
+<p>Copyright(c) 2019 愿你出走半生，归来仍是少年</p>
+
+    </footer>
+  </div>
+</div>
+
+<script type="text/javascript"> 
+
+document.addEventListener('DOMContentLoaded', function () {
+    function audioAutoPlay() {
+        var audio = document.getElementById('bg-music');
+            audio.play();
+        document.addEventListener("WeixinJSBridgeReady", function () {
+            audio.play();
+        }, false);
+    }
+    audioAutoPlay();
+});
+
+</script>
+
+    <div id="main" role="main" class="wrapper-content">
+      <article class="posts">
+  <h1>iOS直播项目总结</h1>
+
+  <div clsss="meta">
+    <span class="date">
+      2018-01-07
+    </span>
+
+    <ul class="tag">
+      
+      <li>
+        <a href="http://localhost:4000/tags#iOS">
+          iOS
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+
+  <div class="entry">
+    <h4 id="直播流媒体介绍">直播流媒体介绍</h4>
+
+<p>直播，音乐播放demo</p>
+
+<p>https://github.com/AndreHu88/iOS_Live</p>
+
+<p>视频流传输使用的是RTMP协议（类似于socket，基于TCP）
+RTMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP</p>
+
+<p>流媒体开发:网络层(socket或st)负责传输，协议层(rtmp或hls)负责网络打包，封装层(flv、ts)负责编解码数据的封装，编码层(h.264和aac)负责图像，音频压缩。
+用于对象,视频,音频的传输.这个协议建立在TCP协议或者轮询HTTP协议之上.</p>
+
+<p>HLS:由Apple公司定义的用于实时流传输的协议,HLS基于HTTP协议实现，传输内容包括两部分，一是M3U8描述文件，二是TS媒体文件。可实现流媒体的直播和点播，主要应用在iOS系统
+HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低</p>
+
+<p>下图是直播的完整图解
+<img src="http://upload-images.jianshu.io/upload_images/4499332-a5920ba5063faae1.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image" /></p>
+
+<h3 id="播放网络视频需要以下几步依赖ffmpeg框架">播放网络视频需要以下几步（依赖FFmpeg框架）</h3>
+<ul>
+  <li>将数据解协议</li>
+  <li>解封装</li>
+  <li>解码音视频</li>
+  <li>音视频同步</li>
+</ul>
+
+<h4 id="播放本地视频不需要解协议直接解封装">播放本地视频不需要解协议，直接解封装</h4>
+
+<ul>
+  <li>
+    <p><strong>解协议</strong>
+解协议就是将流媒体协议上的数据解析为相应的封装格式数据，流媒体一般是RTMP协议传输，这些协议在传输音视频数据的同时也可以传输一些指令数据（播放，停止，暂停，网络状态的描述） ，解协议会去掉信令数据，只保留音视频数据。采用RTMP协议通过解协议后，输入FLV的流</p>
+
+    <p>FFMpeg会根据相关协议的特性，本机与服务器建立连接，获取流数据</p>
+  </li>
+  <li>
+    <p><strong>解封装</strong></p>
+
+    <p>将封装的视频数据分离成音频和视频编码数据，常见的封装的格式有MP4，MKV, RMVB, FLV, AVI等。它的作用就是将已压缩的视频数据和音频数据按照一定的格式放在一起。FLV格式经过解封装后，可以得到H.264的视频编码数据和aac的音频编码数据，一般称为“packet”</p>
+  </li>
+  <li>
+    <p><strong>解码音视频</strong></p>
+
+    <p>解码就是将音视频压缩编码数据解码成非压缩的音视频的原始数据，解码是最复杂最重要的一个环节，通过解码压缩的视频数据被输出成非压缩的颜色数据。目前常用的音频编码方式是aac,mp3,视频编码格式是H.264,H.265。分析源数据的音视频信息，分别设置对应的音频解码器，视频编码器。对packet分别进行解码后，音频解码获得的数据是PCM（Pulse Code Modulation，脉冲编码调制）采样数据，一般称为“sample”。视频解码获得的数据是一幅YUV或RGB图像数据，一般称为“picture”</p>
+  </li>
+  <li>
+    <p><strong>音视频同步</strong></p>
+
+    <p>音视频解码是两个独立的线程，获取到的音视频是分开的。理想情况下，音视频按照自己的固有频率渲染输出能达到音视频同步的效果，但是在现实中，断网、弱网、丢帧、缓冲、音视频不同的解码耗时等情况都会妨碍实现同步，很难达到预期效果。 通过音视频同步调整后，将同步解码出来的音频，视频数据，同步给显卡和声卡播放出来。</p>
+  </li>
+</ul>
+
+<h4 id="videotoolboxframework硬编码">VideoToolbox.framework(硬编码)</h4>
+<p>videoToolbox是苹果的一个硬解码的框架，提供实现压缩，解压缩服务，并存储在缓冲区corevideo像素栅格图像格式之中。这些服务以会话对象的形式提供（压缩、解压，和像素传输），应用程序不需要直接访问硬件编码器和解码器相关内容，硬件编解码这块的质量有一定保证，可以优先使用硬编解码，和软解码FFmpeg可以互补</p>
+
+<h5 id="h264的详解">H.264的详解</h5>
+<p>这篇blog详解:http://www.samirchen.com/video-concept/</p>
+
+<h5 id="编码h264">编码H.264</h5>
+<p>1.初始化VideoToolbox</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)setupVideoToolbox{
+    
+    dispatch_sync(_encodeQueue, ^{
+        
+        [self setupFileHandle];
+        
+        int width = 720, height = 1280;
+        OSStatus status = VTCompressionSessionCreate(NULL, width, height, kCMVideoCodecType_H264, NULL, NULL, NULL, encodingComplectionCallback, (__bridge void *)(self), &amp;_encodingSession);
+        DLog(@"status code is %d",(int)status);
+        if (status != 0) {
+            DLog(@"create H264 session error");
+            return ;
+        }
+        
+        //设置实时编码，避免延迟
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_RealTime, kCFBooleanTrue);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_AutoLevel);
+        
+        //设置关键帧间隔（）关键字间隔越小越清晰，数值越大压缩率越高
+        int frameInterval = 1;
+        CFNumberRef frameIntervalRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;frameInterval);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_MaxKeyFrameInterval, frameIntervalRef);
+        
+        //设置期望帧率
+        int fps = 30;
+        CFNumberRef fpsRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;fps);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ExpectedFrameRate, fpsRef);
+        
+        //设置码率，均值，单位是byte
+        int bitRate = width * height * 3 * 4 * 8;
+        CFNumberRef bitRateRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;bitRate);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_AverageBitRate, bitRateRef);
+        
+        //设置码率上限，单位是bps,如果不设置默认会以很低的码率编码，导致编码出来的视频很模糊
+        int bitRateMax = width * height * 3 * 4;
+        CFNumberRef bitRateMaxRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;bitRateMax);
+        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_DataRateLimits, bitRateMaxRef);
+        
+        //准备编码
+        VTCompressionSessionPrepareToEncodeFrames(_encodingSession);
+        
+    });
+}
+
+- (void)setupFileHandle{
+    
+    //创建文件，初始化fileHandle;
+    NSString *file = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"test.h264"];
+    [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
+    [[NSFileManager defaultManager] createFileAtPath:file contents:nil attributes:nil];
+    _fileHandle = [NSFileHandle fileHandleForWritingAtPath:file];
+}
+</code></pre></div></div>
+<p>2.sampleBuffer回调处理</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)videoEncodeWithSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+    
+    dispatch_sync(_encodeQueue, ^{
+        
+        // CVPixelBufferRef 编码前图像数据结构
+        // 利用给定的接口函数CMSampleBufferGetImageBuffer从中提取出CVPixelBufferRef
+        CVImageBufferRef imageBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
+        // 帧时间 如果不设置导致时间轴过长
+        CMTime presentationTimeStamp = CMTimeMake(_frameID++, 1000);
+        //flags 0 表示同步解码
+        VTEncodeInfoFlags flags;
+        OSStatus status = VTCompressionSessionEncodeFrame(_encodingSession, imageBuffer, presentationTimeStamp, kCMTimeInvalid, NULL, NULL, &amp;flags);
+        DLog(@"status code is %d",(int)status);
+        if (status == noErr) {
+            DLog(@"H264 VTCompressionSessionEncodeFrame success");
+        }
+        else{
+            DLog(@"H264: VTCompressionSessionEncodeFrame failed with %d", (int)status);
+            if (!_encodingSession) return;
+            VTCompressionSessionInvalidate(_encodingSession);
+            //释放资源
+            CFRelease(_encodingSession);
+            _encodingSession = NULL;
+        }
+    });
+    
+}
+</code></pre></div></div>
+
+<p>3.对VideoToolbox的编码回调</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//每压缩一次都异步的调用此方法
+void encodingComplectionCallback(void * CM_NULLABLE outputCallbackRefCon,
+                               void * CM_NULLABLE sourceFrameRefCon,
+                               OSStatus status,
+                               VTEncodeInfoFlags infoFlags,
+                               CM_NULLABLE CMSampleBufferRef sampleBuffer ){
+
+}
+</code></pre></div></div>
+
+<h5 id="音视频同步详解">音视频同步详解</h5>
+<p>播放速度标准量有以下三种</p>
+
+<ul>
+  <li><strong>将视频同步到音频上</strong>，就是以音频的播放速度为基准来同步视频。视频比音频播放慢了，加快其播放速度；快了，则延迟播放。</li>
+  <li><strong>将音频同步到视频上</strong>，就是以视频的播放速度为基准来同步音频。</li>
+  <li><strong>将视频和音频同步外部的时钟上</strong>，选择一个外部时钟为基准，视频和音频的播放速度都以该时钟为标准</li>
+</ul>
+
+<p>视频和音频的同步过程是一个你等我赶的过程，快了则等待，慢了就加快速度。这就需要一个量来判断（和选择基准比较），到底是播放的快了还是慢了，或者正以同步的速度播放。在音视频的包中都含有DTS(decode time stamp)，告诉解码器packet的解码顺序 和 PTS(presentation time stamp)，从packet解码出来的数据的显示顺序。</p>
+
+<p>对于音频来说，DTS和PTS是相同的，也就是解码顺序和显示顺序一致
+视频的编码比音频复杂，DTS和PTS会不同。视频在编码后会得到三种不同的帧</p>
+
+<ul>
+  <li><strong>I帧  关键帧</strong>，包含了一帧的完整数据，解码时只需要本帧的数据，不需要参考其他帧。</li>
+  <li><strong>P帧 P是向前搜索</strong>，该帧的数据不完全的，解码时需要参考其前一帧的数据。</li>
+  <li><strong>B帧 B是双向搜索</strong>，解码这种类型的帧是最复杂，不但需要参考其一帧的数据，还需要其后一帧的数据。</li>
+</ul>
+
+  </div>
+
+  
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+
+	    var disqus_shortname = 'Jack';
+
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+</article>
+
+<div class="pagination">
+  
+    <span class="prev" >
+      <a href="http://localhost:4000/iPhoneX%E7%9A%84%E9%80%82%E9%85%8D%E5%B0%8F%E8%AE%B0/">
+        ← 上一篇
+      </a>
+    </span>
+  
+  
+    <span class="next" >
+      <a href="http://localhost:4000/Git%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/">
+        下一篇 →
+      </a>
+    </span>
+  
+</div>
+    </div>
+
+    
+
+  </body>
+
+  <div class="wrapper-footer-mobile">
+    <footer class="footer">
+      <!-- Refer to https://codepen.io/ruandre/pen/howFi -->
+<ul class="svg-icon">
+
+  
+  <li><a href="https://www.weibo.com/风车大战骑士" class="icon-1 weibo" title="Weibo"><svg viewBox="0 0 512 512"><path d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></svg></a></li>
+  
+  
+  
+
+  
+
+  
+  <li><a href="mailto:huyong229@163.com" class="icon-8 email" title="Email"><svg viewBox="0 0 512 512"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></svg><!--[if lt IE 9]><em>Email</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+  <li><a href="https://github.com/AndreHu88" class="icon-13 github" title="GitHub"><svg viewBox="0 0 512 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg><!--[if lt IE 9]><em>GitHub</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</ul>
+
+
+
+<p>Copyright(c) 2019 愿你出走半生，归来仍是少年</p>
+
+    </footer>
+
+
+</html>

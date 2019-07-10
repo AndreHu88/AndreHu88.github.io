@@ -1,12 +1,10 @@
 ---
 layout:         post
-title:         	 二叉树笔记
-subtitle:       树形结构中最重要的一种
-card-image:  
+title:          二叉树笔记
 date:           2018-06-24
-tags:           数据结构
-post-card-type: article
-published:	true
+tags:           [数据结构]
+categories:
+comments: true
 ---
 
 ####  “树”：一种非线性的存储结构，具有“一对多”关系的元素的集合

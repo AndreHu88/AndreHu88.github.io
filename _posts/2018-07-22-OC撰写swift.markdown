@@ -1,12 +1,10 @@
 ---
 layout:         post
-title:         	转战Swift
-subtitle:       Swift VS OC
-card-image:  
+title:          转战Swift
 date:           2018-07-22
-tags:           iOS
-post-card-type: article
-published:	true
+tags:           [iOS, Swift]
+categories:
+comments: true
 ---
 
 

@@ -1,13 +1,13 @@
 ---
+
 layout:         post
 title:          objcRuntime小记
-subtitle:       runtime学习
-card-image:
 date:           2017-11-25
-tags:           iOS
-post-card-type: article
-published:	true
+tags:           [iOS]
+categories:
+comments: true
 ---
+
 最近在学习objc的底层runtime知识，学到这块时就做个小笔记，做个总结。刚好最近也搭建了自己的博客，就以此作为个人博客的开篇吧
 
 ###什么是runtime

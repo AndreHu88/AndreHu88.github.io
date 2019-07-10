@@ -1,11 +1,12 @@
 ---
+
 layout:         post
 title:          iPhoneX的适配问题
-subtitle:       总结一次iPhone X的适配
-card-image:	https://developer.apple.com/ios/update-apps-for-iphone-x/images/illustrations/checklist-safe-area-landscape.svg
 date:           2017-12-28
-tags:           iOS
-post-card-type: image
+tags:           [iOS]
+categories:
+comments: true
+
 ---
 ### 记录一次iPhone X的适配过程，做个总结
 

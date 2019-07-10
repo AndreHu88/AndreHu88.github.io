@@ -1,11 +1,11 @@
 ---
 layout:         post
 title:          转场动画小记
-subtitle:       总结转场
-card-image:	
 date:           2018-03-17
-tags:           iOS
-post-card-type: article
+tags:           [iOS]
+categories:
+comments: true
+
 ---
 ### 1. 简单push动画和present动画
 ```
