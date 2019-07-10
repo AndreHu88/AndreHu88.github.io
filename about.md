@@ -12,18 +12,18 @@ permalink: /about/
 
 
 	<div >
-		<img src="https://avatars3.githubusercontent.com/u/18731383?s=460&v=4" style="border-radius:50%;  width:100px; ">
+		<img src="https://github.com/AndreHu88/AndreHu88.github.io/blob/master/images/jack.png?raw=true" style="border-radius:50%;  width:100px; ">
 	</div>
 	<p style="text-align: center;font-size:16px">
 		风车大战骑士
 	</p>
 
 	<p id="brief" style="text-align: center;">
-		嗨，我是Jack Hu，一个能读万卷书，行万里路的iOS开发者。
+		嗨，我是Jack Hu，一个能读万卷书，行万里路的斜杠青年
 	</p>
 
 	<p id="brief" style="text-align: center;">
-		现居上海，从事互联网。
+		现居上海，从事互联网
 	</p>
 
 
