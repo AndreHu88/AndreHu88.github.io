@@ -1,5 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-07-11T22:11:36+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Jack Hu</title><subtitle>生活不止眼前的苟且，还有诗和远方</subtitle><entry><title type="html">财务报表分析</title><link href="http://localhost:4000/%E8%B4%A2%E5%8A%A1%E6%8A%A5%E8%A1%A8%E5%AD%A6%E4%B9%A0/" rel="alternate" type="text/html" title="财务报表分析" /><published>2019-07-11T00:00:00+08:00</published><updated>2019-07-11T00:00:00+08:00</updated><id>http://localhost:4000/%E8%B4%A2%E5%8A%A1%E6%8A%A5%E8%A1%A8%E5%AD%A6%E4%B9%A0</id><content type="html" xml:base="http://localhost:4000/%E8%B4%A2%E5%8A%A1%E6%8A%A5%E8%A1%A8%E5%AD%A6%E4%B9%A0/">&lt;h4 id=&quot;记录金融知识的学习&quot;&gt;记录金融知识的学习&lt;/h4&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-07-12T21:27:45+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">风车大战骑士</title><subtitle>生活不止眼前的苟且，还有诗和远方</subtitle><entry><title type="html">财报入门学习</title><link href="http://localhost:4000/%E8%B4%A2%E6%8A%A5%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/" rel="alternate" type="text/html" title="财报入门学习" /><published>2019-07-07T00:00:00+08:00</published><updated>2019-07-07T00:00:00+08:00</updated><id>http://localhost:4000/%E8%B4%A2%E6%8A%A5%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0</id><content type="html" xml:base="http://localhost:4000/%E8%B4%A2%E6%8A%A5%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/">&lt;h4 id=&quot;记录金融入门学习&quot;&gt;记录金融入门学习&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;巴菲特：&lt;/strong&gt;买股票的本质是投资公司&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;彼得林奇：&lt;/strong&gt;当你读不懂某一公司的财务情况时，不要投资。股市的最大的亏损源于投资了在资产负债方面很糟糕的公司。先看资产负债表，搞清该公司是否有偿债能力，然后再投钱冒险&lt;/p&gt;
+&lt;/blockquote&gt;
+
 &lt;h5 id=&quot;金融书籍记录&quot;&gt;金融书籍记录&lt;/h5&gt;
+
 &lt;ul class=&quot;task-list&quot;&gt;
   &lt;li class=&quot;task-list-item&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;task-list-item-checkbox&quot; disabled=&quot;disabled&quot; checked=&quot;checked&quot; /&gt;彼得林奇 &lt;在华尔街的崛起&gt;&lt;/在华尔街的崛起&gt;&lt;/li&gt;
   &lt;li class=&quot;task-list-item&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;task-list-item-checkbox&quot; disabled=&quot;disabled&quot; checked=&quot;checked&quot; /&gt;查理芒格 &lt;查理芒格传&gt;&lt;/查理芒格传&gt;&lt;/li&gt;
@@ -57,10 +66,10 @@
       &lt;td style=&quot;text-align: center&quot;&gt;货币资金&lt;/td&gt;
       &lt;td style=&quot;text-align: center&quot;&gt;企业的现金存款&lt;/td&gt;
       &lt;td style=&quot;text-align: center&quot;&gt;固定资产&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;非货币资产，(房屋，设备，机器，运输机器等)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;非货币资产，(房屋，设备，机器等)&lt;/td&gt;
       &lt;td style=&quot;text-align: center&quot;&gt;银行负债&lt;/td&gt;
       &lt;td style=&quot;text-align: center&quot;&gt;银行贷款&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;股东出的钱&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;股东出钱&lt;/td&gt;
       &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
@@ -86,62 +95,9 @@
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;资产&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt; &lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt; &lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt; &lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;负债&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt; &lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt; &lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt; &lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;流动资产&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;说明&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;非流动资产&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;说明&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;负债&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;说明&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;所有者权益&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;说明&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;货币资金&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;企业的现金存款&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;固定资产&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;非货币资产，(房屋，设备，机器，运输机器等)&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;银行负债&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;银行贷款&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;股东出的钱&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;应收账款&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;发了货，还没结账，(坏账准备)&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;生物性资产&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;农林牧渔行业&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;存货&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;看行业，更新快的行业存货少好&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;无形资产&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;专利权，著作权，土地使用权&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+&lt;p&gt;表格在手机上会有变形，截图如下&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://s2.ax1x.com/2019/07/12/ZfWbHP.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://fdfs.xmcdn.com/group53/M07/D7/2D/wKgLcVwKI92jI9JaAAGHfFHmyt0046_mobile_large.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
@@ -184,6 +140,7 @@
 
 &lt;h6 id=&quot;3-筹资活动中了解企业的融资情况&quot;&gt;3. 筹资活动中了解企业的融资情况&lt;/h6&gt;
 &lt;p&gt;&lt;img src=&quot;http://fdfs.xmcdn.com/group52/M01/59/E3/wKgLe1wZzTqS3C3gAADXdXRFjFY717_mobile_large.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
 &lt;h6 id=&quot;类型一的企业&quot;&gt;类型一、“+++”的企业&lt;/h6&gt;
 
 &lt;p&gt;三项都为正的企业。表明上看起来，这样的公司特别不错。经营活动现金为正数，现金源源不断。但是有一个问题，就是企业经营赚了钱以后，为什么不向外投资呢？反而还需要筹资呢？难道都把钱放在银行账户上数钱玩吗？这类型的企业，要么就是即将大规模的开展对外大规模的投资活动，所以在筹集本钱。要么就很可能是起了歹心，借着上市公司的躯壳在赚钱。所以，如果是这三项都是正的企业，建议我们要谨慎观察一下。如果查阅很多材料，都看不出来企业有大投资的动作。建议这类型的企业，我们也淘汰掉。&lt;/p&gt;
@@ -200,7 +157,58 @@
 
 &lt;h6 id=&quot;类型四的企业&quot;&gt;类型四、“+–”的企业&lt;/h6&gt;
 
-&lt;p&gt;经营活动现金流为正，同样说明企业赚钱。投资活动现金流为负，说明企业也在稳步的扩张。筹资活动现金流为负，说明企业还了贷款，或者给股东分红了。也就是说，企业靠着经营现金流的流入，实施了投资，并且同时还了贷款或给股东分红。这类型的企业是四种画像里面最好的企业，这种企业自我造血能力最强。靠着自己赚的钱可以去投资其他的项目，同时赚的钱还可以给股东分红或者偿还贷款。这类企业是最具备投资价值的&lt;/p&gt;</content><author><name></name></author><category term="金融" /><summary type="html">记录金融知识的学习 金融书籍记录 彼得林奇 查理芒格 瑞达利欧 财务报表学习 财务报表分三类 利润表 资产负债表 现金流量表 在看公司公司财报前，先看会计师审计报告，在年报的第十一节，《审计意见》，审计意见反映了审计师的心声 利润表 形象解释 净利润中包含了企业的应收账款，所以并不能单单以净利润在决定公司运营好坏，还需结合现金流量表和资产负债表 扣非净利润 归属于母公司所有者的净利润 资产负债表 资产       负债       流动资产 说明 非流动资产 说明 负债 说明 所有者权益 说明 货币资金 企业的现金存款 固定资产 非货币资产，(房屋，设备，机器，运输机器等) 银行负债 银行贷款 股东出的钱   应收账款 发了货，还没结账，(坏账准备) 生物性资产 农林牧渔行业         存货 看行业，更新快的行业存货少好 无形资产 专利权，著作权，土地使用权         资产       负债       流动资产 说明 非流动资产 说明 负债 说明 所有者权益 说明 货币资金 企业的现金存款 固定资产 非货币资产，(房屋，设备，机器，运输机器等) 银行负债 银行贷款 股东出的钱   应收账款 发了货，还没结账，(坏账准备) 生物性资产 农林牧渔行业         存货 看行业，更新快的行业存货少好 无形资产 专利权，著作权，土地使用权         现金流量表 序号 类别 说明 1 经营活动产生的现金流量 利润表收入支出现金的变化 2 投资活动产生的现金流量 资产负债表的固定资产变动情况 3 筹资活动产生的现金流量 资产负债表的负债和所有者权益变动情况 1. 经营活动现金流 有公开数据的企业，直接看企业经营活动产生的现金流，这是现金流量表的核心。因为刚刚我们刚讲了，企业的经营能力才是我们投资者最应该看重的。而经营活动现金流，就代表着经营能力的强弱。 如果经营活动现金流量净额，长期为负的话（银行证券保险除外），代表企业日子不太好过，入不敷出，这类企业不用考虑投资。只有经营活动现金流量净额是正数，说明它才是一家正常的企业。 2. 投资活动现金流 3. 筹资活动中了解企业的融资情况 类型一、“+++”的企业 三项都为正的企业。表明上看起来，这样的公司特别不错。经营活动现金为正数，现金源源不断。但是有一个问题，就是企业经营赚了钱以后，为什么不向外投资呢？反而还需要筹资呢？难道都把钱放在银行账户上数钱玩吗？这类型的企业，要么就是即将大规模的开展对外大规模的投资活动，所以在筹集本钱。要么就很可能是起了歹心，借着上市公司的躯壳在赚钱。所以，如果是这三项都是正的企业，建议我们要谨慎观察一下。如果查阅很多材料，都看不出来企业有大投资的动作。建议这类型的企业，我们也淘汰掉。 类型二、“++-”的企业 这类型的企业，经营活动现金流为正，说明企业经营情况还不错。投资活动现金流为正，说明以前投资的资产，带来了利息等方面的收入。或者是变卖了资产，产生了收入。一般来说，资产带来的收益比较多，因为企业变卖资产的情况很小。筹资活动现金流为负数，要么就是还了贷款，要么就是给股东分红。这类的企业，如果投资现金流，不是变卖资产所得。而经营现金流和投资现金流，足以覆盖筹资现金流的流出。我们就可以初步判断，这家公司是健康发展的。 类型三、“+-+”的企业 这类企业，经营活动现金流同样为正，说明企业赚钱。同时筹资活动现金流为正，但是投资活动现金流是负。说明企业现在正在大力的扩大规模。需要把钱投入到新的项目中。这类企业有一个问题，就是所投资的项目如果创造辉煌，企业会高速的增长。反之，企业如果投资失败，会影响企业后期的发展。 这类型的企业，很考验我们对行业发展的一个判断。 类型四、“+–”的企业 经营活动现金流为正，同样说明企业赚钱。投资活动现金流为负，说明企业也在稳步的扩张。筹资活动现金流为负，说明企业还了贷款，或者给股东分红了。也就是说，企业靠着经营现金流的流入，实施了投资，并且同时还了贷款或给股东分红。这类型的企业是四种画像里面最好的企业，这种企业自我造血能力最强。靠着自己赚的钱可以去投资其他的项目，同时赚的钱还可以给股东分红或者偿还贷款。这类企业是最具备投资价值的</summary></entry><entry><title type="html">转战Swift</title><link href="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/" rel="alternate" type="text/html" title="转战Swift" /><published>2018-07-22T00:00:00+08:00</published><updated>2018-07-22T00:00:00+08:00</updated><id>http://localhost:4000/OC%E6%92%B0%E5%86%99swift</id><content type="html" xml:base="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/">&lt;h4 id=&quot;swift相对oc的优势&quot;&gt;swift相对OC的优势&lt;/h4&gt;
+&lt;p&gt;经营活动现金流为正，同样说明企业赚钱。投资活动现金流为负，说明企业也在稳步的扩张。筹资活动现金流为负，说明企业还了贷款，或者给股东分红了。也就是说，企业靠着经营现金流的流入，实施了投资，并且同时还了贷款或给股东分红。这类型的企业是四种画像里面最好的企业，这种企业自我造血能力最强。靠着自己赚的钱可以去投资其他的项目，同时赚的钱还可以给股东分红或者偿还贷款。这类企业是最具备投资价值的&lt;/p&gt;</content><author><name></name></author><category term="金融" /><summary type="html">记录金融入门学习 巴菲特：买股票的本质是投资公司 彼得林奇：当你读不懂某一公司的财务情况时，不要投资。股市的最大的亏损源于投资了在资产负债方面很糟糕的公司。先看资产负债表，搞清该公司是否有偿债能力，然后再投钱冒险 金融书籍记录 彼得林奇 查理芒格 瑞达利欧 财务报表学习 财务报表分三类 利润表 资产负债表 现金流量表 在看公司公司财报前，先看会计师审计报告，在年报的第十一节，《审计意见》，审计意见反映了审计师的心声 利润表 形象解释 净利润中包含了企业的应收账款，所以并不能单单以净利润在决定公司运营好坏，还需结合现金流量表和资产负债表 扣非净利润 归属于母公司所有者的净利润 资产负债表 资产       负债       流动资产 说明 非流动资产 说明 负债 说明 所有者权益 说明 货币资金 企业的现金存款 固定资产 非货币资产，(房屋，设备，机器等) 银行负债 银行贷款 股东出钱   应收账款 发了货，还没结账，(坏账准备) 生物性资产 农林牧渔行业         存货 看行业，更新快的行业存货少好 无形资产 专利权，著作权，土地使用权         表格在手机上会有变形，截图如下 现金流量表 序号 类别 说明 1 经营活动产生的现金流量 利润表收入支出现金的变化 2 投资活动产生的现金流量 资产负债表的固定资产变动情况 3 筹资活动产生的现金流量 资产负债表的负债和所有者权益变动情况 1. 经营活动现金流 有公开数据的企业，直接看企业经营活动产生的现金流，这是现金流量表的核心。因为刚刚我们刚讲了，企业的经营能力才是我们投资者最应该看重的。而经营活动现金流，就代表着经营能力的强弱。 如果经营活动现金流量净额，长期为负的话（银行证券保险除外），代表企业日子不太好过，入不敷出，这类企业不用考虑投资。只有经营活动现金流量净额是正数，说明它才是一家正常的企业。 2. 投资活动现金流 3. 筹资活动中了解企业的融资情况 类型一、“+++”的企业 三项都为正的企业。表明上看起来，这样的公司特别不错。经营活动现金为正数，现金源源不断。但是有一个问题，就是企业经营赚了钱以后，为什么不向外投资呢？反而还需要筹资呢？难道都把钱放在银行账户上数钱玩吗？这类型的企业，要么就是即将大规模的开展对外大规模的投资活动，所以在筹集本钱。要么就很可能是起了歹心，借着上市公司的躯壳在赚钱。所以，如果是这三项都是正的企业，建议我们要谨慎观察一下。如果查阅很多材料，都看不出来企业有大投资的动作。建议这类型的企业，我们也淘汰掉。 类型二、“++-”的企业 这类型的企业，经营活动现金流为正，说明企业经营情况还不错。投资活动现金流为正，说明以前投资的资产，带来了利息等方面的收入。或者是变卖了资产，产生了收入。一般来说，资产带来的收益比较多，因为企业变卖资产的情况很小。筹资活动现金流为负数，要么就是还了贷款，要么就是给股东分红。这类的企业，如果投资现金流，不是变卖资产所得。而经营现金流和投资现金流，足以覆盖筹资现金流的流出。我们就可以初步判断，这家公司是健康发展的。 类型三、“+-+”的企业 这类企业，经营活动现金流同样为正，说明企业赚钱。同时筹资活动现金流为正，但是投资活动现金流是负。说明企业现在正在大力的扩大规模。需要把钱投入到新的项目中。这类企业有一个问题，就是所投资的项目如果创造辉煌，企业会高速的增长。反之，企业如果投资失败，会影响企业后期的发展。 这类型的企业，很考验我们对行业发展的一个判断。 类型四、“+–”的企业 经营活动现金流为正，同样说明企业赚钱。投资活动现金流为负，说明企业也在稳步的扩张。筹资活动现金流为负，说明企业还了贷款，或者给股东分红了。也就是说，企业靠着经营现金流的流入，实施了投资，并且同时还了贷款或给股东分红。这类型的企业是四种画像里面最好的企业，这种企业自我造血能力最强。靠着自己赚的钱可以去投资其他的项目，同时赚的钱还可以给股东分红或者偿还贷款。这类企业是最具备投资价值的</summary></entry><entry><title type="html">PMP考试总结</title><link href="http://localhost:4000/PMP%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="PMP考试总结" /><published>2019-06-22T00:00:00+08:00</published><updated>2019-06-22T00:00:00+08:00</updated><id>http://localhost:4000/PMP%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/PMP%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/">&lt;h3 id=&quot;记录下在备考pmp的一些知识&quot;&gt;记录下在备考PMP的一些知识&lt;/h3&gt;
+
+&lt;h4 id=&quot;pmp十大知识领域&quot;&gt;PMP十大知识领域&lt;/h4&gt;
+&lt;ol&gt;
+  &lt;li&gt;整合管理&lt;/li&gt;
+  &lt;li&gt;范围管理&lt;/li&gt;
+  &lt;li&gt;进度管理&lt;/li&gt;
+  &lt;li&gt;成本管理&lt;/li&gt;
+  &lt;li&gt;质量管理&lt;/li&gt;
+  &lt;li&gt;资源管理&lt;/li&gt;
+  &lt;li&gt;沟通管理&lt;/li&gt;
+  &lt;li&gt;风险管理&lt;/li&gt;
+  &lt;li&gt;采购管理&lt;/li&gt;
+  &lt;li&gt;相关方管理&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;五大过程组&quot;&gt;五大过程组&lt;/h4&gt;
+&lt;ol&gt;
+  &lt;li&gt;启动&lt;/li&gt;
+  &lt;li&gt;规划&lt;/li&gt;
+  &lt;li&gt;执行&lt;/li&gt;
+  &lt;li&gt;监控&lt;/li&gt;
+  &lt;li&gt;收尾&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;共131个工具和技术&quot;&gt;共131个工具和技术&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;数据收集技术。用于从各种渠道收集数据与信息。共有九种数据收集工具与技术。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;数据分析技术。用于组织、评估和评价数据与信息。共有 27 种数据分析工具与技术。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;数据表现技术。用于显示用来传递数据和信息的图形方式或其他方法。共有 15 种数据表现工具与技术。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;决策技术。用于从不同备选方案选择行动方案。共有两种决策工具与技术。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;沟通技巧。用于在相关方之间传递信息。共有两种沟通技巧工具与技术。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;人际关系与团队技能。用于有效地领导团队成员和其他相关方并与之进行互动。共有 17 种人际关系与团队技能工具与技术。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.bmp.ovh/imgs/2019/07/93c0798878114870.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><category term="PMP" /><summary type="html">记录下在备考PMP的一些知识 PMP十大知识领域 整合管理 范围管理 进度管理 成本管理 质量管理 资源管理 沟通管理 风险管理 采购管理 相关方管理 五大过程组 启动 规划 执行 监控 收尾 共131个工具和技术 数据收集技术。用于从各种渠道收集数据与信息。共有九种数据收集工具与技术。 数据分析技术。用于组织、评估和评价数据与信息。共有 27 种数据分析工具与技术。 数据表现技术。用于显示用来传递数据和信息的图形方式或其他方法。共有 15 种数据表现工具与技术。 决策技术。用于从不同备选方案选择行动方案。共有两种决策工具与技术。 沟通技巧。用于在相关方之间传递信息。共有两种沟通技巧工具与技术。 人际关系与团队技能。用于有效地领导团队成员和其他相关方并与之进行互动。共有 17 种人际关系与团队技能工具与技术。</summary></entry><entry><title type="html">转战Swift</title><link href="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/" rel="alternate" type="text/html" title="转战Swift" /><published>2018-07-22T00:00:00+08:00</published><updated>2018-07-22T00:00:00+08:00</updated><id>http://localhost:4000/OC%E6%92%B0%E5%86%99swift</id><content type="html" xml:base="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/">&lt;h4 id=&quot;swift相对oc的优势&quot;&gt;swift相对OC的优势&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Swift容易阅读，语法和文件结构简易化。&lt;/li&gt;
@@ -910,127 +918,4 @@ mysql.server  {start|stop|restart|reload|force-reload|status}  [ MySQL server op
 **  ** 加粗
 ![Alt text](/path/to/img.jpg) 图片
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="Linux" /><summary type="html">ls显示文件 ls -a 显示所有文件包括隐藏文件 ls -l 显示文件属性，包括大小，日期，符号连接，是否可读写及是否可执行 ls -lh 显示文件的大小，以容易理解的格式印出文件大小 (例如 1K 234M2G) ls -lt 显示文件，按照修改时间排序 rm删除文件 rm file　删除某一个文件 rm -f file 删除时候不进行提示。可以于r参数配合使用 rm -r 就是向下递归，不管有多少级目录，一并删除 rm -f 就是直接强行删除，不作任何提示的意思 rm -rf dir　删除当前目录下叫dir的整个目录 系统 用户 w 当前登录用户的详细信息 who 显示登录用户 date 显示当前时间 cal 显示当月日历 pwd 显示当前路径 open . 可以在finder中打开当前文件夹(Mac) bash .sh 运行脚本 网络相关 ifconfig 获取本机IP netstat 显示网络状态 nslookup 域名检查排错 netstat -an 查看网络端口信息 netstat -nr 查看路由表信息，比route快 关机操作 reboot　 重新启动计算机 shutdown -r now 重新启动计算机，停止服务后重新启动计算机 shutdown -h now 关闭计算机，停止服务后再关闭系统 halt 关闭计算机 一般用shutdown -r now,在重启系统是，关闭相关服务，shutdown -h now也是如此。 chown 改变文件或目录的所有者 chown user1 /dir　将/dir目录设置为user1所有 chown -R user1.user1 /dir　将/dir目录下所有文件和目录，设置为user1所有,组为user1。-R递归到下面的每个文件和目录 chmod 改变用户的权限 chmod a+x file　将file文件设置为可执行，脚本类文件一定要这样设置一个，否则得用bash file才能执行 chmod 666 file　将文件file设置为可读写 chmod 750 file 将文件file设置为，所有者为完全权限，同组可以读和执行，其他无权限 mac下执行shell脚本 ./name.sh 如果执行报没有权限，chmod 777 name.sh bash name.sh apache Linux自带Apache cd /ect/apache2 配置文件 cd /usr/bin 程序 cd /Library/WebServer/Documents 默认根目录 sudo apachectl -k start 开启Apache服务 sudo apachectl -k restart 重启Apache服务 sudo apachectl -k stop 关闭Apache服务 mysql的操作 service mysql start 开启MySQL服务 usr/local/mysql/bin/mysql 默认安装目录 alias mysql=/usr/local/mysql/bin/mysql alias mysqladmin=/usr/local/mysql/bin/mysqladmin export PATH=${PATH}:/usr/local/mysql/bin 添加用户环境变量 .bash_profile //如果用HomeBrew安装 mysql.server {start|stop|restart|reload|force-reload|status} [ MySQL server options jekyll bundle exec jekyll serve 本地编译并开启服务 //单张图片居中 &amp;lt;center&amp;gt; &amp;lt;img src=&quot;xxxxx.jpg&quot; alt = &quot;树&quot; style=&quot;width:80%&quot; /&amp;gt; &amp;lt;/center&amp;gt; //两张图片并排 &amp;lt;figure class=&quot;half&quot;&amp;gt; &amp;lt;img src=&quot;http://xxx.jpg&quot;&amp;gt; &amp;lt;img src=&quot;http://yyy.jpg&quot;&amp;gt; &amp;lt;/figure&amp;gt; //三张图片并排 &amp;lt;figure class=&quot;third&quot;&amp;gt; &amp;lt;img src=&quot;http://xxx.jpg&quot;&amp;gt; &amp;lt;img src=&quot;http://yyy.jpg&quot;&amp;gt; &amp;lt;img src=&quot;http://zzz.jpg&quot;&amp;gt; &amp;lt;/figure&amp;gt; markdown ``` 这是 H1 这是 H2 这是 H6 区块引用 无序列表 数字. 有序列表 ***</summary></entry><entry><title type="html">objcRuntime小记</title><link href="http://localhost:4000/objcRuntme/" rel="alternate" type="text/html" title="objcRuntime小记" /><published>2017-11-25T00:00:00+08:00</published><updated>2017-11-25T00:00:00+08:00</updated><id>http://localhost:4000/objcRuntme</id><content type="html" xml:base="http://localhost:4000/objcRuntme/">&lt;p&gt;最近在学习objc的底层runtime知识，学到这块时就做个小笔记，做个总结。刚好最近也搭建了自己的博客，就以此作为个人博客的开篇吧&lt;/p&gt;
-
-&lt;p&gt;###什么是runtime&lt;/p&gt;
-
-&lt;p&gt;我们知道高级编程语言要想成为可执行文件的过程：高级语言 -&amp;gt; 汇编语言 -&amp;gt; 机器语言。机器语言是计算机唯一能识别的语言。所以从OC代码到最后的可执行文件的过程大概有：OC -&amp;gt; C - &amp;gt;编译(汇编) -&amp;gt; 可执行文件 。从OC到C的过程就是由runtime来实现。通俗的将runtime就是把面向对象的类转变为面向过程的结构体&lt;/p&gt;
-
-&lt;p&gt;我们导入&lt;code class=&quot;highlighter-rouge&quot;&gt;import &amp;lt;objc/runtime.h&amp;gt;&lt;/code&gt;，查看runtime.h的头文件，会发现以下代码&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;/// Represents an instance of a class.
-struct objc_object {
-    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
-};
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;/// An opaque type that represents an Objective-C class.
-typedef struct objc_class *Class;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;struct objc_class {
-    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
-
-#if !__OBJC2__
-    Class _Nullable super_class                              OBJC2_UNAVAILABLE;
-    const char * _Nonnull name                               OBJC2_UNAVAILABLE;
-    long version                                             OBJC2_UNAVAILABLE;
-    long info                                                OBJC2_UNAVAILABLE;
-    long instance_size                                       OBJC2_UNAVAILABLE;
-    struct objc_ivar_list * _Nullable ivars                  OBJC2_UNAVAILABLE;
-    struct objc_method_list * _Nullable * _Nullable methodLists                    OBJC2_UNAVAILABLE;
-    struct objc_cache * _Nonnull cache                       OBJC2_UNAVAILABLE;
-    struct objc_protocol_list * _Nullable protocols          OBJC2_UNAVAILABLE;
-#endif
-
-} OBJC2_UNAVAILABLE;
-/* Use `Class` instead of `struct objc_class *` */
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;通过这个代码发现，我们创建的对象其实就是一个objc_object的结构体，这个结构体只有一个成员变量(Class的isa指针)，Classs是一个结构体指针，指向objc_class。而objc的&lt;code class=&quot;highlighter-rouge&quot;&gt;类对象&lt;/code&gt;就是一个&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_class&lt;/code&gt;的结构体,这个结构体存放的数据被称为&lt;code class=&quot;highlighter-rouge&quot;&gt;元数据(metadata)&lt;/code&gt;该结构体的第一个成员变量也是&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针，这样就说明了类本身也是一个对象，我们趁为类对象。类对象的&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针指向的对象是&lt;code class=&quot;highlighter-rouge&quot;&gt;元类&lt;/code&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;objc函数调用总结&quot;&gt;objc函数调用总结&lt;/h3&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Objective-C是动态语言，编译时并不决定函数的调用，通俗的讲，所有的类型声明都是给编译器看的。OC的函数调用实际上就是向一个objc对象(或者Class)&lt;strong&gt;发消息&lt;/strong&gt;，发消息实际上就是沿着它的isa指针寻找真正的函数地址&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;runtime中声明了id和Class的类型，简化如下&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;struct objc_class {
-    struct objc_class *isa;
-};
-struct objc_object {
-    struct objc_class *isa;
-};
- 
-typedef struct objc_class *Class; //类  (class object)
-typedef struct objc_object *id;   //对象 (instance of class)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;在objc中，id代表了一个对象。凡是首地址是*isa的结构体指针，都可以被认为是objc的对象。运行时通过isa指针，可以查找到该对象是属于什么类
-只要一个对象满足下面的结构，就可以对它发消息&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;struct objc_object {
-    Class isa;
-} *id
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h5 id=&quot;runtime的运行机制&quot;&gt;runtime的运行机制&lt;/h5&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;我们可以通过clang来重写一个类查看cpp代码&lt;/p&gt;
-  &lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;clang -rewrite-objc ClassName.m
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/blockquote&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;//class的实际结构
-struct _class_t {
-	struct _class_t *isa;        //isa指针
-	struct _class_t *superclass; //父类
-	void *cache;
-	void *vtable;
-	struct _class_ro_t *ro;     //Class包含的信息
-};
-
-//Class包含的信息
-struct _class_ro_t {
-	unsigned int flags;
-	unsigned int instanceStart;
-	unsigned int instanceSize;
-	unsigned int reserved;
-	const unsigned char *ivarLayout;
-	const char *name; //类名
-	const struct _method_list_t *baseMethods; //方法列表
-	const struct _objc_protocol_list *baseProtocols;  //协议列表
-	const struct _ivar_list_t *ivars; //ivar列表
-	const unsigned char *weakIvarLayout;
-	const struct _prop_list_t *properties; //属性列表
-};
-
-//Person(meta-class)
-struct _class_t OBJC_METACLASS_$_Person  = {
-	.isa        = &amp;amp;OBJC_METACLASS_$_NSObject,
-	.superclass = &amp;amp;OBJC_METACLASS_$_NSObject,
-	.cache      = (void *)&amp;amp;_objc_empty_cache,
-	.vtable     = (void *)&amp;amp;_objc_empty_vtable,
-	.ro         = &amp;amp;_OBJC_METACLASS_RO_$_Person, //包含了类方法等
-};
- 
-//Person(Class)
-struct _class_t OBJC_CLASS_$_Person = {
-	.isa        = &amp;amp;OBJC_METACLASS_$_Person,   //此处isa指向meta-class
-	.superclass = &amp;amp;OBJC_CLASS_$_NSObject,
-	.superclass = (void *)&amp;amp;_objc_empty_cache,
-	.vtable     = (void *)&amp;amp;_objc_empty_vtable,
-	.ro         = &amp;amp;_OBJC_CLASS_RO_$_Person,   //包含了实例方法 ivar信息等
-};
-typedef struct objc_object Person;   //定义NyanCat类型
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;所有实例的isa都指向了Class，Class是一个全局变量，其中记录了类名，成员变量，property信息，实例方法列表，协议列表&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;Person *jack = [Person alloc] init];
-[jack walk];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;向jack(instance)发送walk消息时，运行时会通过isa指针查找到Person(class)，Class中保存着本类中定义的实例方法的指针&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;[Person eat];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;向Person发送eat消息时，runtime会通过isa查找到Person(meta-class),这里保存本类定义的类方法的指针&lt;/p&gt;
-
-&lt;p&gt;obj_msgSend()实际上是找到这个函数指针，然后调用它&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">最近在学习objc的底层runtime知识，学到这块时就做个小笔记，做个总结。刚好最近也搭建了自己的博客，就以此作为个人博客的开篇吧 ###什么是runtime 我们知道高级编程语言要想成为可执行文件的过程：高级语言 -&amp;gt; 汇编语言 -&amp;gt; 机器语言。机器语言是计算机唯一能识别的语言。所以从OC代码到最后的可执行文件的过程大概有：OC -&amp;gt; C - &amp;gt;编译(汇编) -&amp;gt; 可执行文件 。从OC到C的过程就是由runtime来实现。通俗的将runtime就是把面向对象的类转变为面向过程的结构体 我们导入import &amp;lt;objc/runtime.h&amp;gt;，查看runtime.h的头文件，会发现以下代码 /// Represents an instance of a class. struct objc_object { Class _Nonnull isa OBJC_ISA_AVAILABILITY; }; /// An opaque type that represents an Objective-C class. typedef struct objc_class *Class; struct objc_class { Class _Nonnull isa OBJC_ISA_AVAILABILITY; #if !__OBJC2__ Class _Nullable super_class OBJC2_UNAVAILABLE; const char * _Nonnull name OBJC2_UNAVAILABLE; long version OBJC2_UNAVAILABLE; long info OBJC2_UNAVAILABLE; long instance_size OBJC2_UNAVAILABLE; struct objc_ivar_list * _Nullable ivars OBJC2_UNAVAILABLE; struct objc_method_list * _Nullable * _Nullable methodLists OBJC2_UNAVAILABLE; struct objc_cache * _Nonnull cache OBJC2_UNAVAILABLE; struct objc_protocol_list * _Nullable protocols OBJC2_UNAVAILABLE; #endif } OBJC2_UNAVAILABLE; /* Use `Class` instead of `struct objc_class *` */ 通过这个代码发现，我们创建的对象其实就是一个objc_object的结构体，这个结构体只有一个成员变量(Class的isa指针)，Classs是一个结构体指针，指向objc_class。而objc的类对象就是一个objc_class的结构体,这个结构体存放的数据被称为元数据(metadata)该结构体的第一个成员变量也是isa指针，这样就说明了类本身也是一个对象，我们趁为类对象。类对象的isa指针指向的对象是元类 objc函数调用总结 Objective-C是动态语言，编译时并不决定函数的调用，通俗的讲，所有的类型声明都是给编译器看的。OC的函数调用实际上就是向一个objc对象(或者Class)发消息，发消息实际上就是沿着它的isa指针寻找真正的函数地址 runtime中声明了id和Class的类型，简化如下 struct objc_class { struct objc_class *isa; }; struct objc_object { struct objc_class *isa; }; typedef struct objc_class *Class; //类 (class object) typedef struct objc_object *id; //对象 (instance of class) 在objc中，id代表了一个对象。凡是首地址是*isa的结构体指针，都可以被认为是objc的对象。运行时通过isa指针，可以查找到该对象是属于什么类 只要一个对象满足下面的结构，就可以对它发消息 struct objc_object { Class isa; } *id runtime的运行机制 我们可以通过clang来重写一个类查看cpp代码 clang -rewrite-objc ClassName.m //class的实际结构 struct _class_t { struct _class_t *isa; //isa指针 struct _class_t *superclass; //父类 void *cache; void *vtable; struct _class_ro_t *ro; //Class包含的信息 }; //Class包含的信息 struct _class_ro_t { unsigned int flags; unsigned int instanceStart; unsigned int instanceSize; unsigned int reserved; const unsigned char *ivarLayout; const char *name; //类名 const struct _method_list_t *baseMethods; //方法列表 const struct _objc_protocol_list *baseProtocols; //协议列表 const struct _ivar_list_t *ivars; //ivar列表 const unsigned char *weakIvarLayout; const struct _prop_list_t *properties; //属性列表 }; //Person(meta-class) struct _class_t OBJC_METACLASS_$_Person = { .isa = &amp;amp;OBJC_METACLASS_$_NSObject, .superclass = &amp;amp;OBJC_METACLASS_$_NSObject, .cache = (void *)&amp;amp;_objc_empty_cache, .vtable = (void *)&amp;amp;_objc_empty_vtable, .ro = &amp;amp;_OBJC_METACLASS_RO_$_Person, //包含了类方法等 }; //Person(Class) struct _class_t OBJC_CLASS_$_Person = { .isa = &amp;amp;OBJC_METACLASS_$_Person, //此处isa指向meta-class .superclass = &amp;amp;OBJC_CLASS_$_NSObject, .superclass = (void *)&amp;amp;_objc_empty_cache, .vtable = (void *)&amp;amp;_objc_empty_vtable, .ro = &amp;amp;_OBJC_CLASS_RO_$_Person, //包含了实例方法 ivar信息等 }; typedef struct objc_object Person; //定义NyanCat类型 所有实例的isa都指向了Class，Class是一个全局变量，其中记录了类名，成员变量，property信息，实例方法列表，协议列表 Person *jack = [Person alloc] init]; [jack walk]; 向jack(instance)发送walk消息时，运行时会通过isa指针查找到Person(class)，Class中保存着本类中定义的实例方法的指针 [Person eat]; 向Person发送eat消息时，runtime会通过isa查找到Person(meta-class),这里保存本类定义的类方法的指针 obj_msgSend()实际上是找到这个函数指针，然后调用它</summary></entry></feed>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="Linux" /><summary type="html">ls显示文件 ls -a 显示所有文件包括隐藏文件 ls -l 显示文件属性，包括大小，日期，符号连接，是否可读写及是否可执行 ls -lh 显示文件的大小，以容易理解的格式印出文件大小 (例如 1K 234M2G) ls -lt 显示文件，按照修改时间排序 rm删除文件 rm file　删除某一个文件 rm -f file 删除时候不进行提示。可以于r参数配合使用 rm -r 就是向下递归，不管有多少级目录，一并删除 rm -f 就是直接强行删除，不作任何提示的意思 rm -rf dir　删除当前目录下叫dir的整个目录 系统 用户 w 当前登录用户的详细信息 who 显示登录用户 date 显示当前时间 cal 显示当月日历 pwd 显示当前路径 open . 可以在finder中打开当前文件夹(Mac) bash .sh 运行脚本 网络相关 ifconfig 获取本机IP netstat 显示网络状态 nslookup 域名检查排错 netstat -an 查看网络端口信息 netstat -nr 查看路由表信息，比route快 关机操作 reboot　 重新启动计算机 shutdown -r now 重新启动计算机，停止服务后重新启动计算机 shutdown -h now 关闭计算机，停止服务后再关闭系统 halt 关闭计算机 一般用shutdown -r now,在重启系统是，关闭相关服务，shutdown -h now也是如此。 chown 改变文件或目录的所有者 chown user1 /dir　将/dir目录设置为user1所有 chown -R user1.user1 /dir　将/dir目录下所有文件和目录，设置为user1所有,组为user1。-R递归到下面的每个文件和目录 chmod 改变用户的权限 chmod a+x file　将file文件设置为可执行，脚本类文件一定要这样设置一个，否则得用bash file才能执行 chmod 666 file　将文件file设置为可读写 chmod 750 file 将文件file设置为，所有者为完全权限，同组可以读和执行，其他无权限 mac下执行shell脚本 ./name.sh 如果执行报没有权限，chmod 777 name.sh bash name.sh apache Linux自带Apache cd /ect/apache2 配置文件 cd /usr/bin 程序 cd /Library/WebServer/Documents 默认根目录 sudo apachectl -k start 开启Apache服务 sudo apachectl -k restart 重启Apache服务 sudo apachectl -k stop 关闭Apache服务 mysql的操作 service mysql start 开启MySQL服务 usr/local/mysql/bin/mysql 默认安装目录 alias mysql=/usr/local/mysql/bin/mysql alias mysqladmin=/usr/local/mysql/bin/mysqladmin export PATH=${PATH}:/usr/local/mysql/bin 添加用户环境变量 .bash_profile //如果用HomeBrew安装 mysql.server {start|stop|restart|reload|force-reload|status} [ MySQL server options jekyll bundle exec jekyll serve 本地编译并开启服务 //单张图片居中 &amp;lt;center&amp;gt; &amp;lt;img src=&quot;xxxxx.jpg&quot; alt = &quot;树&quot; style=&quot;width:80%&quot; /&amp;gt; &amp;lt;/center&amp;gt; //两张图片并排 &amp;lt;figure class=&quot;half&quot;&amp;gt; &amp;lt;img src=&quot;http://xxx.jpg&quot;&amp;gt; &amp;lt;img src=&quot;http://yyy.jpg&quot;&amp;gt; &amp;lt;/figure&amp;gt; //三张图片并排 &amp;lt;figure class=&quot;third&quot;&amp;gt; &amp;lt;img src=&quot;http://xxx.jpg&quot;&amp;gt; &amp;lt;img src=&quot;http://yyy.jpg&quot;&amp;gt; &amp;lt;img src=&quot;http://zzz.jpg&quot;&amp;gt; &amp;lt;/figure&amp;gt; markdown ``` 这是 H1 这是 H2 这是 H6 区块引用 无序列表 数字. 有序列表 ***</summary></entry></feed>
