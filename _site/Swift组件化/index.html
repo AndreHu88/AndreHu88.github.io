@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>二叉树笔记 – Jack Hu – 生活不止眼前的苟且，还有诗和远方</title>
+  <title>Swift组件化 – Jack Hu – 生活不止眼前的苟且，还有诗和远方</title>
 
       <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
@@ -13,92 +13,64 @@
     <meta name="description" content="Jack Hu,胡勇，上海 胡勇，胡勇，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,www.sohod.cn">
 
     
-    <meta name="description" content="“树”：一种非线性的存储结构，具有“一对多”关系的元素的集合
-n(n &gt;= 0)个结点的有限集合，n=0时是一棵空树，对于一棵非空树具有以下特性
+    <meta name="description" content="iOS组件化方案
 
-
-  有且仅有一个根节点(ROOT)
-  当n&gt;1时，其余的结点可分为m(m&gt;0)个互不相交的有限集，其中每个集合本身也是一棵树，称为根的子树
+将程序中功能相对独立的部分打包在一起形成模块，并且减少模块之间的直接依赖。
 
 
 
-	
-
-“树”  基本术语
-
-  结点：	树结构存储的每一个数据元素称为结点
-   度：	一个结点拥有的子树数(degree)  一棵树中的最大的度数为该树的度
-  叶子结点：  度数为0的结点(终端结点)
-   开始结点：	根结点
-   分支结点：  度数不为0的结点(非终端结点)	
-   层次：	  从根开始算起，根为第一层，其余结点的层次等于其双亲结点的层数+1
-  深度(高度)：树种结点的最大层次
-   有序树：	树中结点的各子树从左至右依次有序且不能交换
+为什么要组件化
+随着业务复杂度不断增加，工程越来越庞大，开发人员逐渐增多，单一工程的开发模式会出现一系列问题：
 
 
-二叉树
-每个结点至多只有两棵子树，或者是空集，或者一个根结点及两颗互不相交的分别作为这个根的左子树，右子树组成
-二叉树性质
-
-  二叉树中，第 i 层最多有2^i-1个结点。
-  如果二叉树的深度为 K，那么此二叉树最多有2\^K-1个结点。
-  二叉树中，终端结点数（叶子结点数）为 n0，度为 2 的结点数为 n2，则n0 = n2 + 1。
+  耦合严重：组件之间依赖过于复杂，维护成本高。
+  容易出现冲突：xib 或者代码冲突机会大大增加。
+  开发效率低：每次都需要编译整个项目。
 
 
+创建组件
+查看本地Repo
+pod repo list
 
-	
+添加Repo
+pod repo add specs url
 
-
-完全二叉树特有的性质
-n个结点的完全二叉树的深度为log2b+1
+创建Pod
+pod lib create project
 
 " />
-    <meta property="og:description" content="“树”：一种非线性的存储结构，具有“一对多”关系的元素的集合
-n(n &gt;= 0)个结点的有限集合，n=0时是一棵空树，对于一棵非空树具有以下特性
+    <meta property="og:description" content="iOS组件化方案
 
-
-  有且仅有一个根节点(ROOT)
-  当n&gt;1时，其余的结点可分为m(m&gt;0)个互不相交的有限集，其中每个集合本身也是一棵树，称为根的子树
+将程序中功能相对独立的部分打包在一起形成模块，并且减少模块之间的直接依赖。
 
 
 
-	
-
-“树”  基本术语
-
-  结点：	树结构存储的每一个数据元素称为结点
-   度：	一个结点拥有的子树数(degree)  一棵树中的最大的度数为该树的度
-  叶子结点：  度数为0的结点(终端结点)
-   开始结点：	根结点
-   分支结点：  度数不为0的结点(非终端结点)	
-   层次：	  从根开始算起，根为第一层，其余结点的层次等于其双亲结点的层数+1
-  深度(高度)：树种结点的最大层次
-   有序树：	树中结点的各子树从左至右依次有序且不能交换
+为什么要组件化
+随着业务复杂度不断增加，工程越来越庞大，开发人员逐渐增多，单一工程的开发模式会出现一系列问题：
 
 
-二叉树
-每个结点至多只有两棵子树，或者是空集，或者一个根结点及两颗互不相交的分别作为这个根的左子树，右子树组成
-二叉树性质
-
-  二叉树中，第 i 层最多有2^i-1个结点。
-  如果二叉树的深度为 K，那么此二叉树最多有2\^K-1个结点。
-  二叉树中，终端结点数（叶子结点数）为 n0，度为 2 的结点数为 n2，则n0 = n2 + 1。
+  耦合严重：组件之间依赖过于复杂，维护成本高。
+  容易出现冲突：xib 或者代码冲突机会大大增加。
+  开发效率低：每次都需要编译整个项目。
 
 
+创建组件
+查看本地Repo
+pod repo list
 
-	
+添加Repo
+pod repo add specs url
 
-
-完全二叉树特有的性质
-n个结点的完全二叉树的深度为log2b+1
+创建Pod
+pod lib create project
 
 " />
     
     <meta name="author" content="Jack Hu" />
 
     
-    <meta property="og:title" content="二叉树笔记" />
-    <meta property="twitter:title" content="二叉树笔记" />
+    <meta property="og:title" content="Swift组件化" />
+    <meta property="twitter:title" content="Swift组件化" />
 
 
 
@@ -234,18 +206,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <div id="main" role="main" class="wrapper-content">
       <article class="posts">
-  <h1>二叉树笔记</h1>
+  <h1>Swift组件化</h1>
 
   <div clsss="meta">
     <span class="date">
-      2018-06-24
+      2019-06-22
     </span>
 
     <ul class="tag">
       
       <li>
-        <a href="http://localhost:4000/tags#数据结构">
-          数据结构
+        <a href="http://localhost:4000/tags#iOS">
+          iOS
+        </a>
+      </li>
+      
+      <li>
+        <a href="http://localhost:4000/tags#Swift">
+          Swift
+        </a>
+      </li>
+      
+      <li>
+        <a href="http://localhost:4000/tags#组件化">
+          组件化
         </a>
       </li>
       
@@ -253,44 +237,30 @@ document.addEventListener('DOMContentLoaded', function () {
   </div>
 
   <div class="entry">
-    <h4 id="树一种非线性的存储结构具有一对多关系的元素的集合">“树”：一种非线性的存储结构，具有“一对多”关系的元素的集合</h4>
-<p>n(n &gt;= 0)个结点的有限集合，n=0时是一棵空树，对于一棵非空树具有以下特性</p>
+    <h4 id="ios组件化方案">iOS组件化方案</h4>
+
+<p>将程序中功能相对独立的部分打包在一起形成模块，并且减少模块之间的直接依赖。</p>
+
+<p><img src="https://nixwang.com/images/2017-05-06/%E7%BB%84%E4%BB%B6%E5%8C%96.jpg" alt="" /></p>
+
+<h5 id="为什么要组件化">为什么要组件化</h5>
+<p>随着业务复杂度不断增加，工程越来越庞大，开发人员逐渐增多，单一工程的开发模式会出现一系列问题：</p>
 
 <ul>
-  <li>有且仅有一个根节点(ROOT)</li>
-  <li>当n&gt;1时，其余的结点可分为m(m&gt;0)个互不相交的有限集，其中每个集合本身也是一棵树，称为根的子树</li>
+  <li>耦合严重：组件之间依赖过于复杂，维护成本高。</li>
+  <li>容易出现冲突：xib 或者代码冲突机会大大增加。</li>
+  <li>开发效率低：每次都需要编译整个项目。</li>
 </ul>
 
-<center>
-	<img src="http://data.biancheng.net/uploads/allimg/170830/2-1FS0094003158.png" alt="树" style="width:80%" />
-</center>
-<h4 id="树--基本术语">“树”  基本术语</h4>
-<ul>
-  <li>结点：	树结构存储的每一个数据元素称为结点
-   度：	一个结点拥有的子树数(degree)  一棵树中的最大的度数为该树的度</li>
-  <li>叶子结点：  度数为0的结点(终端结点)
-   开始结点：	根结点
-   分支结点：  度数不为0的结点(非终端结点)	
-   层次：	  从根开始算起，根为第一层，其余结点的层次等于其双亲结点的层数+1</li>
-  <li>深度(高度)：树种结点的最大层次
-   有序树：	树中结点的各子树从左至右依次有序且不能交换</li>
-</ul>
+<h3 id="创建组件">创建组件</h3>
+<p>查看本地Repo
+<code class="highlighter-rouge">pod repo list</code></p>
 
-<h4 id="二叉树">二叉树</h4>
-<p>每个结点至多只有两棵子树，或者是空集，或者一个根结点及两颗互不相交的分别作为这个根的左子树，右子树组成</p>
-<h4 id="二叉树性质">二叉树性质</h4>
-<ol>
-  <li>二叉树中，第 i 层最多有2^i-1个结点。</li>
-  <li>如果二叉树的深度为 K，那么此二叉树最多有2\^K-1个结点。</li>
-  <li>二叉树中，终端结点数（叶子结点数）为 n0，度为 2 的结点数为 n2，则n0 = n2 + 1。</li>
-</ol>
+<p>添加Repo
+<code class="highlighter-rouge">pod repo add specs url</code></p>
 
-<center>
-	<img src="http://data.biancheng.net/uploads/allimg/170830/2-1FS0103951Y1.png" alt="二叉树" style="width:50%" />
-</center>
-
-<h4 id="完全二叉树特有的性质">完全二叉树特有的性质</h4>
-<p>n个结点的完全二叉树的深度为log<sub>2</sub>b+1</p>
+<p>创建Pod
+<code class="highlighter-rouge">pod lib create project</code></p>
 
 
   </div>
@@ -317,17 +287,11 @@ document.addEventListener('DOMContentLoaded', function () {
 <div class="pagination">
   
     <span class="prev" >
-      <a href="http://localhost:4000/%E6%99%93%E4%B9%A6%E9%A6%86%E4%B9%8B%E8%A1%8C/">
+      <a href="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/">
         ← 上一篇
       </a>
     </span>
   
-  
-    <span class="next" >
-      <a href="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/">
-        下一篇 →
-      </a>
-    </span>
   
 </div>
     </div>

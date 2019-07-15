@@ -1,0 +1,42 @@
+---
+layout:         post
+title:          Swift组件化
+date:           2019-06-22
+tags:           [iOS, Swift]
+categories:
+comments: true
+---
+
+
+
+#### iOS组件化方案
+
+将程序中功能相对独立的部分打包在一起形成模块，并且减少模块之间的直接依赖。
+
+![](https://nixwang.com/images/2017-05-06/%E7%BB%84%E4%BB%B6%E5%8C%96.jpg)
+
+##### 为什么要组件化
+随着业务复杂度不断增加，工程越来越庞大，开发人员逐渐增多，单一工程的开发模式会出现一系列问题：
+
+* 耦合严重：组件之间依赖过于复杂，维护成本高。
+* 容易出现冲突：xib 或者代码冲突机会大大增加。
+* 开发效率低：每次都需要编译整个项目。
+
+### 创建组件
+查看本地Repo
+`pod repo list`
+
+添加Repo
+`pod repo add specs url`
+
+创建Pod
+`pod lib create project`
+
+
+
+
+
+
+
+
+

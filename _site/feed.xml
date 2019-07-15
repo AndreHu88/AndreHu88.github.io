@@ -1,4 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-07-10T17:35:04+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Jack Hu</title><subtitle>生活不止眼前的苟且，还有诗和远方</subtitle><entry><title type="html">转战Swift</title><link href="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/" rel="alternate" type="text/html" title="转战Swift" /><published>2018-07-22T00:00:00+08:00</published><updated>2018-07-22T00:00:00+08:00</updated><id>http://localhost:4000/OC%E6%92%B0%E5%86%99swift</id><content type="html" xml:base="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/">&lt;h4 id=&quot;swift相对oc的优势&quot;&gt;swift相对OC的优势&lt;/h4&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-07-10T18:55:00+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Jack Hu</title><subtitle>生活不止眼前的苟且，还有诗和远方</subtitle><entry><title type="html">Swift组件化</title><link href="http://localhost:4000/Swift%E7%BB%84%E4%BB%B6%E5%8C%96/" rel="alternate" type="text/html" title="Swift组件化" /><published>2019-06-22T00:00:00+08:00</published><updated>2019-06-22T00:00:00+08:00</updated><id>http://localhost:4000/Swift%E7%BB%84%E4%BB%B6%E5%8C%96</id><content type="html" xml:base="http://localhost:4000/Swift%E7%BB%84%E4%BB%B6%E5%8C%96/">&lt;h4 id=&quot;ios组件化方案&quot;&gt;iOS组件化方案&lt;/h4&gt;
+
+&lt;p&gt;将程序中功能相对独立的部分打包在一起形成模块，并且减少模块之间的直接依赖。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://nixwang.com/images/2017-05-06/%E7%BB%84%E4%BB%B6%E5%8C%96.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;为什么要组件化&quot;&gt;为什么要组件化&lt;/h5&gt;
+&lt;p&gt;随着业务复杂度不断增加，工程越来越庞大，开发人员逐渐增多，单一工程的开发模式会出现一系列问题：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;耦合严重：组件之间依赖过于复杂，维护成本高。&lt;/li&gt;
+  &lt;li&gt;容易出现冲突：xib 或者代码冲突机会大大增加。&lt;/li&gt;
+  &lt;li&gt;开发效率低：每次都需要编译整个项目。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;创建组件&quot;&gt;创建组件&lt;/h3&gt;
+&lt;p&gt;查看本地Repo
+&lt;code class=&quot;highlighter-rouge&quot;&gt;pod repo list&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;添加Repo
+&lt;code class=&quot;highlighter-rouge&quot;&gt;pod repo add specs url&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;创建Pod
+&lt;code class=&quot;highlighter-rouge&quot;&gt;pod lib create project&lt;/code&gt;&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><category term="Swift" /><category term="组件化" /><summary type="html">iOS组件化方案 将程序中功能相对独立的部分打包在一起形成模块，并且减少模块之间的直接依赖。 为什么要组件化 随着业务复杂度不断增加，工程越来越庞大，开发人员逐渐增多，单一工程的开发模式会出现一系列问题： 耦合严重：组件之间依赖过于复杂，维护成本高。 容易出现冲突：xib 或者代码冲突机会大大增加。 开发效率低：每次都需要编译整个项目。 创建组件 查看本地Repo pod repo list 添加Repo pod repo add specs url 创建Pod pod lib create project</summary></entry><entry><title type="html">转战Swift</title><link href="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/" rel="alternate" type="text/html" title="转战Swift" /><published>2018-07-22T00:00:00+08:00</published><updated>2018-07-22T00:00:00+08:00</updated><id>http://localhost:4000/OC%E6%92%B0%E5%86%99swift</id><content type="html" xml:base="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/">&lt;h4 id=&quot;swift相对oc的优势&quot;&gt;swift相对OC的优势&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Swift容易阅读，语法和文件结构简易化。&lt;/li&gt;
