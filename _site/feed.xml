@@ -1,10 +1,246 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-07-10T18:55:00+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Jack Hu</title><subtitle>生活不止眼前的苟且，还有诗和远方</subtitle><entry><title type="html">Swift组件化</title><link href="http://localhost:4000/Swift%E7%BB%84%E4%BB%B6%E5%8C%96/" rel="alternate" type="text/html" title="Swift组件化" /><published>2019-06-22T00:00:00+08:00</published><updated>2019-06-22T00:00:00+08:00</updated><id>http://localhost:4000/Swift%E7%BB%84%E4%BB%B6%E5%8C%96</id><content type="html" xml:base="http://localhost:4000/Swift%E7%BB%84%E4%BB%B6%E5%8C%96/">&lt;h4 id=&quot;ios组件化方案&quot;&gt;iOS组件化方案&lt;/h4&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-07-15T12:07:07+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">风车大战骑士</title><subtitle>生活不止眼前的苟且，还有诗和远方</subtitle><entry><title type="html">查理芒格传读书笔记</title><link href="http://localhost:4000/%E6%9F%A5%E7%90%86%E8%8A%92%E6%A0%BC%E4%BC%A0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="alternate" type="text/html" title="查理芒格传读书笔记" /><published>2019-07-14T00:00:00+08:00</published><updated>2019-07-14T00:00:00+08:00</updated><id>http://localhost:4000/%E6%9F%A5%E7%90%86%E8%8A%92%E6%A0%BC%E4%BC%A0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0</id><content type="html" xml:base="http://localhost:4000/%E6%9F%A5%E7%90%86%E8%8A%92%E6%A0%BC%E4%BC%A0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">&lt;h4 id=&quot;记录在看查理芒格传的笔记&quot;&gt;记录在看《查理·芒格传》的笔记&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;你一定要和高水准的人做生意，永远不要和一头猪玩摔跤，因为如果你这么做了，你们两个都会变脏，但是猪会乐在其中&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;好企业和差企业之间的区别在于，在好企业里你会做出一个接一个的轻松决定，而差企业的决定则常常是痛苦万分的。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;我本人是一个传记狂，比如你要是和亚当•斯密成了朋友，那你一定会把经济学得更好。跟离世的伟人交朋友，这听起来很滑稽，但如果你一生都这样做，你会受益匪浅。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;投资游戏说到底就是要比其他人对未来做出更准确的预言。要如何做到呢？一种方法是将这种竞争在有限的几个区域中进行。如果你试图预言所有事情的未来，你会因为缺乏专长而失败。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;如果你想变得聪明，你就必须不停地问为什么？为什么？为什么？同时你还必须将答案和有条理的深层理论联系起来。你必须知道那些最主要的理论。这稍微会有些费力，但充满乐趣。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;我们大多数人做决策时都会存在一个问题：不考虑这个决策可能带来的长远影响。这时，你可以根据 10 → 10 → 10 原则来考虑所做的决策可能带来的长远影响。这个原则就是：&lt;br /&gt;
+这个决策在 10 分钟后，会产生什么影响？&lt;br /&gt;
+这个决策在 10 个月后，会产生什么影响？&lt;br /&gt;
+这个决策在 10 年后，会产生什么影响？&lt;br /&gt;
+在做决策时如果能践行 10 → 10 → 10 原则，这将有助于你在决策时免受感性因素的影响，迫使你考虑到这个决策可能会带来的长远影响，从而做出更加明智的决策&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><category term="读书笔记" /><summary type="html">记录在看《查理·芒格传》的笔记 你一定要和高水准的人做生意，永远不要和一头猪玩摔跤，因为如果你这么做了，你们两个都会变脏，但是猪会乐在其中 好企业和差企业之间的区别在于，在好企业里你会做出一个接一个的轻松决定，而差企业的决定则常常是痛苦万分的。 我本人是一个传记狂，比如你要是和亚当•斯密成了朋友，那你一定会把经济学得更好。跟离世的伟人交朋友，这听起来很滑稽，但如果你一生都这样做，你会受益匪浅。 投资游戏说到底就是要比其他人对未来做出更准确的预言。要如何做到呢？一种方法是将这种竞争在有限的几个区域中进行。如果你试图预言所有事情的未来，你会因为缺乏专长而失败。 如果你想变得聪明，你就必须不停地问为什么？为什么？为什么？同时你还必须将答案和有条理的深层理论联系起来。你必须知道那些最主要的理论。这稍微会有些费力，但充满乐趣。 我们大多数人做决策时都会存在一个问题：不考虑这个决策可能带来的长远影响。这时，你可以根据 10 → 10 → 10 原则来考虑所做的决策可能带来的长远影响。这个原则就是： 这个决策在 10 分钟后，会产生什么影响？ 这个决策在 10 个月后，会产生什么影响？ 这个决策在 10 年后，会产生什么影响？ 在做决策时如果能践行 10 → 10 → 10 原则，这将有助于你在决策时免受感性因素的影响，迫使你考虑到这个决策可能会带来的长远影响，从而做出更加明智的决策</summary></entry><entry><title type="html">财报入门学习</title><link href="http://localhost:4000/%E8%B4%A2%E6%8A%A5%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/" rel="alternate" type="text/html" title="财报入门学习" /><published>2019-07-07T00:00:00+08:00</published><updated>2019-07-07T00:00:00+08:00</updated><id>http://localhost:4000/%E8%B4%A2%E6%8A%A5%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0</id><content type="html" xml:base="http://localhost:4000/%E8%B4%A2%E6%8A%A5%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/">&lt;h4 id=&quot;记录金融入门学习&quot;&gt;记录金融入门学习&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;巴菲特：&lt;/strong&gt;买股票的本质是投资公司&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;彼得林奇：&lt;/strong&gt;当你读不懂某一公司的财务情况时，不要投资。股市的最大的亏损源于投资了在资产负债方面很糟糕的公司。先看资产负债表，搞清该公司是否有偿债能力，然后再投钱冒险&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h5 id=&quot;金融书籍记录&quot;&gt;金融书籍记录&lt;/h5&gt;
+
+&lt;ul class=&quot;task-list&quot;&gt;
+  &lt;li class=&quot;task-list-item&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;task-list-item-checkbox&quot; disabled=&quot;disabled&quot; checked=&quot;checked&quot; /&gt;彼得林奇 &lt;在华尔街的崛起&gt;&lt;/在华尔街的崛起&gt;&lt;/li&gt;
+  &lt;li class=&quot;task-list-item&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;task-list-item-checkbox&quot; disabled=&quot;disabled&quot; checked=&quot;checked&quot; /&gt;查理芒格 &lt;查理芒格传&gt;&lt;/查理芒格传&gt;&lt;/li&gt;
+  &lt;li class=&quot;task-list-item&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;task-list-item-checkbox&quot; disabled=&quot;disabled&quot; checked=&quot;checked&quot; /&gt;瑞达利欧 &lt;原则&gt;&lt;/原则&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;财务报表学习&quot;&gt;财务报表学习&lt;/h5&gt;
+&lt;p&gt;财务报表分三类&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;利润表&lt;/li&gt;
+  &lt;li&gt;资产负债表&lt;/li&gt;
+  &lt;li&gt;现金流量表&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在看公司公司财报前，先看会计师审计报告，在年报的第十一节，《审计意见》，审计意见反映了审计师的心声
+&lt;img src=&quot;http://fdfs.xmcdn.com/group49/M0A/82/E6/wKgKl1vyIimQcOpPAAFtInzQd2A978_mobile_large.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;利润表&quot;&gt;利润表&lt;/h5&gt;
+&lt;p&gt;形象解释
+&lt;img src=&quot;http://fdfs.xmcdn.com/group53/M09/02/0A/wKgLfFv7l6OyBzn2AAFRrI5yisI426_mobile_large.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;净利润中包含了企业的应收账款，所以并不能单单以净利润在决定公司运营好坏，还需结合现金流量表和资产负债表&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;扣非净利润&lt;/li&gt;
+  &lt;li&gt;归属于母公司所有者的净利润&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;资产负债表&quot;&gt;资产负债表&lt;/h5&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;资产&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt; &lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt; &lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt; &lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;负债&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt; &lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt; &lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt; &lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;流动资产&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;说明&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;非流动资产&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;说明&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;负债&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;说明&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;所有者权益&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;说明&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;货币资金&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;企业的现金存款&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;固定资产&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;非货币资产，(房屋，设备，机器等)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;银行负债&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;银行贷款&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;股东出钱&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;应收账款&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;发了货，还没结账，(坏账准备)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;生物性资产&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;农林牧渔行业&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;存货&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;看行业，更新快的行业存货少好&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;无形资产&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;专利权，著作权，土地使用权&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;表格在手机上会有变形，截图如下&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://s2.ax1x.com/2019/07/12/ZfWbHP.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://fdfs.xmcdn.com/group53/M07/D7/2D/wKgLcVwKI92jI9JaAAGHfFHmyt0046_mobile_large.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;现金流量表&quot;&gt;现金流量表&lt;/h5&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;序号&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;类别&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;说明&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;经营活动产生的现金流量&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;利润表收入支出现金的变化&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;2&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;投资活动产生的现金流量&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;资产负债表的固定资产变动情况&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;3&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;筹资活动产生的现金流量&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;资产负债表的负债和所有者权益变动情况&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h6 id=&quot;1-经营活动现金流&quot;&gt;1. 经营活动现金流&lt;/h6&gt;
+&lt;p&gt;有公开数据的企业，直接看企业经营活动产生的现金流，这是现金流量表的核心。因为刚刚我们刚讲了，企业的经营能力才是我们投资者最应该看重的。而经营活动现金流，就代表着经营能力的强弱。&lt;/p&gt;
+
+&lt;p&gt;如果经营活动现金流量净额，长期为负的话（银行证券保险除外），代表企业日子不太好过，入不敷出，这类企业不用考虑投资。只有经营活动现金流量净额是正数，说明它才是一家正常的企业。&lt;/p&gt;
+
+&lt;h6 id=&quot;2-投资活动现金流&quot;&gt;2. 投资活动现金流&lt;/h6&gt;
+&lt;p&gt;&lt;img src=&quot;http://fdfs.xmcdn.com/group52/M01/59/BF/wKgLcFwZzTmDkUDgAAFRpaHBRiY184_mobile_large.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h6 id=&quot;3-筹资活动中了解企业的融资情况&quot;&gt;3. 筹资活动中了解企业的融资情况&lt;/h6&gt;
+&lt;p&gt;&lt;img src=&quot;http://fdfs.xmcdn.com/group52/M01/59/E3/wKgLe1wZzTqS3C3gAADXdXRFjFY717_mobile_large.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h6 id=&quot;类型一的企业&quot;&gt;类型一、“+++”的企业&lt;/h6&gt;
+
+&lt;p&gt;三项都为正的企业。表明上看起来，这样的公司特别不错。经营活动现金为正数，现金源源不断。但是有一个问题，就是企业经营赚了钱以后，为什么不向外投资呢？反而还需要筹资呢？难道都把钱放在银行账户上数钱玩吗？这类型的企业，要么就是即将大规模的开展对外大规模的投资活动，所以在筹集本钱。要么就很可能是起了歹心，借着上市公司的躯壳在赚钱。所以，如果是这三项都是正的企业，建议我们要谨慎观察一下。如果查阅很多材料，都看不出来企业有大投资的动作。建议这类型的企业，我们也淘汰掉。&lt;/p&gt;
+
+&lt;h6 id=&quot;类型二-的企业&quot;&gt;类型二、“++-”的企业&lt;/h6&gt;
+
+&lt;p&gt;这类型的企业，经营活动现金流为正，说明企业经营情况还不错。投资活动现金流为正，说明以前投资的资产，带来了利息等方面的收入。或者是变卖了资产，产生了收入。一般来说，资产带来的收益比较多，因为企业变卖资产的情况很小。筹资活动现金流为负数，要么就是还了贷款，要么就是给股东分红。这类的企业，如果投资现金流，不是变卖资产所得。而经营现金流和投资现金流，足以覆盖筹资现金流的流出。我们就可以初步判断，这家公司是健康发展的。&lt;/p&gt;
+
+&lt;h6 id=&quot;类型三-的企业&quot;&gt;类型三、“+-+”的企业&lt;/h6&gt;
+
+&lt;p&gt;这类企业，经营活动现金流同样为正，说明企业赚钱。同时筹资活动现金流为正，但是投资活动现金流是负。说明企业现在正在大力的扩大规模。需要把钱投入到新的项目中。这类企业有一个问题，就是所投资的项目如果创造辉煌，企业会高速的增长。反之，企业如果投资失败，会影响企业后期的发展。&lt;/p&gt;
+
+&lt;p&gt;这类型的企业，很考验我们对行业发展的一个判断。&lt;/p&gt;
+
+&lt;h6 id=&quot;类型四的企业&quot;&gt;类型四、“+–”的企业&lt;/h6&gt;
+
+&lt;p&gt;经营活动现金流为正，同样说明企业赚钱。投资活动现金流为负，说明企业也在稳步的扩张。筹资活动现金流为负，说明企业还了贷款，或者给股东分红了。也就是说，企业靠着经营现金流的流入，实施了投资，并且同时还了贷款或给股东分红。这类型的企业是四种画像里面最好的企业，这种企业自我造血能力最强。靠着自己赚的钱可以去投资其他的项目，同时赚的钱还可以给股东分红或者偿还贷款。这类企业是最具备投资价值的&lt;/p&gt;</content><author><name></name></author><category term="金融" /><summary type="html">记录金融入门学习 巴菲特：买股票的本质是投资公司 彼得林奇：当你读不懂某一公司的财务情况时，不要投资。股市的最大的亏损源于投资了在资产负债方面很糟糕的公司。先看资产负债表，搞清该公司是否有偿债能力，然后再投钱冒险 金融书籍记录 彼得林奇 查理芒格 瑞达利欧 财务报表学习 财务报表分三类 利润表 资产负债表 现金流量表 在看公司公司财报前，先看会计师审计报告，在年报的第十一节，《审计意见》，审计意见反映了审计师的心声 利润表 形象解释 净利润中包含了企业的应收账款，所以并不能单单以净利润在决定公司运营好坏，还需结合现金流量表和资产负债表 扣非净利润 归属于母公司所有者的净利润 资产负债表 资产       负债       流动资产 说明 非流动资产 说明 负债 说明 所有者权益 说明 货币资金 企业的现金存款 固定资产 非货币资产，(房屋，设备，机器等) 银行负债 银行贷款 股东出钱   应收账款 发了货，还没结账，(坏账准备) 生物性资产 农林牧渔行业         存货 看行业，更新快的行业存货少好 无形资产 专利权，著作权，土地使用权         表格在手机上会有变形，截图如下 现金流量表 序号 类别 说明 1 经营活动产生的现金流量 利润表收入支出现金的变化 2 投资活动产生的现金流量 资产负债表的固定资产变动情况 3 筹资活动产生的现金流量 资产负债表的负债和所有者权益变动情况 1. 经营活动现金流 有公开数据的企业，直接看企业经营活动产生的现金流，这是现金流量表的核心。因为刚刚我们刚讲了，企业的经营能力才是我们投资者最应该看重的。而经营活动现金流，就代表着经营能力的强弱。 如果经营活动现金流量净额，长期为负的话（银行证券保险除外），代表企业日子不太好过，入不敷出，这类企业不用考虑投资。只有经营活动现金流量净额是正数，说明它才是一家正常的企业。 2. 投资活动现金流 3. 筹资活动中了解企业的融资情况 类型一、“+++”的企业 三项都为正的企业。表明上看起来，这样的公司特别不错。经营活动现金为正数，现金源源不断。但是有一个问题，就是企业经营赚了钱以后，为什么不向外投资呢？反而还需要筹资呢？难道都把钱放在银行账户上数钱玩吗？这类型的企业，要么就是即将大规模的开展对外大规模的投资活动，所以在筹集本钱。要么就很可能是起了歹心，借着上市公司的躯壳在赚钱。所以，如果是这三项都是正的企业，建议我们要谨慎观察一下。如果查阅很多材料，都看不出来企业有大投资的动作。建议这类型的企业，我们也淘汰掉。 类型二、“++-”的企业 这类型的企业，经营活动现金流为正，说明企业经营情况还不错。投资活动现金流为正，说明以前投资的资产，带来了利息等方面的收入。或者是变卖了资产，产生了收入。一般来说，资产带来的收益比较多，因为企业变卖资产的情况很小。筹资活动现金流为负数，要么就是还了贷款，要么就是给股东分红。这类的企业，如果投资现金流，不是变卖资产所得。而经营现金流和投资现金流，足以覆盖筹资现金流的流出。我们就可以初步判断，这家公司是健康发展的。 类型三、“+-+”的企业 这类企业，经营活动现金流同样为正，说明企业赚钱。同时筹资活动现金流为正，但是投资活动现金流是负。说明企业现在正在大力的扩大规模。需要把钱投入到新的项目中。这类企业有一个问题，就是所投资的项目如果创造辉煌，企业会高速的增长。反之，企业如果投资失败，会影响企业后期的发展。 这类型的企业，很考验我们对行业发展的一个判断。 类型四、“+–”的企业 经营活动现金流为正，同样说明企业赚钱。投资活动现金流为负，说明企业也在稳步的扩张。筹资活动现金流为负，说明企业还了贷款，或者给股东分红了。也就是说，企业靠着经营现金流的流入，实施了投资，并且同时还了贷款或给股东分红。这类型的企业是四种画像里面最好的企业，这种企业自我造血能力最强。靠着自己赚的钱可以去投资其他的项目，同时赚的钱还可以给股东分红或者偿还贷款。这类企业是最具备投资价值的</summary></entry><entry><title type="html">PMP考试总结</title><link href="http://localhost:4000/PMP%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="PMP考试总结" /><published>2019-06-22T00:00:00+08:00</published><updated>2019-06-22T00:00:00+08:00</updated><id>http://localhost:4000/PMP%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/PMP%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/">&lt;h3 id=&quot;记录下在备考pmp的一些知识&quot;&gt;记录下在备考PMP的一些知识&lt;/h3&gt;
+
+&lt;h4 id=&quot;pmp十大知识领域&quot;&gt;PMP十大知识领域&lt;/h4&gt;
+&lt;ol&gt;
+  &lt;li&gt;整合管理&lt;/li&gt;
+  &lt;li&gt;范围管理&lt;/li&gt;
+  &lt;li&gt;进度管理&lt;/li&gt;
+  &lt;li&gt;成本管理&lt;/li&gt;
+  &lt;li&gt;质量管理&lt;/li&gt;
+  &lt;li&gt;资源管理&lt;/li&gt;
+  &lt;li&gt;沟通管理&lt;/li&gt;
+  &lt;li&gt;风险管理&lt;/li&gt;
+  &lt;li&gt;采购管理&lt;/li&gt;
+  &lt;li&gt;相关方管理&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;五大过程组&quot;&gt;五大过程组&lt;/h4&gt;
+&lt;ol&gt;
+  &lt;li&gt;启动&lt;/li&gt;
+  &lt;li&gt;规划&lt;/li&gt;
+  &lt;li&gt;执行&lt;/li&gt;
+  &lt;li&gt;监控&lt;/li&gt;
+  &lt;li&gt;收尾&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;共131个工具和技术&quot;&gt;共131个工具和技术&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;数据收集技术。用于从各种渠道收集数据与信息。共有九种数据收集工具与技术。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;数据分析技术。用于组织、评估和评价数据与信息。共有 27 种数据分析工具与技术。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;数据表现技术。用于显示用来传递数据和信息的图形方式或其他方法。共有 15 种数据表现工具与技术。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;决策技术。用于从不同备选方案选择行动方案。共有两种决策工具与技术。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;沟通技巧。用于在相关方之间传递信息。共有两种沟通技巧工具与技术。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;人际关系与团队技能。用于有效地领导团队成员和其他相关方并与之进行互动。共有 17 种人际关系与团队技能工具与技术。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.bmp.ovh/imgs/2019/07/93c0798878114870.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><category term="PMP" /><summary type="html">记录下在备考PMP的一些知识 PMP十大知识领域 整合管理 范围管理 进度管理 成本管理 质量管理 资源管理 沟通管理 风险管理 采购管理 相关方管理 五大过程组 启动 规划 执行 监控 收尾 共131个工具和技术 数据收集技术。用于从各种渠道收集数据与信息。共有九种数据收集工具与技术。 数据分析技术。用于组织、评估和评价数据与信息。共有 27 种数据分析工具与技术。 数据表现技术。用于显示用来传递数据和信息的图形方式或其他方法。共有 15 种数据表现工具与技术。 决策技术。用于从不同备选方案选择行动方案。共有两种决策工具与技术。 沟通技巧。用于在相关方之间传递信息。共有两种沟通技巧工具与技术。 人际关系与团队技能。用于有效地领导团队成员和其他相关方并与之进行互动。共有 17 种人际关系与团队技能工具与技术。</summary></entry><entry><title type="html">Swift组件化</title><link href="http://localhost:4000/Swift%E7%BB%84%E4%BB%B6%E5%8C%96/" rel="alternate" type="text/html" title="Swift组件化" /><published>2019-06-16T00:00:00+08:00</published><updated>2019-06-16T00:00:00+08:00</updated><id>http://localhost:4000/Swift%E7%BB%84%E4%BB%B6%E5%8C%96</id><content type="html" xml:base="http://localhost:4000/Swift%E7%BB%84%E4%BB%B6%E5%8C%96/">&lt;h3 id=&quot;ios组件化方案&quot;&gt;iOS组件化方案&lt;/h3&gt;
 
 &lt;p&gt;将程序中功能相对独立的部分打包在一起形成模块，并且减少模块之间的直接依赖。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://nixwang.com/images/2017-05-06/%E7%BB%84%E4%BB%B6%E5%8C%96.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h5 id=&quot;为什么要组件化&quot;&gt;为什么要组件化&lt;/h5&gt;
+&lt;h4 id=&quot;为什么要组件化&quot;&gt;为什么要组件化&lt;/h4&gt;
 &lt;p&gt;随着业务复杂度不断增加，工程越来越庞大，开发人员逐渐增多，单一工程的开发模式会出现一系列问题：&lt;/p&gt;
 
 &lt;ul&gt;
@@ -13,15 +249,103 @@
   &lt;li&gt;开发效率低：每次都需要编译整个项目。&lt;/li&gt;
 &lt;/ul&gt;
 
+&lt;h4 id=&quot;组件间通信方案&quot;&gt;组件间通信方案&lt;/h4&gt;
+&lt;h5 id=&quot;目前业界主要的方案有以下几种&quot;&gt;目前业界主要的方案有以下几种&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;Protocol注册方案&lt;/li&gt;
+  &lt;li&gt;URL注册方案&lt;/li&gt;
+  &lt;li&gt;Target-Action runtime调用方案&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;本博客采用target-action的方式&quot;&gt;本博客采用Target-Action的方式&lt;/h5&gt;
+&lt;p&gt;原理：&lt;/p&gt;
+
+&lt;p&gt;每个组件, 提供一个统一暴露的接口文件
+额外的维护一个中间件的分类扩展（用Runtime进行解耦）
+其他地方通过target-action的方案进行交互&lt;/p&gt;
+
+&lt;p&gt;特点：&lt;/p&gt;
+
+&lt;p&gt;统一了组件api服务
+组件与框架之间无依赖关系
+需要额外维护中间件类扩展&lt;/p&gt;
+
 &lt;h3 id=&quot;创建组件&quot;&gt;创建组件&lt;/h3&gt;
-&lt;p&gt;查看本地Repo
-&lt;code class=&quot;highlighter-rouge&quot;&gt;pod repo list&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;查看本地Repo&lt;/p&gt;
 
-&lt;p&gt;添加Repo
-&lt;code class=&quot;highlighter-rouge&quot;&gt;pod repo add specs url&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pod repo list&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;创建Pod
-&lt;code class=&quot;highlighter-rouge&quot;&gt;pod lib create project&lt;/code&gt;&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><category term="Swift" /><category term="组件化" /><summary type="html">iOS组件化方案 将程序中功能相对独立的部分打包在一起形成模块，并且减少模块之间的直接依赖。 为什么要组件化 随着业务复杂度不断增加，工程越来越庞大，开发人员逐渐增多，单一工程的开发模式会出现一系列问题： 耦合严重：组件之间依赖过于复杂，维护成本高。 容易出现冲突：xib 或者代码冲突机会大大增加。 开发效率低：每次都需要编译整个项目。 创建组件 查看本地Repo pod repo list 添加Repo pod repo add specs url 创建Pod pod lib create project</summary></entry><entry><title type="html">转战Swift</title><link href="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/" rel="alternate" type="text/html" title="转战Swift" /><published>2018-07-22T00:00:00+08:00</published><updated>2018-07-22T00:00:00+08:00</updated><id>http://localhost:4000/OC%E6%92%B0%E5%86%99swift</id><content type="html" xml:base="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/">&lt;h4 id=&quot;swift相对oc的优势&quot;&gt;swift相对OC的优势&lt;/h4&gt;
+&lt;p&gt;添加本地远程索引库&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pod repo add specs http:xxx&lt;/code&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;步骤一-创建podspec&quot;&gt;步骤一： 创建podspec&lt;/h5&gt;
+&lt;p&gt;创建Pod, 会生成podspec文件&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pod lib create project&lt;/code&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;步骤二-本地验证&quot;&gt;步骤二： 本地验证&lt;/h5&gt;
+&lt;p&gt;验证本地spec是否存在错误&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pod lib lint&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;如果本地spec中对依赖了私有库&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pod lib lint --sources='private spec url, https://github.com/CocoaPods/Specs.git' --allow-warnings&lt;/code&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;步骤三-提交到远程&quot;&gt;步骤三： 提交到远程&lt;/h5&gt;
+&lt;p&gt;本地验证成功后，需提交到远程服务器，并打Tag，确保和spec中保持一致&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git push origin master
+git tag 1.0
+git push --tags #上传本地所有tag
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;步骤四-远程验证&quot;&gt;步骤四: 远程验证&lt;/h5&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pod spec lint --allow-warnings --verbose&lt;/code&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;步骤五-组件库发布&quot;&gt;步骤五: 组件库发布&lt;/h5&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pod repo push RepoName xx.podspec&lt;/code&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;步骤六-检查组件库&quot;&gt;步骤六: 检查组件库&lt;/h5&gt;
+
+&lt;p&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;~/.cocoapods&lt;/code&gt;目录下查看与Spec同名的文件夹，即为本地索引库&lt;/p&gt;
+
+&lt;h4 id=&quot;使用组件&quot;&gt;使用组件&lt;/h4&gt;
+&lt;p&gt;在podfile中添加pod的源路径&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;source 'https://github.com/CocoaPods/Specs.git' 
+source 'xxx/xxx/xxxxx.git' # 私有库 repo
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;podspec文件&quot;&gt;podspec文件&lt;/h4&gt;
+&lt;p&gt;s.source_files的写法&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;“*” 表示匹配所有文件&lt;/li&gt;
+  &lt;li&gt;“*.{h,m,swift}” 表示匹配所有以.h和.m结尾的文件&lt;/li&gt;
+  &lt;li&gt;“**” 表示匹配所有子目录&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  s.dependency 'IQKeyboardManagerSwift', '6.3.0'
+  s.dependency 'Kingfisher',  '4.10.1'  
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;在spec中添加资源文件(图片，国际化字符串)&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;resource_bundles&lt;/li&gt;
+  &lt;li&gt;resources&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;官方建议使用&lt;code class=&quot;highlighter-rouge&quot;&gt;resource_bundles&lt;/code&gt;，这样可以避免主工程和组件中的资源出现冲突&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><category term="Swift" /><summary type="html">iOS组件化方案 将程序中功能相对独立的部分打包在一起形成模块，并且减少模块之间的直接依赖。 为什么要组件化 随着业务复杂度不断增加，工程越来越庞大，开发人员逐渐增多，单一工程的开发模式会出现一系列问题： 耦合严重：组件之间依赖过于复杂，维护成本高。 容易出现冲突：xib 或者代码冲突机会大大增加。 开发效率低：每次都需要编译整个项目。 组件间通信方案 目前业界主要的方案有以下几种 Protocol注册方案 URL注册方案 Target-Action runtime调用方案 本博客采用Target-Action的方式 原理： 每个组件, 提供一个统一暴露的接口文件 额外的维护一个中间件的分类扩展（用Runtime进行解耦） 其他地方通过target-action的方案进行交互 特点： 统一了组件api服务 组件与框架之间无依赖关系 需要额外维护中间件类扩展 创建组件 查看本地Repo pod repo list 添加本地远程索引库 pod repo add specs http:xxx 步骤一： 创建podspec 创建Pod, 会生成podspec文件 pod lib create project 步骤二： 本地验证 验证本地spec是否存在错误 pod lib lint 如果本地spec中对依赖了私有库 pod lib lint --sources='private spec url, https://github.com/CocoaPods/Specs.git' --allow-warnings 步骤三： 提交到远程 本地验证成功后，需提交到远程服务器，并打Tag，确保和spec中保持一致 git push origin master git tag 1.0 git push --tags #上传本地所有tag 步骤四: 远程验证 pod spec lint --allow-warnings --verbose 步骤五: 组件库发布 pod repo push RepoName xx.podspec 步骤六: 检查组件库 在~/.cocoapods目录下查看与Spec同名的文件夹，即为本地索引库 使用组件 在podfile中添加pod的源路径 source 'https://github.com/CocoaPods/Specs.git' source 'xxx/xxx/xxxxx.git' # 私有库 repo podspec文件 s.source_files的写法 “*” 表示匹配所有文件 “*.{h,m,swift}” 表示匹配所有以.h和.m结尾的文件 “**” 表示匹配所有子目录 s.dependency 'IQKeyboardManagerSwift', '6.3.0' s.dependency 'Kingfisher', '4.10.1' 在spec中添加资源文件(图片，国际化字符串) resource_bundles resources 官方建议使用resource_bundles，这样可以避免主工程和组件中的资源出现冲突</summary></entry><entry><title type="html">2019书单</title><link href="http://localhost:4000/2019%E4%B9%A6%E5%8D%95/" rel="alternate" type="text/html" title="2019书单" /><published>2019-04-14T00:00:00+08:00</published><updated>2019-04-14T00:00:00+08:00</updated><id>http://localhost:4000/2019%E4%B9%A6%E5%8D%95</id><content type="html" xml:base="http://localhost:4000/2019%E4%B9%A6%E5%8D%95/">&lt;h3 id=&quot;记录下2019年要看的书单&quot;&gt;记录下2019年要看的书单&lt;/h3&gt;
+&lt;ul class=&quot;task-list&quot;&gt;
+  &lt;li class=&quot;task-list-item&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;task-list-item-checkbox&quot; disabled=&quot;disabled&quot; /&gt;在华尔街的崛起&lt;/li&gt;
+  &lt;li class=&quot;task-list-item&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;task-list-item-checkbox&quot; disabled=&quot;disabled&quot; /&gt;原则&lt;/li&gt;
+  &lt;li class=&quot;task-list-item&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;task-list-item-checkbox&quot; disabled=&quot;disabled&quot; /&gt;查理·芒格传&lt;/li&gt;
+  &lt;li class=&quot;task-list-item&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;task-list-item-checkbox&quot; disabled=&quot;disabled&quot; /&gt;红与黑&lt;/li&gt;
+  &lt;li class=&quot;task-list-item&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;task-list-item-checkbox&quot; disabled=&quot;disabled&quot; /&gt;国富论&lt;/li&gt;
+  &lt;li class=&quot;task-list-item&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;task-list-item-checkbox&quot; disabled=&quot;disabled&quot; /&gt;PMP全解读&lt;/li&gt;
+  &lt;li class=&quot;task-list-item&quot;&gt;[ ]&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="读书笔记" /><summary type="html">记录下2019年要看的书单 在华尔街的崛起 原则 查理·芒格传 红与黑 国富论 PMP全解读 [ ]</summary></entry><entry><title type="html">转战Swift</title><link href="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/" rel="alternate" type="text/html" title="转战Swift" /><published>2018-07-22T00:00:00+08:00</published><updated>2018-07-22T00:00:00+08:00</updated><id>http://localhost:4000/OC%E6%92%B0%E5%86%99swift</id><content type="html" xml:base="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/">&lt;h4 id=&quot;swift相对oc的优势&quot;&gt;swift相对OC的优势&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Swift容易阅读，语法和文件结构简易化。&lt;/li&gt;
@@ -350,508 +674,4 @@ tag主要用于发布版本的管理，一个版本发布之后，我们可以�
 
 &lt;h4 id=&quot;git更新与合并&quot;&gt;Git更新与合并&lt;/h4&gt;
 &lt;p&gt;更新你的本地仓库至最新改动
-git pull&lt;/p&gt;</content><author><name></name></author><category term="Git" /><summary type="html">Git创建提交 创建新仓库 git init 添加文件 git add &amp;lt;filename&amp;gt; git add * 提交文件 git commit -m &quot;commit info&quot; 添加远程仓库 git remote add origin &amp;lt;server&amp;gt; 提交到远程仓库 git push origin &amp;lt;branch name&amp;gt;</summary></entry><entry><title type="html">iOS直播项目总结</title><link href="http://localhost:4000/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="iOS直播项目总结" /><published>2018-01-07T00:00:00+08:00</published><updated>2018-01-07T00:00:00+08:00</updated><id>http://localhost:4000/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/">&lt;h4 id=&quot;直播流媒体介绍&quot;&gt;直播流媒体介绍&lt;/h4&gt;
-
-&lt;p&gt;直播，音乐播放demo&lt;/p&gt;
-
-&lt;p&gt;https://github.com/AndreHu88/iOS_Live&lt;/p&gt;
-
-&lt;p&gt;视频流传输使用的是RTMP协议（类似于socket，基于TCP）
-RTMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP&lt;/p&gt;
-
-&lt;p&gt;流媒体开发:网络层(socket或st)负责传输，协议层(rtmp或hls)负责网络打包，封装层(flv、ts)负责编解码数据的封装，编码层(h.264和aac)负责图像，音频压缩。
-用于对象,视频,音频的传输.这个协议建立在TCP协议或者轮询HTTP协议之上.&lt;/p&gt;
-
-&lt;p&gt;HLS:由Apple公司定义的用于实时流传输的协议,HLS基于HTTP协议实现，传输内容包括两部分，一是M3U8描述文件，二是TS媒体文件。可实现流媒体的直播和点播，主要应用在iOS系统
-HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低&lt;/p&gt;
-
-&lt;p&gt;下图是直播的完整图解
-&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/4499332-a5920ba5063faae1.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;播放网络视频需要以下几步依赖ffmpeg框架&quot;&gt;播放网络视频需要以下几步（依赖FFmpeg框架）&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;将数据解协议&lt;/li&gt;
-  &lt;li&gt;解封装&lt;/li&gt;
-  &lt;li&gt;解码音视频&lt;/li&gt;
-  &lt;li&gt;音视频同步&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;播放本地视频不需要解协议直接解封装&quot;&gt;播放本地视频不需要解协议，直接解封装&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;解协议&lt;/strong&gt;
-解协议就是将流媒体协议上的数据解析为相应的封装格式数据，流媒体一般是RTMP协议传输，这些协议在传输音视频数据的同时也可以传输一些指令数据（播放，停止，暂停，网络状态的描述） ，解协议会去掉信令数据，只保留音视频数据。采用RTMP协议通过解协议后，输入FLV的流&lt;/p&gt;
-
-    &lt;p&gt;FFMpeg会根据相关协议的特性，本机与服务器建立连接，获取流数据&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;解封装&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;将封装的视频数据分离成音频和视频编码数据，常见的封装的格式有MP4，MKV, RMVB, FLV, AVI等。它的作用就是将已压缩的视频数据和音频数据按照一定的格式放在一起。FLV格式经过解封装后，可以得到H.264的视频编码数据和aac的音频编码数据，一般称为“packet”&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;解码音视频&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;解码就是将音视频压缩编码数据解码成非压缩的音视频的原始数据，解码是最复杂最重要的一个环节，通过解码压缩的视频数据被输出成非压缩的颜色数据。目前常用的音频编码方式是aac,mp3,视频编码格式是H.264,H.265。分析源数据的音视频信息，分别设置对应的音频解码器，视频编码器。对packet分别进行解码后，音频解码获得的数据是PCM（Pulse Code Modulation，脉冲编码调制）采样数据，一般称为“sample”。视频解码获得的数据是一幅YUV或RGB图像数据，一般称为“picture”&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;音视频同步&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;音视频解码是两个独立的线程，获取到的音视频是分开的。理想情况下，音视频按照自己的固有频率渲染输出能达到音视频同步的效果，但是在现实中，断网、弱网、丢帧、缓冲、音视频不同的解码耗时等情况都会妨碍实现同步，很难达到预期效果。 通过音视频同步调整后，将同步解码出来的音频，视频数据，同步给显卡和声卡播放出来。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;videotoolboxframework硬编码&quot;&gt;VideoToolbox.framework(硬编码)&lt;/h4&gt;
-&lt;p&gt;videoToolbox是苹果的一个硬解码的框架，提供实现压缩，解压缩服务，并存储在缓冲区corevideo像素栅格图像格式之中。这些服务以会话对象的形式提供（压缩、解压，和像素传输），应用程序不需要直接访问硬件编码器和解码器相关内容，硬件编解码这块的质量有一定保证，可以优先使用硬编解码，和软解码FFmpeg可以互补&lt;/p&gt;
-
-&lt;h5 id=&quot;h264的详解&quot;&gt;H.264的详解&lt;/h5&gt;
-&lt;p&gt;这篇blog详解:http://www.samirchen.com/video-concept/&lt;/p&gt;
-
-&lt;h5 id=&quot;编码h264&quot;&gt;编码H.264&lt;/h5&gt;
-&lt;p&gt;1.初始化VideoToolbox&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)setupVideoToolbox{
-    
-    dispatch_sync(_encodeQueue, ^{
-        
-        [self setupFileHandle];
-        
-        int width = 720, height = 1280;
-        OSStatus status = VTCompressionSessionCreate(NULL, width, height, kCMVideoCodecType_H264, NULL, NULL, NULL, encodingComplectionCallback, (__bridge void *)(self), &amp;amp;_encodingSession);
-        DLog(@&quot;status code is %d&quot;,(int)status);
-        if (status != 0) {
-            DLog(@&quot;create H264 session error&quot;);
-            return ;
-        }
-        
-        //设置实时编码，避免延迟
-        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_RealTime, kCFBooleanTrue);
-        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_AutoLevel);
-        
-        //设置关键帧间隔（）关键字间隔越小越清晰，数值越大压缩率越高
-        int frameInterval = 1;
-        CFNumberRef frameIntervalRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;amp;frameInterval);
-        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_MaxKeyFrameInterval, frameIntervalRef);
-        
-        //设置期望帧率
-        int fps = 30;
-        CFNumberRef fpsRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;amp;fps);
-        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ExpectedFrameRate, fpsRef);
-        
-        //设置码率，均值，单位是byte
-        int bitRate = width * height * 3 * 4 * 8;
-        CFNumberRef bitRateRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;amp;bitRate);
-        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_AverageBitRate, bitRateRef);
-        
-        //设置码率上限，单位是bps,如果不设置默认会以很低的码率编码，导致编码出来的视频很模糊
-        int bitRateMax = width * height * 3 * 4;
-        CFNumberRef bitRateMaxRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;amp;bitRateMax);
-        VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_DataRateLimits, bitRateMaxRef);
-        
-        //准备编码
-        VTCompressionSessionPrepareToEncodeFrames(_encodingSession);
-        
-    });
-}
-
-- (void)setupFileHandle{
-    
-    //创建文件，初始化fileHandle;
-    NSString *file = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@&quot;test.h264&quot;];
-    [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
-    [[NSFileManager defaultManager] createFileAtPath:file contents:nil attributes:nil];
-    _fileHandle = [NSFileHandle fileHandleForWritingAtPath:file];
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;2.sampleBuffer回调处理&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)videoEncodeWithSampleBuffer:(CMSampleBufferRef)sampleBuffer{
-    
-    dispatch_sync(_encodeQueue, ^{
-        
-        // CVPixelBufferRef 编码前图像数据结构
-        // 利用给定的接口函数CMSampleBufferGetImageBuffer从中提取出CVPixelBufferRef
-        CVImageBufferRef imageBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
-        // 帧时间 如果不设置导致时间轴过长
-        CMTime presentationTimeStamp = CMTimeMake(_frameID++, 1000);
-        //flags 0 表示同步解码
-        VTEncodeInfoFlags flags;
-        OSStatus status = VTCompressionSessionEncodeFrame(_encodingSession, imageBuffer, presentationTimeStamp, kCMTimeInvalid, NULL, NULL, &amp;amp;flags);
-        DLog(@&quot;status code is %d&quot;,(int)status);
-        if (status == noErr) {
-            DLog(@&quot;H264 VTCompressionSessionEncodeFrame success&quot;);
-        }
-        else{
-            DLog(@&quot;H264: VTCompressionSessionEncodeFrame failed with %d&quot;, (int)status);
-            if (!_encodingSession) return;
-            VTCompressionSessionInvalidate(_encodingSession);
-            //释放资源
-            CFRelease(_encodingSession);
-            _encodingSession = NULL;
-        }
-    });
-    
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;3.对VideoToolbox的编码回调&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//每压缩一次都异步的调用此方法
-void encodingComplectionCallback(void * CM_NULLABLE outputCallbackRefCon,
-                               void * CM_NULLABLE sourceFrameRefCon,
-                               OSStatus status,
-                               VTEncodeInfoFlags infoFlags,
-                               CM_NULLABLE CMSampleBufferRef sampleBuffer ){
-
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h5 id=&quot;音视频同步详解&quot;&gt;音视频同步详解&lt;/h5&gt;
-&lt;p&gt;播放速度标准量有以下三种&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;将视频同步到音频上&lt;/strong&gt;，就是以音频的播放速度为基准来同步视频。视频比音频播放慢了，加快其播放速度；快了，则延迟播放。&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;将音频同步到视频上&lt;/strong&gt;，就是以视频的播放速度为基准来同步音频。&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;将视频和音频同步外部的时钟上&lt;/strong&gt;，选择一个外部时钟为基准，视频和音频的播放速度都以该时钟为标准&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;视频和音频的同步过程是一个你等我赶的过程，快了则等待，慢了就加快速度。这就需要一个量来判断（和选择基准比较），到底是播放的快了还是慢了，或者正以同步的速度播放。在音视频的包中都含有DTS(decode time stamp)，告诉解码器packet的解码顺序 和 PTS(presentation time stamp)，从packet解码出来的数据的显示顺序。&lt;/p&gt;
-
-&lt;p&gt;对于音频来说，DTS和PTS是相同的，也就是解码顺序和显示顺序一致
-视频的编码比音频复杂，DTS和PTS会不同。视频在编码后会得到三种不同的帧&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;I帧  关键帧&lt;/strong&gt;，包含了一帧的完整数据，解码时只需要本帧的数据，不需要参考其他帧。&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;P帧 P是向前搜索&lt;/strong&gt;，该帧的数据不完全的，解码时需要参考其前一帧的数据。&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;B帧 B是双向搜索&lt;/strong&gt;，解码这种类型的帧是最复杂，不但需要参考其一帧的数据，还需要其后一帧的数据。&lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">直播流媒体介绍 直播，音乐播放demo https://github.com/AndreHu88/iOS_Live 视频流传输使用的是RTMP协议（类似于socket，基于TCP） RTMP是Real Time Messaging Protocol（实时消息传输协议）的首字母缩写。该协议基于TCP 流媒体开发:网络层(socket或st)负责传输，协议层(rtmp或hls)负责网络打包，封装层(flv、ts)负责编解码数据的封装，编码层(h.264和aac)负责图像，音频压缩。 用于对象,视频,音频的传输.这个协议建立在TCP协议或者轮询HTTP协议之上. HLS:由Apple公司定义的用于实时流传输的协议,HLS基于HTTP协议实现，传输内容包括两部分，一是M3U8描述文件，二是TS媒体文件。可实现流媒体的直播和点播，主要应用在iOS系统 HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低 下图是直播的完整图解 播放网络视频需要以下几步（依赖FFmpeg框架） 将数据解协议 解封装 解码音视频 音视频同步 播放本地视频不需要解协议，直接解封装 解协议 解协议就是将流媒体协议上的数据解析为相应的封装格式数据，流媒体一般是RTMP协议传输，这些协议在传输音视频数据的同时也可以传输一些指令数据（播放，停止，暂停，网络状态的描述） ，解协议会去掉信令数据，只保留音视频数据。采用RTMP协议通过解协议后，输入FLV的流 FFMpeg会根据相关协议的特性，本机与服务器建立连接，获取流数据 解封装 将封装的视频数据分离成音频和视频编码数据，常见的封装的格式有MP4，MKV, RMVB, FLV, AVI等。它的作用就是将已压缩的视频数据和音频数据按照一定的格式放在一起。FLV格式经过解封装后，可以得到H.264的视频编码数据和aac的音频编码数据，一般称为“packet” 解码音视频 解码就是将音视频压缩编码数据解码成非压缩的音视频的原始数据，解码是最复杂最重要的一个环节，通过解码压缩的视频数据被输出成非压缩的颜色数据。目前常用的音频编码方式是aac,mp3,视频编码格式是H.264,H.265。分析源数据的音视频信息，分别设置对应的音频解码器，视频编码器。对packet分别进行解码后，音频解码获得的数据是PCM（Pulse Code Modulation，脉冲编码调制）采样数据，一般称为“sample”。视频解码获得的数据是一幅YUV或RGB图像数据，一般称为“picture” 音视频同步 音视频解码是两个独立的线程，获取到的音视频是分开的。理想情况下，音视频按照自己的固有频率渲染输出能达到音视频同步的效果，但是在现实中，断网、弱网、丢帧、缓冲、音视频不同的解码耗时等情况都会妨碍实现同步，很难达到预期效果。 通过音视频同步调整后，将同步解码出来的音频，视频数据，同步给显卡和声卡播放出来。 VideoToolbox.framework(硬编码) videoToolbox是苹果的一个硬解码的框架，提供实现压缩，解压缩服务，并存储在缓冲区corevideo像素栅格图像格式之中。这些服务以会话对象的形式提供（压缩、解压，和像素传输），应用程序不需要直接访问硬件编码器和解码器相关内容，硬件编解码这块的质量有一定保证，可以优先使用硬编解码，和软解码FFmpeg可以互补 H.264的详解 这篇blog详解:http://www.samirchen.com/video-concept/ 编码H.264 1.初始化VideoToolbox - (void)setupVideoToolbox{ dispatch_sync(_encodeQueue, ^{ [self setupFileHandle]; int width = 720, height = 1280; OSStatus status = VTCompressionSessionCreate(NULL, width, height, kCMVideoCodecType_H264, NULL, NULL, NULL, encodingComplectionCallback, (__bridge void *)(self), &amp;amp;_encodingSession); DLog(@&quot;status code is %d&quot;,(int)status); if (status != 0) { DLog(@&quot;create H264 session error&quot;); return ; } //设置实时编码，避免延迟 VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_RealTime, kCFBooleanTrue); VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_AutoLevel); //设置关键帧间隔（）关键字间隔越小越清晰，数值越大压缩率越高 int frameInterval = 1; CFNumberRef frameIntervalRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;amp;frameInterval); VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_MaxKeyFrameInterval, frameIntervalRef); //设置期望帧率 int fps = 30; CFNumberRef fpsRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &amp;amp;fps); VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_ExpectedFrameRate, fpsRef); //设置码率，均值，单位是byte int bitRate = width * height * 3 * 4 * 8; CFNumberRef bitRateRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;amp;bitRate); VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_AverageBitRate, bitRateRef); //设置码率上限，单位是bps,如果不设置默认会以很低的码率编码，导致编码出来的视频很模糊 int bitRateMax = width * height * 3 * 4; CFNumberRef bitRateMaxRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &amp;amp;bitRateMax); VTSessionSetProperty(_encodingSession, kVTCompressionPropertyKey_DataRateLimits, bitRateMaxRef); //准备编码 VTCompressionSessionPrepareToEncodeFrames(_encodingSession); }); } - (void)setupFileHandle{ //创建文件，初始化fileHandle; NSString *file = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@&quot;test.h264&quot;]; [[NSFileManager defaultManager] removeItemAtPath:file error:nil]; [[NSFileManager defaultManager] createFileAtPath:file contents:nil attributes:nil]; _fileHandle = [NSFileHandle fileHandleForWritingAtPath:file]; } 2.sampleBuffer回调处理 - (void)videoEncodeWithSampleBuffer:(CMSampleBufferRef)sampleBuffer{ dispatch_sync(_encodeQueue, ^{ // CVPixelBufferRef 编码前图像数据结构 // 利用给定的接口函数CMSampleBufferGetImageBuffer从中提取出CVPixelBufferRef CVImageBufferRef imageBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer); // 帧时间 如果不设置导致时间轴过长 CMTime presentationTimeStamp = CMTimeMake(_frameID++, 1000); //flags 0 表示同步解码 VTEncodeInfoFlags flags; OSStatus status = VTCompressionSessionEncodeFrame(_encodingSession, imageBuffer, presentationTimeStamp, kCMTimeInvalid, NULL, NULL, &amp;amp;flags); DLog(@&quot;status code is %d&quot;,(int)status); if (status == noErr) { DLog(@&quot;H264 VTCompressionSessionEncodeFrame success&quot;); } else{ DLog(@&quot;H264: VTCompressionSessionEncodeFrame failed with %d&quot;, (int)status); if (!_encodingSession) return; VTCompressionSessionInvalidate(_encodingSession); //释放资源 CFRelease(_encodingSession); _encodingSession = NULL; } }); } 3.对VideoToolbox的编码回调 //每压缩一次都异步的调用此方法 void encodingComplectionCallback(void * CM_NULLABLE outputCallbackRefCon, void * CM_NULLABLE sourceFrameRefCon, OSStatus status, VTEncodeInfoFlags infoFlags, CM_NULLABLE CMSampleBufferRef sampleBuffer ){ } 音视频同步详解 播放速度标准量有以下三种 将视频同步到音频上，就是以音频的播放速度为基准来同步视频。视频比音频播放慢了，加快其播放速度；快了，则延迟播放。 将音频同步到视频上，就是以视频的播放速度为基准来同步音频。 将视频和音频同步外部的时钟上，选择一个外部时钟为基准，视频和音频的播放速度都以该时钟为标准 视频和音频的同步过程是一个你等我赶的过程，快了则等待，慢了就加快速度。这就需要一个量来判断（和选择基准比较），到底是播放的快了还是慢了，或者正以同步的速度播放。在音视频的包中都含有DTS(decode time stamp)，告诉解码器packet的解码顺序 和 PTS(presentation time stamp)，从packet解码出来的数据的显示顺序。 对于音频来说，DTS和PTS是相同的，也就是解码顺序和显示顺序一致 视频的编码比音频复杂，DTS和PTS会不同。视频在编码后会得到三种不同的帧 I帧 关键帧，包含了一帧的完整数据，解码时只需要本帧的数据，不需要参考其他帧。 P帧 P是向前搜索，该帧的数据不完全的，解码时需要参考其前一帧的数据。 B帧 B是双向搜索，解码这种类型的帧是最复杂，不但需要参考其一帧的数据，还需要其后一帧的数据。</summary></entry><entry><title type="html">iPhoneX的适配问题</title><link href="http://localhost:4000/iPhoneX%E7%9A%84%E9%80%82%E9%85%8D%E5%B0%8F%E8%AE%B0/" rel="alternate" type="text/html" title="iPhoneX的适配问题" /><published>2017-12-28T00:00:00+08:00</published><updated>2017-12-28T00:00:00+08:00</updated><id>http://localhost:4000/iPhoneX%E7%9A%84%E9%80%82%E9%85%8D%E5%B0%8F%E8%AE%B0</id><content type="html" xml:base="http://localhost:4000/iPhoneX%E7%9A%84%E9%80%82%E9%85%8D%E5%B0%8F%E8%AE%B0/">&lt;h3 id=&quot;记录一次iphone-x的适配过程做个总结&quot;&gt;记录一次iPhone X的适配过程，做个总结&lt;/h3&gt;
-
-&lt;p&gt;自iOS11后，苹果推出&lt;code class=&quot;highlighter-rouge&quot;&gt;iPhone X&lt;/code&gt;。由于&lt;code class=&quot;highlighter-rouge&quot;&gt;iPhoneX&lt;/code&gt;的尺寸，外观不太常规，所以适配自然就不太一样。而且iOS11后，有些API做了些改变。&lt;/p&gt;
-
-&lt;p&gt;在Xcode中，我打印了&lt;code class=&quot;highlighter-rouge&quot;&gt;iPhone X&lt;/code&gt;的一些尺寸信息&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;StatusBarHeight:44.000000
-TabBarHeight:83.000000
-NavHeight:44.000000
-ScreenHeight:812.000000
-frame: [0, 0, 375, 812]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;再次打印&lt;code class=&quot;highlighter-rouge&quot;&gt;Phone7&lt;/code&gt;的尺寸信息&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;StatusBarHeight:20.000000
-TabBarHeight:49.000000
-NavHeight:44.000000
-frame: [0, 0, 375, 667]
-ScreenHeight:667.000000
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;首先要在launchImage中加入iPhone X的启动页，大小为1125*2436，再次启动APP发现可以全屏显示了。
-&lt;img src=&quot;https://developer.apple.com/ios/update-apps-for-iphone-x/images/illustrations/checklist-safe-area-portrait.svg&quot; alt=&quot;launchImage&quot; /&gt;
-&lt;img src=&quot;https://developer.apple.com/ios/update-apps-for-iphone-x/images/illustrations/checklist-safe-area-landscape.svg&quot; alt=&quot;launchImage&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;在开发中尽量把我们的内容放到图中的safeArea中&lt;/p&gt;
-
-&lt;p&gt;在iOS11中增加了几个新的API。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;viewSafeAreaInsetsDidChange
-UIView增加了safeAreaInsets属性
-ViewController增加了additionalSafeAreaInsets属性
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;经过几次实验发现，&lt;code class=&quot;highlighter-rouge&quot;&gt;viewSafeAreaInsetsDidChange&lt;/code&gt;在TabBar的VC不会调用此方法，在非TabBar的Controller会调用此方法，方法的调用顺序如下&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;viewDidLoad
-viewWillAppear
-viewSafeAreaInsetsDidChange
-viewWillLayoutSubviews
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;只有在调用了&lt;code class=&quot;highlighter-rouge&quot;&gt;viewSafeAreaInsetsDidChange&lt;/code&gt;后才能获取到&lt;code class=&quot;highlighter-rouge&quot;&gt;UIEdgeInsets&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;在iOS11后我们要更改部分宏的定义&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;/** 底部安全区高度 */
-#define KSafeAreaBottom_Height  (KSCREEN_HEIGHT == 812.0 ? 34 : 0)
-/** tabBar高度 */
-#define KTABBAR_HEIGHT      [[UIApplication sharedApplication] statusBarFrame].size.height &amp;gt; 20 ? 83 : 49
-/** 是否为iphoneX */
-#define IS_IPHONE_X         ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )812 ) &amp;lt; DBL_EPSILON )
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;总结来看，总体变化有：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;1.状态栏由20pt变成44pt，所以导航栏从64pt变为88pt&lt;/li&gt;
-  &lt;li&gt;2.底部多出了34pt的home indicator的边距&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;更多的适配细节还是见&lt;a href=&quot;https://developer.apple.com/cn/ios/update-apps-for-iphone-x/&quot;&gt;苹果人机交互指南网站&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">记录一次iPhone X的适配过程，做个总结 自iOS11后，苹果推出iPhone X。由于iPhoneX的尺寸，外观不太常规，所以适配自然就不太一样。而且iOS11后，有些API做了些改变。 在Xcode中，我打印了iPhone X的一些尺寸信息 StatusBarHeight:44.000000 TabBarHeight:83.000000 NavHeight:44.000000 ScreenHeight:812.000000 frame: [0, 0, 375, 812] 再次打印Phone7的尺寸信息 StatusBarHeight:20.000000 TabBarHeight:49.000000 NavHeight:44.000000 frame: [0, 0, 375, 667] ScreenHeight:667.000000 首先要在launchImage中加入iPhone X的启动页，大小为1125*2436，再次启动APP发现可以全屏显示了。 在开发中尽量把我们的内容放到图中的safeArea中 在iOS11中增加了几个新的API。 viewSafeAreaInsetsDidChange UIView增加了safeAreaInsets属性 ViewController增加了additionalSafeAreaInsets属性 经过几次实验发现，viewSafeAreaInsetsDidChange在TabBar的VC不会调用此方法，在非TabBar的Controller会调用此方法，方法的调用顺序如下 viewDidLoad viewWillAppear viewSafeAreaInsetsDidChange viewWillLayoutSubviews 只有在调用了viewSafeAreaInsetsDidChange后才能获取到UIEdgeInsets 在iOS11后我们要更改部分宏的定义 /** 底部安全区高度 */ #define KSafeAreaBottom_Height (KSCREEN_HEIGHT == 812.0 ? 34 : 0) /** tabBar高度 */ #define KTABBAR_HEIGHT [[UIApplication sharedApplication] statusBarFrame].size.height &amp;gt; 20 ? 83 : 49 /** 是否为iphoneX */ #define IS_IPHONE_X ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )812 ) &amp;lt; DBL_EPSILON ) 总结来看，总体变化有： 1.状态栏由20pt变成44pt，所以导航栏从64pt变为88pt 2.底部多出了34pt的home indicator的边距 更多的适配细节还是见苹果人机交互指南网站</summary></entry><entry><title type="html">Linux命令总结</title><link href="http://localhost:4000/Linux%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="Linux命令总结" /><published>2017-12-27T00:00:00+08:00</published><updated>2017-12-27T00:00:00+08:00</updated><id>http://localhost:4000/Linux%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/Linux%E6%80%BB%E7%BB%93/">&lt;blockquote&gt;
-  &lt;p&gt;ls显示文件&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ls -a 显示所有文件包括隐藏文件
-ls -l 显示文件属性，包括大小，日期，符号连接，是否可读写及是否可执行
-ls -lh 显示文件的大小，以容易理解的格式印出文件大小 (例如 1K 234M2G)
-ls -lt 显示文件，按照修改时间排序
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;rm删除文件&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rm file　删除某一个文件
-rm -f file 删除时候不进行提示。可以于r参数配合使用
-rm -r 就是向下递归，不管有多少级目录，一并删除
-rm -f 就是直接强行删除，不作任何提示的意思
-rm -rf dir　删除当前目录下叫dir的整个目录
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;系统 用户&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;w 当前登录用户的详细信息
-who 显示登录用户
-date 显示当前时间
-cal  显示当月日历
-pwd  显示当前路径
-open .   可以在finder中打开当前文件夹(Mac)
-bash .sh 运行脚本
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;网络相关&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ifconfig 获取本机IP
-netstat 显示网络状态
-nslookup 域名检查排错
-netstat -an  查看网络端口信息
-netstat -nr 查看路由表信息，比route快
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;关机操作&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;reboot　  重新启动计算机
-shutdown -r now  重新启动计算机，停止服务后重新启动计算机
-shutdown -h now  关闭计算机，停止服务后再关闭系统
-halt   关闭计算机
-一般用shutdown -r now,在重启系统是，关闭相关服务，shutdown -h now也是如此。
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;chown 改变文件或目录的所有者&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chown user1 /dir　将/dir目录设置为user1所有
-chown -R user1.user1 /dir　将/dir目录下所有文件和目录，设置为user1所有,组为user1。-R递归到下面的每个文件和目录
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;chmod 改变用户的权限&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chmod a+x file　将file文件设置为可执行，脚本类文件一定要这样设置一个，否则得用bash file才能执行
-chmod 666 file　将文件file设置为可读写
-chmod 750 file 将文件file设置为，所有者为完全权限，同组可以读和执行，其他无权限
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;mac下执行shell脚本&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./name.sh
-如果执行报没有权限，chmod 777 name.sh
-bash name.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;apache	 Linux自带Apache&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd /ect/apache2		配置文件
-cd /usr/bin			程序
-cd /Library/WebServer/Documents		默认根目录
-sudo apachectl -k start 	开启Apache服务
-sudo apachectl -k restart 	重启Apache服务
-sudo apachectl -k stop	 	关闭Apache服务
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;mysql的操作&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;service mysql start  开启MySQL服务
-usr/local/mysql/bin/mysql	默认安装目录
-alias mysql=/usr/local/mysql/bin/mysql
-alias mysqladmin=/usr/local/mysql/bin/mysqladmin
-export PATH=${PATH}:/usr/local/mysql/bin  添加用户环境变量 .bash_profile
-
-//如果用HomeBrew安装
-mysql.server  {start|stop|restart|reload|force-reload|status}  [ MySQL server options
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;jekyll&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bundle exec jekyll serve 		本地编译并开启服务
-//单张图片居中
-&amp;lt;center&amp;gt;
-	&amp;lt;img src=&quot;xxxxx.jpg&quot; alt = &quot;树&quot; style=&quot;width:80%&quot; /&amp;gt;
-&amp;lt;/center&amp;gt;
-
-//两张图片并排
-&amp;lt;figure class=&quot;half&quot;&amp;gt;
-    &amp;lt;img src=&quot;http://xxx.jpg&quot;&amp;gt;
-    &amp;lt;img src=&quot;http://yyy.jpg&quot;&amp;gt;
-&amp;lt;/figure&amp;gt;
-
-//三张图片并排
-&amp;lt;figure class=&quot;third&quot;&amp;gt;
-    &amp;lt;img src=&quot;http://xxx.jpg&quot;&amp;gt;
-    &amp;lt;img src=&quot;http://yyy.jpg&quot;&amp;gt;
-    &amp;lt;img src=&quot;http://zzz.jpg&quot;&amp;gt;
-&amp;lt;/figure&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;markdown&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# 这是 H1
-## 这是 H2
-###### 这是 H6
-&amp;gt; 区块引用
-* + -  无序列表
-数字.   有序列表
-*** --- 分割线
-[This link](http://example.net/) 链接
-**  ** 加粗
-![Alt text](/path/to/img.jpg) 图片
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="Linux" /><summary type="html">ls显示文件 ls -a 显示所有文件包括隐藏文件 ls -l 显示文件属性，包括大小，日期，符号连接，是否可读写及是否可执行 ls -lh 显示文件的大小，以容易理解的格式印出文件大小 (例如 1K 234M2G) ls -lt 显示文件，按照修改时间排序 rm删除文件 rm file　删除某一个文件 rm -f file 删除时候不进行提示。可以于r参数配合使用 rm -r 就是向下递归，不管有多少级目录，一并删除 rm -f 就是直接强行删除，不作任何提示的意思 rm -rf dir　删除当前目录下叫dir的整个目录 系统 用户 w 当前登录用户的详细信息 who 显示登录用户 date 显示当前时间 cal 显示当月日历 pwd 显示当前路径 open . 可以在finder中打开当前文件夹(Mac) bash .sh 运行脚本 网络相关 ifconfig 获取本机IP netstat 显示网络状态 nslookup 域名检查排错 netstat -an 查看网络端口信息 netstat -nr 查看路由表信息，比route快 关机操作 reboot　 重新启动计算机 shutdown -r now 重新启动计算机，停止服务后重新启动计算机 shutdown -h now 关闭计算机，停止服务后再关闭系统 halt 关闭计算机 一般用shutdown -r now,在重启系统是，关闭相关服务，shutdown -h now也是如此。 chown 改变文件或目录的所有者 chown user1 /dir　将/dir目录设置为user1所有 chown -R user1.user1 /dir　将/dir目录下所有文件和目录，设置为user1所有,组为user1。-R递归到下面的每个文件和目录 chmod 改变用户的权限 chmod a+x file　将file文件设置为可执行，脚本类文件一定要这样设置一个，否则得用bash file才能执行 chmod 666 file　将文件file设置为可读写 chmod 750 file 将文件file设置为，所有者为完全权限，同组可以读和执行，其他无权限 mac下执行shell脚本 ./name.sh 如果执行报没有权限，chmod 777 name.sh bash name.sh apache Linux自带Apache cd /ect/apache2 配置文件 cd /usr/bin 程序 cd /Library/WebServer/Documents 默认根目录 sudo apachectl -k start 开启Apache服务 sudo apachectl -k restart 重启Apache服务 sudo apachectl -k stop 关闭Apache服务 mysql的操作 service mysql start 开启MySQL服务 usr/local/mysql/bin/mysql 默认安装目录 alias mysql=/usr/local/mysql/bin/mysql alias mysqladmin=/usr/local/mysql/bin/mysqladmin export PATH=${PATH}:/usr/local/mysql/bin 添加用户环境变量 .bash_profile //如果用HomeBrew安装 mysql.server {start|stop|restart|reload|force-reload|status} [ MySQL server options jekyll bundle exec jekyll serve 本地编译并开启服务 //单张图片居中 &amp;lt;center&amp;gt; &amp;lt;img src=&quot;xxxxx.jpg&quot; alt = &quot;树&quot; style=&quot;width:80%&quot; /&amp;gt; &amp;lt;/center&amp;gt; //两张图片并排 &amp;lt;figure class=&quot;half&quot;&amp;gt; &amp;lt;img src=&quot;http://xxx.jpg&quot;&amp;gt; &amp;lt;img src=&quot;http://yyy.jpg&quot;&amp;gt; &amp;lt;/figure&amp;gt; //三张图片并排 &amp;lt;figure class=&quot;third&quot;&amp;gt; &amp;lt;img src=&quot;http://xxx.jpg&quot;&amp;gt; &amp;lt;img src=&quot;http://yyy.jpg&quot;&amp;gt; &amp;lt;img src=&quot;http://zzz.jpg&quot;&amp;gt; &amp;lt;/figure&amp;gt; markdown ``` 这是 H1 这是 H2 这是 H6 区块引用 无序列表 数字. 有序列表 ***</summary></entry><entry><title type="html">objcRuntime小记</title><link href="http://localhost:4000/objcRuntme/" rel="alternate" type="text/html" title="objcRuntime小记" /><published>2017-11-25T00:00:00+08:00</published><updated>2017-11-25T00:00:00+08:00</updated><id>http://localhost:4000/objcRuntme</id><content type="html" xml:base="http://localhost:4000/objcRuntme/">&lt;p&gt;最近在学习objc的底层runtime知识，学到这块时就做个小笔记，做个总结。刚好最近也搭建了自己的博客，就以此作为个人博客的开篇吧&lt;/p&gt;
-
-&lt;p&gt;###什么是runtime&lt;/p&gt;
-
-&lt;p&gt;我们知道高级编程语言要想成为可执行文件的过程：高级语言 -&amp;gt; 汇编语言 -&amp;gt; 机器语言。机器语言是计算机唯一能识别的语言。所以从OC代码到最后的可执行文件的过程大概有：OC -&amp;gt; C - &amp;gt;编译(汇编) -&amp;gt; 可执行文件 。从OC到C的过程就是由runtime来实现。通俗的将runtime就是把面向对象的类转变为面向过程的结构体&lt;/p&gt;
-
-&lt;p&gt;我们导入&lt;code class=&quot;highlighter-rouge&quot;&gt;import &amp;lt;objc/runtime.h&amp;gt;&lt;/code&gt;，查看runtime.h的头文件，会发现以下代码&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;/// Represents an instance of a class.
-struct objc_object {
-    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
-};
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;/// An opaque type that represents an Objective-C class.
-typedef struct objc_class *Class;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;struct objc_class {
-    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
-
-#if !__OBJC2__
-    Class _Nullable super_class                              OBJC2_UNAVAILABLE;
-    const char * _Nonnull name                               OBJC2_UNAVAILABLE;
-    long version                                             OBJC2_UNAVAILABLE;
-    long info                                                OBJC2_UNAVAILABLE;
-    long instance_size                                       OBJC2_UNAVAILABLE;
-    struct objc_ivar_list * _Nullable ivars                  OBJC2_UNAVAILABLE;
-    struct objc_method_list * _Nullable * _Nullable methodLists                    OBJC2_UNAVAILABLE;
-    struct objc_cache * _Nonnull cache                       OBJC2_UNAVAILABLE;
-    struct objc_protocol_list * _Nullable protocols          OBJC2_UNAVAILABLE;
-#endif
-
-} OBJC2_UNAVAILABLE;
-/* Use `Class` instead of `struct objc_class *` */
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;通过这个代码发现，我们创建的对象其实就是一个objc_object的结构体，这个结构体只有一个成员变量(Class的isa指针)，Classs是一个结构体指针，指向objc_class。而objc的&lt;code class=&quot;highlighter-rouge&quot;&gt;类对象&lt;/code&gt;就是一个&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_class&lt;/code&gt;的结构体,这个结构体存放的数据被称为&lt;code class=&quot;highlighter-rouge&quot;&gt;元数据(metadata)&lt;/code&gt;该结构体的第一个成员变量也是&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针，这样就说明了类本身也是一个对象，我们趁为类对象。类对象的&lt;code class=&quot;highlighter-rouge&quot;&gt;isa&lt;/code&gt;指针指向的对象是&lt;code class=&quot;highlighter-rouge&quot;&gt;元类&lt;/code&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;objc函数调用总结&quot;&gt;objc函数调用总结&lt;/h3&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Objective-C是动态语言，编译时并不决定函数的调用，通俗的讲，所有的类型声明都是给编译器看的。OC的函数调用实际上就是向一个objc对象(或者Class)&lt;strong&gt;发消息&lt;/strong&gt;，发消息实际上就是沿着它的isa指针寻找真正的函数地址&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;runtime中声明了id和Class的类型，简化如下&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;struct objc_class {
-    struct objc_class *isa;
-};
-struct objc_object {
-    struct objc_class *isa;
-};
- 
-typedef struct objc_class *Class; //类  (class object)
-typedef struct objc_object *id;   //对象 (instance of class)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;在objc中，id代表了一个对象。凡是首地址是*isa的结构体指针，都可以被认为是objc的对象。运行时通过isa指针，可以查找到该对象是属于什么类
-只要一个对象满足下面的结构，就可以对它发消息&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;struct objc_object {
-    Class isa;
-} *id
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h5 id=&quot;runtime的运行机制&quot;&gt;runtime的运行机制&lt;/h5&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;我们可以通过clang来重写一个类查看cpp代码&lt;/p&gt;
-  &lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;clang -rewrite-objc ClassName.m
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/blockquote&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;//class的实际结构
-struct _class_t {
-	struct _class_t *isa;        //isa指针
-	struct _class_t *superclass; //父类
-	void *cache;
-	void *vtable;
-	struct _class_ro_t *ro;     //Class包含的信息
-};
-
-//Class包含的信息
-struct _class_ro_t {
-	unsigned int flags;
-	unsigned int instanceStart;
-	unsigned int instanceSize;
-	unsigned int reserved;
-	const unsigned char *ivarLayout;
-	const char *name; //类名
-	const struct _method_list_t *baseMethods; //方法列表
-	const struct _objc_protocol_list *baseProtocols;  //协议列表
-	const struct _ivar_list_t *ivars; //ivar列表
-	const unsigned char *weakIvarLayout;
-	const struct _prop_list_t *properties; //属性列表
-};
-
-//Person(meta-class)
-struct _class_t OBJC_METACLASS_$_Person  = {
-	.isa        = &amp;amp;OBJC_METACLASS_$_NSObject,
-	.superclass = &amp;amp;OBJC_METACLASS_$_NSObject,
-	.cache      = (void *)&amp;amp;_objc_empty_cache,
-	.vtable     = (void *)&amp;amp;_objc_empty_vtable,
-	.ro         = &amp;amp;_OBJC_METACLASS_RO_$_Person, //包含了类方法等
-};
- 
-//Person(Class)
-struct _class_t OBJC_CLASS_$_Person = {
-	.isa        = &amp;amp;OBJC_METACLASS_$_Person,   //此处isa指向meta-class
-	.superclass = &amp;amp;OBJC_CLASS_$_NSObject,
-	.superclass = (void *)&amp;amp;_objc_empty_cache,
-	.vtable     = (void *)&amp;amp;_objc_empty_vtable,
-	.ro         = &amp;amp;_OBJC_CLASS_RO_$_Person,   //包含了实例方法 ivar信息等
-};
-typedef struct objc_object Person;   //定义NyanCat类型
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;所有实例的isa都指向了Class，Class是一个全局变量，其中记录了类名，成员变量，property信息，实例方法列表，协议列表&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;Person *jack = [Person alloc] init];
-[jack walk];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;向jack(instance)发送walk消息时，运行时会通过isa指针查找到Person(class)，Class中保存着本类中定义的实例方法的指针&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;[Person eat];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;向Person发送eat消息时，runtime会通过isa查找到Person(meta-class),这里保存本类定义的类方法的指针&lt;/p&gt;
-
-&lt;p&gt;obj_msgSend()实际上是找到这个函数指针，然后调用它&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">最近在学习objc的底层runtime知识，学到这块时就做个小笔记，做个总结。刚好最近也搭建了自己的博客，就以此作为个人博客的开篇吧 ###什么是runtime 我们知道高级编程语言要想成为可执行文件的过程：高级语言 -&amp;gt; 汇编语言 -&amp;gt; 机器语言。机器语言是计算机唯一能识别的语言。所以从OC代码到最后的可执行文件的过程大概有：OC -&amp;gt; C - &amp;gt;编译(汇编) -&amp;gt; 可执行文件 。从OC到C的过程就是由runtime来实现。通俗的将runtime就是把面向对象的类转变为面向过程的结构体 我们导入import &amp;lt;objc/runtime.h&amp;gt;，查看runtime.h的头文件，会发现以下代码 /// Represents an instance of a class. struct objc_object { Class _Nonnull isa OBJC_ISA_AVAILABILITY; }; /// An opaque type that represents an Objective-C class. typedef struct objc_class *Class; struct objc_class { Class _Nonnull isa OBJC_ISA_AVAILABILITY; #if !__OBJC2__ Class _Nullable super_class OBJC2_UNAVAILABLE; const char * _Nonnull name OBJC2_UNAVAILABLE; long version OBJC2_UNAVAILABLE; long info OBJC2_UNAVAILABLE; long instance_size OBJC2_UNAVAILABLE; struct objc_ivar_list * _Nullable ivars OBJC2_UNAVAILABLE; struct objc_method_list * _Nullable * _Nullable methodLists OBJC2_UNAVAILABLE; struct objc_cache * _Nonnull cache OBJC2_UNAVAILABLE; struct objc_protocol_list * _Nullable protocols OBJC2_UNAVAILABLE; #endif } OBJC2_UNAVAILABLE; /* Use `Class` instead of `struct objc_class *` */ 通过这个代码发现，我们创建的对象其实就是一个objc_object的结构体，这个结构体只有一个成员变量(Class的isa指针)，Classs是一个结构体指针，指向objc_class。而objc的类对象就是一个objc_class的结构体,这个结构体存放的数据被称为元数据(metadata)该结构体的第一个成员变量也是isa指针，这样就说明了类本身也是一个对象，我们趁为类对象。类对象的isa指针指向的对象是元类 objc函数调用总结 Objective-C是动态语言，编译时并不决定函数的调用，通俗的讲，所有的类型声明都是给编译器看的。OC的函数调用实际上就是向一个objc对象(或者Class)发消息，发消息实际上就是沿着它的isa指针寻找真正的函数地址 runtime中声明了id和Class的类型，简化如下 struct objc_class { struct objc_class *isa; }; struct objc_object { struct objc_class *isa; }; typedef struct objc_class *Class; //类 (class object) typedef struct objc_object *id; //对象 (instance of class) 在objc中，id代表了一个对象。凡是首地址是*isa的结构体指针，都可以被认为是objc的对象。运行时通过isa指针，可以查找到该对象是属于什么类 只要一个对象满足下面的结构，就可以对它发消息 struct objc_object { Class isa; } *id runtime的运行机制 我们可以通过clang来重写一个类查看cpp代码 clang -rewrite-objc ClassName.m //class的实际结构 struct _class_t { struct _class_t *isa; //isa指针 struct _class_t *superclass; //父类 void *cache; void *vtable; struct _class_ro_t *ro; //Class包含的信息 }; //Class包含的信息 struct _class_ro_t { unsigned int flags; unsigned int instanceStart; unsigned int instanceSize; unsigned int reserved; const unsigned char *ivarLayout; const char *name; //类名 const struct _method_list_t *baseMethods; //方法列表 const struct _objc_protocol_list *baseProtocols; //协议列表 const struct _ivar_list_t *ivars; //ivar列表 const unsigned char *weakIvarLayout; const struct _prop_list_t *properties; //属性列表 }; //Person(meta-class) struct _class_t OBJC_METACLASS_$_Person = { .isa = &amp;amp;OBJC_METACLASS_$_NSObject, .superclass = &amp;amp;OBJC_METACLASS_$_NSObject, .cache = (void *)&amp;amp;_objc_empty_cache, .vtable = (void *)&amp;amp;_objc_empty_vtable, .ro = &amp;amp;_OBJC_METACLASS_RO_$_Person, //包含了类方法等 }; //Person(Class) struct _class_t OBJC_CLASS_$_Person = { .isa = &amp;amp;OBJC_METACLASS_$_Person, //此处isa指向meta-class .superclass = &amp;amp;OBJC_CLASS_$_NSObject, .superclass = (void *)&amp;amp;_objc_empty_cache, .vtable = (void *)&amp;amp;_objc_empty_vtable, .ro = &amp;amp;_OBJC_CLASS_RO_$_Person, //包含了实例方法 ivar信息等 }; typedef struct objc_object Person; //定义NyanCat类型 所有实例的isa都指向了Class，Class是一个全局变量，其中记录了类名，成员变量，property信息，实例方法列表，协议列表 Person *jack = [Person alloc] init]; [jack walk]; 向jack(instance)发送walk消息时，运行时会通过isa指针查找到Person(class)，Class中保存着本类中定义的实例方法的指针 [Person eat]; 向Person发送eat消息时，runtime会通过isa查找到Person(meta-class),这里保存本类定义的类方法的指针 obj_msgSend()实际上是找到这个函数指针，然后调用它</summary></entry></feed>
+git pull&lt;/p&gt;</content><author><name></name></author><category term="Git" /><summary type="html">Git创建提交 创建新仓库 git init 添加文件 git add &amp;lt;filename&amp;gt; git add * 提交文件 git commit -m &quot;commit info&quot; 添加远程仓库 git remote add origin &amp;lt;server&amp;gt; 提交到远程仓库 git push origin &amp;lt;branch name&amp;gt;</summary></entry></feed>

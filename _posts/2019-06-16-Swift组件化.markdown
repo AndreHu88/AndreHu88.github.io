@@ -1,0 +1,118 @@
+---
+layout:         post
+title:          Swift组件化
+date:           2019-06-16
+tags:           [iOS, Swift]
+categories:
+comments: true
+---
+
+
+
+### iOS组件化方案
+
+将程序中功能相对独立的部分打包在一起形成模块，并且减少模块之间的直接依赖。
+
+#### 为什么要组件化
+随着业务复杂度不断增加，工程越来越庞大，开发人员逐渐增多，单一工程的开发模式会出现一系列问题：
+
+* 耦合严重：组件之间依赖过于复杂，维护成本高。
+* 容易出现冲突：xib 或者代码冲突机会大大增加。
+* 开发效率低：每次都需要编译整个项目。
+
+#### 组件间通信方案
+#####  目前业界主要的方案有以下几种
+* Protocol注册方案
+* URL注册方案
+* Target-Action runtime调用方案
+
+##### 本博客采用Target-Action的方式
+原理：
+
+每个组件, 提供一个统一暴露的接口文件
+额外的维护一个中间件的分类扩展（用Runtime进行解耦）
+其他地方通过target-action的方案进行交互
+
+特点：
+
+统一了组件api服务
+组件与框架之间无依赖关系
+需要额外维护中间件类扩展
+
+### 创建组件
+查看本地Repo
+
+`pod repo list`
+
+添加本地远程索引库
+
+`pod repo add specs http:xxx`
+
+##### 步骤一： 创建podspec
+创建Pod, 会生成podspec文件
+
+`pod lib create project`
+
+##### 步骤二： 本地验证
+验证本地spec是否存在错误
+
+`pod lib lint`
+
+如果本地spec中对依赖了私有库
+
+`pod lib lint --sources='private spec url, https://github.com/CocoaPods/Specs.git' --allow-warnings`
+
+##### 步骤三： 提交到远程
+本地验证成功后，需提交到远程服务器，并打Tag，确保和spec中保持一致
+
+```
+git push origin master
+git tag 1.0
+git push --tags #上传本地所有tag
+```
+
+##### 步骤四: 远程验证
+
+`pod spec lint --allow-warnings --verbose`
+
+##### 步骤五: 组件库发布
+
+`pod repo push RepoName xx.podspec`
+
+##### 步骤六: 检查组件库
+
+在`~/.cocoapods`目录下查看与Spec同名的文件夹，即为本地索引库
+
+#### 使用组件
+在podfile中添加pod的源路径
+
+```
+source 'https://github.com/CocoaPods/Specs.git' 
+source 'xxx/xxx/xxxxx.git' # 私有库 repo
+```
+#### podspec文件
+ s.source_files的写法
+* "*" 表示匹配所有文件
+* "*.{h,m,swift}" 表示匹配所有以.h和.m结尾的文件
+* "**" 表示匹配所有子目录
+
+```
+  s.dependency 'IQKeyboardManagerSwift', '6.3.0'
+  s.dependency 'Kingfisher',  '4.10.1'  
+```
+在spec中添加资源文件(图片，国际化字符串)
+* resource_bundles
+* resources
+
+官方建议使用`resource_bundles`，这样可以避免主工程和组件中的资源出现冲突
+
+
+
+
+
+
+
+
+
+
+
