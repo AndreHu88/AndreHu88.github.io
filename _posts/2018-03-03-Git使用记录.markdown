@@ -110,5 +110,26 @@ Git提供了一个命令`git reflog`用来记录你的每一次命令
 更新你的本地仓库至最新改动
 git pull 
 
+#### Git代理
+当git clone时特别慢时，可以为git 设置代理
+```
+git config --global http.proxy http://127.0.0.1:1080
+git config --global https.proxy https://127.0.0.1:1080
+git config --global http.proxy 'socks5://127.0.0.1:1080' 
+git config --global https.proxy 'socks5://127.0.0.1:1080'
+```
+
+取消代理
+
+```
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+```
+
+取消设置GitHub的代理
+```
+git config --global --unset http.https://github.com.proxy
+```
+
 
 
