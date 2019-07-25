@@ -89,7 +89,7 @@ extension URL: Resource {
 ```
 
 ## 三、具体分析Kingfisher的工作原理
-
+先判断Resource是否为空， 如果为空，直接return RetrieveImageTask.empty
 ```
  public func setImage(with resource: Resource?,
                          placeholder: Placeholder? = nil,
@@ -103,83 +103,58 @@ extension URL: Resource {
             completionHandler?(nil, nil, .none, nil)
             return .empty
         }
-        
-        var options = KingfisherManager.shared.defaultOptions + (options ?? KingfisherEmptyOptionsInfo)
-        let noImageOrPlaceholderSet = base.image == nil && self.placeholder == nil
-        
-        if !options.keepCurrentImageWhileLoading || noImageOrPlaceholderSet { // Always set placeholder while there is no image/placehoer yet.
-            self.placeholder = placeholder
-        }
+}
 
-        let maybeIndicator = indicator
-        maybeIndicator?.startAnimatingView()
-        
-        setWebURL(resource.downloadURL)
-
-        if base.shouldPreloadAllAnimation() {
-            options.append(.preloadAllAnimationData)
-        }
-        
-        let task = KingfisherManager.shared.retrieveImage(
-            with: resource,
-            options: options,
-            progressBlock: { receivedSize, totalSize in
-                guard resource.downloadURL == self.webURL else {
-                    return
-                }
-                if let progressBlock = progressBlock {
-                    progressBlock(receivedSize, totalSize)
-                }
-            },
-            completionHandler: {[weak base] image, error, cacheType, imageURL in
-                DispatchQueue.main.safeAsync {
-                    maybeIndicator?.stopAnimatingView()
-                    guard let strongBase = base, imageURL == self.webURL else {
-                        completionHandler?(image, error, cacheType, imageURL)
-                        return
-                    }
-                    
-                    self.setImageTask(nil)
-                    guard let image = image else {
-                        completionHandler?(nil, error, cacheType, imageURL)
-                        return
-                    }
-                    
-                    guard let transitionItem = options.lastMatchIgnoringAssociatedValue(.transition(.none)),
-                        case .transition(let transition) = transitionItem, ( options.forceTransition || cacheType == .none) else
-                    {
-                        self.placeholder = nil
-                        strongBase.image = image
-                        completionHandler?(image, error, cacheType, imageURL)
-                        return
-                    }
-                    
-                    #if !os(macOS)
-                        UIView.transition(with: strongBase, duration: 0.0, options: [],
-                                          animations: { maybeIndicator?.stopAnimatingView() },
-                                          completion: { _ in
-
-                                            self.placeholder = nil
-                                            UIView.transition(with: strongBase, duration: transition.duration,
-                                                              options: [transition.animationOptions, .allowUserInteraction],
-                                                              animations: {
-                                                                // Set image property in the animation.
-                                                                transition.animations?(strongBase, image)
-                                                              },
-                                                              completion: { finished in
-                                                                transition.completion?(finished)
-                                                                completionHandler?(image, error, cacheType, imageURL)
-                                                              })
-                                          })
-                    #endif
-                }
-            })
-        
-        setImageTask(task)
-        
-        return task
-    }
 ```
+我们来具体看Kingfisher的对于一张未下载图片的工作流
+```
+// 1. UIView的Extension，提供API调用
+func setImage(with resource: Resource?,
+                         placeholder: Placeholder? = nil,
+                         options: KingfisherOptionsInfo? = nil,
+                         progressBlock: DownloadProgressBlock? = nil,
+                         completionHandler: CompletionHandler? = nil) -> RetrieveImageTask
+                
+                         
+// 2. 尝试从缓存中获取Image            
+func retrieveImage(with resource: Resource,
+        options: KingfisherOptionsInfo?,
+        progressBlock: DownloadProgressBlock?,
+        completionHandler: CompletionHandler?) -> RetrieveImageTask
+        
+// 3. 创建ImageDownloader，来下载Image
+func downloadAndCacheImage(with url: URL,
+                             forKey key: String,
+                      retrieveImageTask: RetrieveImageTask,
+                          progressBlock: DownloadProgressBlock?,
+                      completionHandler: CompletionHandler?,
+                                options: KingfisherOptionsInfo) -> RetrieveImageDownloadTask?
+          
+// 4. Download                               
+open func downloadImage(with url: URL,
+                       retrieveImageTask: RetrieveImageTask? = nil,
+                       options: KingfisherOptionsInfo? = nil,
+                       progressBlock: ImageDownloaderProgressBlock? = nil,
+                       completionHandler: ImageDownloaderCompletionHandler? = nil) -> RetrieveImageDownloadTask?
+
+```
+
+
+下载的核心流程, 来自`ImageDownloader`
+
+```
+// 1. 
+ var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeout)  
+ 
+// 2. ImageDownloader内部 创建了多个队列
+barrierQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Barrier.\(name)", attributes: .concurrent)
+
+processQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Process.\(name)", attributes: .concurrent)
+
+cancelQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Cancel.\(name)")                 
+
+```
+
 
 
 
