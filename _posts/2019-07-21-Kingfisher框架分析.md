@@ -7,10 +7,10 @@ categories:
 comments: false
 ---
 
-# Kingfisher框架的内部实现解读
+### Kingfisher框架的内部实现解读
 Kingfisher 是由 onevcat 编写的用于下载和缓存网络图片的轻量级Swift工具库，其中涉及到了包括GCD、Swift高级语法、缓存、硬盘读写、网络编程、图像编码、图形绘制、Gif数据生成和处理、MD5、Associated Objects的使用等大量iOS开发知识
 
-## 一、Kingfisher的架构
+#### 一、Kingfisher的架构
 ![](https://user-gold-cdn.xitu.io/2016/11/30/8a440adc43cd3da2b46c16f9ffb8c087)
 
 UIImage+Extension 文件内部对 UIImage 以及 NSData 进行了拓展, 包含判定图片类型、图片解码以及Gif数据处理等操作。
@@ -35,7 +35,7 @@ KingfisherOptionsInfoItem 被提供给开发者对 Kingfisher 的各种行为进
 
 UIImage+Kingfisher 以及 UIButton+Kingfisher 对 UIImageView 和 UIButton 进行了拓展，即主要用于提供 Kingfisher 的外部接口。
 
-## 二、 Kingfisher的入口
+#### 二、 Kingfisher的入口
 
 我们在使用Kingfisher时，是这样调用的
 ```
@@ -88,7 +88,7 @@ extension URL: Resource {
 }
 ```
 
-## 三、具体分析Kingfisher的工作原理
+#### 三、具体分析Kingfisher的工作原理
 先判断Resource是否为空， 如果为空，直接return RetrieveImageTask.empty
 ```
  public func setImage(with resource: Resource?,
