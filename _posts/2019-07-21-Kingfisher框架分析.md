@@ -2,15 +2,15 @@
 layout:         post
 title:          Kingfisher框架分析
 date:           2019-07-21
-tags:           [iOS，Swift]
+tags:           [iOS, Swift]
 categories:
 comments: false
 ---
 
-# Kingfisher框架的内部实现解读
+### Kingfisher框架的内部实现解读
 Kingfisher 是由 onevcat 编写的用于下载和缓存网络图片的轻量级Swift工具库，其中涉及到了包括GCD、Swift高级语法、缓存、硬盘读写、网络编程、图像编码、图形绘制、Gif数据生成和处理、MD5、Associated Objects的使用等大量iOS开发知识
 
-## 一、Kingfisher的架构
+#### 一、Kingfisher的架构
 ![](https://user-gold-cdn.xitu.io/2016/11/30/8a440adc43cd3da2b46c16f9ffb8c087)
 
 UIImage+Extension 文件内部对 UIImage 以及 NSData 进行了拓展, 包含判定图片类型、图片解码以及Gif数据处理等操作。
@@ -35,7 +35,7 @@ KingfisherOptionsInfoItem 被提供给开发者对 Kingfisher 的各种行为进
 
 UIImage+Kingfisher 以及 UIButton+Kingfisher 对 UIImageView 和 UIButton 进行了拓展，即主要用于提供 Kingfisher 的外部接口。
 
-## 二、 Kingfisher的入口
+#### 二、 Kingfisher的入口
 
 我们在使用Kingfisher时，是这样调用的
 ```
@@ -88,8 +88,8 @@ extension URL: Resource {
 }
 ```
 
-## 三、具体分析Kingfisher的工作原理
-
+#### 三、具体分析Kingfisher的工作原理
+先判断Resource是否为空， 如果为空，直接return RetrieveImageTask.empty
 ```
  public func setImage(with resource: Resource?,
                          placeholder: Placeholder? = nil,
@@ -103,82 +103,56 @@ extension URL: Resource {
             completionHandler?(nil, nil, .none, nil)
             return .empty
         }
-        
-        var options = KingfisherManager.shared.defaultOptions + (options ?? KingfisherEmptyOptionsInfo)
-        let noImageOrPlaceholderSet = base.image == nil && self.placeholder == nil
-        
-        if !options.keepCurrentImageWhileLoading || noImageOrPlaceholderSet { // Always set placeholder while there is no image/placehoer yet.
-            self.placeholder = placeholder
-        }
+}
 
-        let maybeIndicator = indicator
-        maybeIndicator?.startAnimatingView()
+```
+我们来具体看Kingfisher的对于一张未下载图片的工作流
+```
+// 1. UIView的Extension，提供API调用
+func setImage(with resource: Resource?,
+                         placeholder: Placeholder? = nil,
+                         options: KingfisherOptionsInfo? = nil,
+                         progressBlock: DownloadProgressBlock? = nil,
+                         completionHandler: CompletionHandler? = nil) -> RetrieveImageTask
+                
+                         
+// 2. 尝试从缓存中获取Image            
+func retrieveImage(with resource: Resource,
+        options: KingfisherOptionsInfo?,
+        progressBlock: DownloadProgressBlock?,
+        completionHandler: CompletionHandler?) -> RetrieveImageTask
         
-        setWebURL(resource.downloadURL)
+// 3. 创建ImageDownloader，来下载Image
+func downloadAndCacheImage(with url: URL,
+                             forKey key: String,
+                      retrieveImageTask: RetrieveImageTask,
+                          progressBlock: DownloadProgressBlock?,
+                      completionHandler: CompletionHandler?,
+                                options: KingfisherOptionsInfo) -> RetrieveImageDownloadTask?
+          
+// 4. Download                               
+open func downloadImage(with url: URL,
+                       retrieveImageTask: RetrieveImageTask? = nil,
+                       options: KingfisherOptionsInfo? = nil,
+                       progressBlock: ImageDownloaderProgressBlock? = nil,
+                       completionHandler: ImageDownloaderCompletionHandler? = nil) -> RetrieveImageDownloadTask?
 
-        if base.shouldPreloadAllAnimation() {
-            options.append(.preloadAllAnimationData)
-        }
-        
-        let task = KingfisherManager.shared.retrieveImage(
-            with: resource,
-            options: options,
-            progressBlock: { receivedSize, totalSize in
-                guard resource.downloadURL == self.webURL else {
-                    return
-                }
-                if let progressBlock = progressBlock {
-                    progressBlock(receivedSize, totalSize)
-                }
-            },
-            completionHandler: {[weak base] image, error, cacheType, imageURL in
-                DispatchQueue.main.safeAsync {
-                    maybeIndicator?.stopAnimatingView()
-                    guard let strongBase = base, imageURL == self.webURL else {
-                        completionHandler?(image, error, cacheType, imageURL)
-                        return
-                    }
-                    
-                    self.setImageTask(nil)
-                    guard let image = image else {
-                        completionHandler?(nil, error, cacheType, imageURL)
-                        return
-                    }
-                    
-                    guard let transitionItem = options.lastMatchIgnoringAssociatedValue(.transition(.none)),
-                        case .transition(let transition) = transitionItem, ( options.forceTransition || cacheType == .none) else
-                    {
-                        self.placeholder = nil
-                        strongBase.image = image
-                        completionHandler?(image, error, cacheType, imageURL)
-                        return
-                    }
-                    
-                    #if !os(macOS)
-                        UIView.transition(with: strongBase, duration: 0.0, options: [],
-                                          animations: { maybeIndicator?.stopAnimatingView() },
-                                          completion: { _ in
+```
 
-                                            self.placeholder = nil
-                                            UIView.transition(with: strongBase, duration: transition.duration,
-                                                              options: [transition.animationOptions, .allowUserInteraction],
-                                                              animations: {
-                                                                // Set image property in the animation.
-                                                                transition.animations?(strongBase, image)
-                                                              },
-                                                              completion: { finished in
-                                                                transition.completion?(finished)
-                                                                completionHandler?(image, error, cacheType, imageURL)
-                                                              })
-                                          })
-                    #endif
-                }
-            })
-        
-        setImageTask(task)
-        
-        return task
-    }
+
+下载的核心流程, 来自`ImageDownloader`
+
+```
+// 1. 
+ var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeout)  
+ 
+// 2. ImageDownloader内部 创建了多个队列
+barrierQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Barrier.\(name)", attributes: .concurrent)
+
+processQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Process.\(name)", attributes: .concurrent)
+
+cancelQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Cancel.\(name)")                 
+
 ```
 
 
