@@ -4,7 +4,7 @@ title:          PMP考试总结
 date:           2019-06-22
 tags:           [PMP]
 categories:
-comments: true
+comments: false
 ---
 
 ### 记录下在备考PMP的一些知识
