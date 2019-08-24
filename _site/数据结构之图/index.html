@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>归档 – 风车大战骑士 – 生活不止眼前的苟且，还有诗和远方</title>
+  <title>数据结构-图 – 风车大战骑士 – 生活不止眼前的苟且，还有诗和远方</title>
 
       <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
@@ -12,14 +12,178 @@
     <meta name="description" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
 
     
-    <meta name="description" content="生活不止眼前的苟且，还有诗和远方">
-    <meta property="og:description" content="生活不止眼前的苟且，还有诗和远方" />
+    <meta name="description" content="数据结构之图
+图是一种（包含若干个节点），每个节点可以连接 0 个或多个元素
+
+两个节点相连的部分称为边（edge）。节点也被称作顶点（vertice）
+
+
+
+一个顶点的度（degree）是指与该顶点相连的边的条数
+
+如果所有的边都是双向的，那我们就有了一个无向图（undirected graph）。反之如果边是有向的，我们得到的就是有向图（directed graph）。可以将有向图和无向图想象为单行道或双行道组成的交通网
+
+
+
+顶点的边可以是从自己出发再连接回自己（如蓝色的顶点），拥有这样的边的图被称为自环
+
+图可以有环（cycle），即如果遍历图的顶点，某个顶点可以被访问超过一次。而没有环的图被称为无环图（acyclic graph）
+
+
+
+无环无向图也被称为树（tree）
+
+在图中，从一个顶点出发，并非所有顶点都是可到达的。可能会存在孤立的顶点或者是相分离的子图。如果一个图所有顶点都至少有一条边，这样的图被称为连通图（connected graph）。而当一个图中两两不同的顶点之间都恰有一条边相连，这样的图就是完全图（complete graph）
+
+
+
+对于完全图而言，每个定点都有图的定点数 - 1 条边
+
+图的应用
+
+当图的每条边都被分配了权重时，我们就有了一个加权图（weighted graph）。如果边的权重被忽略，那么可以将（每条边的）权重都视为 1（权重都是一样，也就是无权重）
+
+
+
+加权图应用的场景很多，根据待解决问题主体的不同，有不同的展现。一起来看一些具体的场景吧：
+
+
+  航空线路图 (如上图所示)
+    
+      顶点 = 机场
+      边 = 两个机场间的飞行线路
+      权重 = 两个机场间的距离
+    
+  
+  
+    GPS 导航
+
+    
+      顶点 = 交叉路口
+      边 = 道路
+      权重 = 从一个路口到另一个路口所花的时间
+    
+  
+  
+    网络
+
+    
+      顶点 = 服务器
+      边 = 数据链路
+      权重 = 连接速度
+    
+  
+
+
+图在现实世界中的应用有：
+
+  电子电路
+  航空控制
+  行车导航
+  电信设施： 基站建设规划
+  社交网络： Facebook 利用图来推荐（你可能认识的）朋友
+  推荐系统： Amazon/Netflix 利用图来推荐产品与电影
+  利用图来规划物流线路
+
+
+图的表示有两种主要方式：
+
+  邻接表
+  邻接矩阵
+
+
+按照图的存储结构分为 完全图，连通图、稀疏图和稠密图
+
+" />
+    <meta property="og:description" content="数据结构之图
+图是一种（包含若干个节点），每个节点可以连接 0 个或多个元素
+
+两个节点相连的部分称为边（edge）。节点也被称作顶点（vertice）
+
+
+
+一个顶点的度（degree）是指与该顶点相连的边的条数
+
+如果所有的边都是双向的，那我们就有了一个无向图（undirected graph）。反之如果边是有向的，我们得到的就是有向图（directed graph）。可以将有向图和无向图想象为单行道或双行道组成的交通网
+
+
+
+顶点的边可以是从自己出发再连接回自己（如蓝色的顶点），拥有这样的边的图被称为自环
+
+图可以有环（cycle），即如果遍历图的顶点，某个顶点可以被访问超过一次。而没有环的图被称为无环图（acyclic graph）
+
+
+
+无环无向图也被称为树（tree）
+
+在图中，从一个顶点出发，并非所有顶点都是可到达的。可能会存在孤立的顶点或者是相分离的子图。如果一个图所有顶点都至少有一条边，这样的图被称为连通图（connected graph）。而当一个图中两两不同的顶点之间都恰有一条边相连，这样的图就是完全图（complete graph）
+
+
+
+对于完全图而言，每个定点都有图的定点数 - 1 条边
+
+图的应用
+
+当图的每条边都被分配了权重时，我们就有了一个加权图（weighted graph）。如果边的权重被忽略，那么可以将（每条边的）权重都视为 1（权重都是一样，也就是无权重）
+
+
+
+加权图应用的场景很多，根据待解决问题主体的不同，有不同的展现。一起来看一些具体的场景吧：
+
+
+  航空线路图 (如上图所示)
+    
+      顶点 = 机场
+      边 = 两个机场间的飞行线路
+      权重 = 两个机场间的距离
+    
+  
+  
+    GPS 导航
+
+    
+      顶点 = 交叉路口
+      边 = 道路
+      权重 = 从一个路口到另一个路口所花的时间
+    
+  
+  
+    网络
+
+    
+      顶点 = 服务器
+      边 = 数据链路
+      权重 = 连接速度
+    
+  
+
+
+图在现实世界中的应用有：
+
+  电子电路
+  航空控制
+  行车导航
+  电信设施： 基站建设规划
+  社交网络： Facebook 利用图来推荐（你可能认识的）朋友
+  推荐系统： Amazon/Netflix 利用图来推荐产品与电影
+  利用图来规划物流线路
+
+
+图的表示有两种主要方式：
+
+  邻接表
+  邻接矩阵
+
+
+按照图的存储结构分为 完全图，连通图、稀疏图和稠密图
+
+" />
     
     <meta name="author" content="风车大战骑士" />
 
     
-    <meta property="og:title" content="归档" />
-    <meta property="twitter:title" content="归档" />
+    <meta property="og:title" content="数据结构-图" />
+    <meta property="twitter:title" content="数据结构-图" />
 
 
 
@@ -154,337 +318,146 @@
  </script>
 
     <div id="main" role="main" class="wrapper-content">
-      <article class="page">
+      <article class="posts">
+  <h1>数据结构-图</h1>
 
-  <h1>归档</h1>
+  <div clsss="meta">
+    <span class="date">
+      2018-07-25
+    </span>
+
+    <ul class="tag">
+      
+      <li>
+        <a href="http://localhost:4000/tags#数据结构">
+          数据结构
+        </a>
+      </li>
+      
+    </ul>
+  </div>
 
   <div class="entry">
-    
+    <h2 id="数据结构之图">数据结构之图</h2>
+<p>图是一种（包含若干个节点），每个节点可以连接 0 个或多个元素</p>
 
-<ul class="archive">
-  
-    
-      <h2>2019</h2>
-    
+<p>两个节点相连的部分称为边（edge）。节点也被称作顶点（vertice）</p>
 
-    <li>
-      
-      <a href="/%E6%9B%BE%E5%9B%BD%E8%97%A9%E4%BC%A0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
-      
-        曾国藩传读书笔记
-      </a>
-      <time>2019-08-24</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p><img src="https://user-gold-cdn.xitu.io/2018/7/23/164c76f06793a319?imageView2/0/w/1280/h/960" alt="" /></p>
 
-    <li>
-      
-      <a href="/springBoot%E5%AD%A6%E4%B9%A0/">
-      
-        SpringBoot学习笔记
-      </a>
-      <time>2019-08-18</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>一个顶点的<strong>度（degree）</strong>是指与该顶点相连的边的条数</p>
 
-    <li>
-      
-      <a href="/IM%E6%8A%80%E6%9C%AF%E7%9A%84%E6%95%B4%E7%90%86/">
-      
-        IM技术的整理
-      </a>
-      <time>2019-08-04</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>如果所有的边都是双向的，那我们就有了一个无向图（undirected graph）。反之如果边是有向的，我们得到的就是有向图（directed graph）。可以将有向图和无向图想象为单行道或双行道组成的交通网</p>
 
-    <li>
-      
-      <a href="/%E5%A4%8D%E7%9B%98%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
-      
-        复盘内存管理
-      </a>
-      <time>2019-07-28</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p><img src="https://user-gold-cdn.xitu.io/2018/7/23/164c76f0763f8910?imageView2/0/w/1280/h/960/" alt="" /></p>
 
-    <li>
-      
-      <a href="/Kingfisher%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90/">
-      
-        Kingfisher框架分析
-      </a>
-      <time>2019-07-21</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>顶点的边可以是从自己出发再连接回自己（如蓝色的顶点），拥有这样的边的图被称为自环</p>
 
-    <li>
-      
-      <a href="/%E6%9F%A5%E7%90%86%E8%8A%92%E6%A0%BC%E4%BC%A0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
-      
-        查理芒格传读书笔记
-      </a>
-      <time>2019-07-14</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>图可以有环（cycle），即如果遍历图的顶点，某个顶点可以被访问超过一次。而没有环的图被称为无环图（acyclic graph）</p>
 
-    <li>
-      
-      <a href="/%E8%B4%A2%E6%8A%A5%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/">
-      
-        财报入门学习
-      </a>
-      <time>2019-07-07</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p><img src="https://user-gold-cdn.xitu.io/2018/7/23/164c76f066352d46?imageView2/0/w/1280/h/960/" alt="" /></p>
 
-    <li>
-      
-      <a href="/%E5%BD%BC%E5%BE%97%E6%9E%97%E5%A5%87%E7%AC%94%E8%AE%B0/">
-      
-        彼得林奇笔记
-      </a>
-      <time>2019-07-07</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>无环无向图也被称为树（tree）</p>
 
-    <li>
-      
-      <a href="/PMP%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/">
-      
-        PMP考试总结
-      </a>
-      <time>2019-06-22</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>在图中，从一个顶点出发，并非所有顶点都是可到达的。可能会存在孤立的顶点或者是相分离的子图。如果一个图所有顶点都至少有一条边，这样的图被称为连通图（connected graph）。而当一个图中两两不同的顶点之间都恰有一条边相连，这样的图就是完全图（complete graph）</p>
 
-    <li>
-      
-      <a href="/Swift%E7%BB%84%E4%BB%B6%E5%8C%96/">
-      
-        Swift组件化
-      </a>
-      <time>2019-06-16</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p><img src="https://user-gold-cdn.xitu.io/2018/7/23/164c76f06428af90?imageView2/0/w/1280/h/960/" alt="" /></p>
 
-    <li>
-      
-      <a href="/2019%E4%B9%A6%E5%8D%95/">
-      
-        2019书单
-      </a>
-      <time>2019-04-14</time>
-    </li>
-  
-    
-      
-      
-      
-        <h2>2018</h2>
-      
-    
+<p>对于完全图而言，每个定点都有图的定点数 - 1 条边</p>
 
-    <li>
-      
-      <a href="/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E5%9B%BE/">
-      
-        数据结构-图
-      </a>
-      <time>2018-07-25</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<h2 id="图的应用">图的应用</h2>
 
-    <li>
-      
-      <a href="/OC%E6%92%B0%E5%86%99swift/">
-      
-        转战Swift
-      </a>
-      <time>2018-07-22</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>当图的每条边都被分配了权重时，我们就有了一个加权图（weighted graph）。如果边的权重被忽略，那么可以将（每条边的）权重都视为 1（权重都是一样，也就是无权重）</p>
 
-    <li>
-      
-      <a href="/%E4%BA%8C%E5%8F%89%E6%A0%91/">
-      
-        二叉树笔记
-      </a>
-      <time>2018-06-24</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p><img src="https://user-gold-cdn.xitu.io/2018/7/23/164c76f06abe1418?imageView2/0/w/1280/h/960/" alt="" /></p>
 
-    <li>
-      
-      <a href="/%E6%99%93%E4%B9%A6%E9%A6%86%E4%B9%8B%E8%A1%8C/">
-      
-        晓书馆之行
-      </a>
-      <time>2018-06-17</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>加权图应用的场景很多，根据待解决问题主体的不同，有不同的展现。一起来看一些具体的场景吧：</p>
 
-    <li>
-      
-      <a href="/%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E5%B0%8F%E8%AE%B0/">
-      
-        转场动画小记
-      </a>
-      <time>2018-03-17</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<ul>
+  <li>航空线路图 (如上图所示)
+    <ul>
+      <li>顶点 = 机场</li>
+      <li>边 = 两个机场间的飞行线路</li>
+      <li>权重 = 两个机场间的距离</li>
+    </ul>
+  </li>
+  <li>
+    <p>GPS 导航</p>
 
-    <li>
-      
-      <a href="/Git%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/">
-      
-        Git使用记录
-      </a>
-      <time>2018-03-03</time>
-    </li>
-  
-    
-      
-      
-      
-    
+    <ul>
+      <li>顶点 = 交叉路口</li>
+      <li>边 = 道路</li>
+      <li>权重 = 从一个路口到另一个路口所花的时间</li>
+    </ul>
+  </li>
+  <li>
+    <p>网络</p>
 
-    <li>
-      
-      <a href="/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/">
-      
-        iOS直播项目总结
-      </a>
-      <time>2018-01-07</time>
-    </li>
-  
-    
-      
-      
-      
-        <h2>2017</h2>
-      
-    
-
-    <li>
-      
-      <a href="/iPhoneX%E7%9A%84%E9%80%82%E9%85%8D%E5%B0%8F%E8%AE%B0/">
-      
-        iPhoneX的适配问题
-      </a>
-      <time>2017-12-28</time>
-    </li>
-  
-    
-      
-      
-      
-    
-
-    <li>
-      
-      <a href="/Linux%E6%80%BB%E7%BB%93/">
-      
-        Linux命令总结
-      </a>
-      <time>2017-12-27</time>
-    </li>
-  
-    
-      
-      
-      
-    
-
-    <li>
-      
-      <a href="/objcRuntme/">
-      
-        objcRuntime小记
-      </a>
-      <time>2017-11-25</time>
-    </li>
-  
+    <ul>
+      <li>顶点 = 服务器</li>
+      <li>边 = 数据链路</li>
+      <li>权重 = 连接速度</li>
+    </ul>
+  </li>
 </ul>
 
+<p>图在现实世界中的应用有：</p>
+<ul>
+  <li>电子电路</li>
+  <li>航空控制</li>
+  <li>行车导航</li>
+  <li>电信设施： 基站建设规划</li>
+  <li>社交网络： Facebook 利用图来推荐（你可能认识的）朋友</li>
+  <li>推荐系统： Amazon/Netflix 利用图来推荐产品与电影</li>
+  <li>利用图来规划物流线路</li>
+</ul>
+
+<p>图的表示有两种主要方式：</p>
+<ol>
+  <li>邻接表</li>
+  <li>邻接矩阵</li>
+</ol>
+
+<p>按照图的存储结构分为 完全图，连通图、稀疏图和稠密图</p>
+
+
   </div>
+
+  
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+
+	    var disqus_shortname = 'Jack';
+
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
 </article>
 
+<div class="pagination">
+  
+    <span class="prev" >
+      <a href="http://localhost:4000/OC%E6%92%B0%E5%86%99swift/">
+        ← 上一篇
+      </a>
+    </span>
+  
+  
+    <span class="next" >
+      <a href="http://localhost:4000/2019%E4%B9%A6%E5%8D%95/">
+        下一篇 →
+      </a>
+    </span>
+  
+</div>
     </div>
 
     

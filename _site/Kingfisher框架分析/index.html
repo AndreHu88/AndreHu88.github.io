@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>Kingfisher框架分析 – 风车大战骑士 – 生活不止眼前的苟且，还有诗和远方</title>
+
+      <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+    <meta name="keywords" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
+
+    <meta name="description" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
+
+    
+    <meta name="description" content="Kingfisher框架的内部实现解读
+Kingfisher 是由 onevcat 编写的用于下载和缓存网络图片的轻量级Swift工具库，其中涉及到了包括GCD、Swift高级语法、缓存、硬盘读写、网络编程、图像编码、图形绘制、Gif数据生成和处理、MD5、Associated Objects的使用等大量iOS开发知识
+
+一、Kingfisher的架构
+
+
+UIImage+Extension 文件内部对 UIImage 以及 NSData 进行了拓展, 包含判定图片类型、图片解码以及Gif数据处理等操作。
+
+String+MD5 负责图片缓存时对文件名进行MD5加密操作。
+
+ImageCache 主要负责将加载过的图片缓存至本地。
+
+ImageDownloader 负责下载网络图片。
+
+KingfisherOptions 内含配置 Kingfisher 行为的部分参数，包括是否设置下载低优先级、是否强制刷新、是否仅缓存至内存、是否允许图像后台解码等设置。
+
+Resource 中的 Resource 结构体记录了图片的下载地址和缓存Key。
+
+ImageTransition 文件中的动画效果将在使用 UIImageView 的拓展 API 时被采用，其底层为UIViewAnimationOptions，此外你也可以自己传入相应地动画操作、完成闭包来配置自己的动画效果。
+
+ThreadHelper 中的dispatch_async_safely_main_queue 函数接受一个闭包，利用 NSThread.isMainThread 判定并将其放置在主线程中执行。
+
+KingfisherManager 是 Kingfisher 的主控制类，整合了图片下载及缓存操作。
+
+KingfisherOptionsInfoItem 被提供给开发者对 Kingfisher 的各种行为进行控制，包含下载设置、缓存设置、动画设置以及 KingfisherOptions 中的全部配置参数。
+
+UIImage+Kingfisher 以及 UIButton+Kingfisher 对 UIImageView 和 UIButton 进行了拓展，即主要用于提供 Kingfisher 的外部接口。
+
+二、 Kingfisher的入口
+
+我们在使用Kingfisher时，是这样调用的
+imageView.kf.setImage(with: URL(string: imageUrl), placeholder: UIImage(named: "img_default_medium"))
+
+
+kf是kingfisher.swift中 对UIImageView和UIButton的extension中都实现了KingfisherCompatible的Protocol， Protocol中定义了kf变量，用来标识当前的调用类型
+/**
+ A type that has Kingfisher extensions.
+ */
+public protocol KingfisherCompatible {
+
+    associatedtype CompatibleType
+
+    var kf: Self.CompatibleType { get }
+}
+
+extension KingfisherCompatible {
+
+    public var kf: Kingfisher.Kingfisher&lt;Self&gt; { get }
+}
+
+extension ImageView: KingfisherCompatible { }
+extension Button: KingfisherCompatible { }
+
+
+在UIImageView和UIButton的extension中有以上方法，供外部使用的API，快速设置网络图片，我们看到传入的的是Resource类型
+
+public func setImage(with resource: Resource?,
+                         placeholder: Placeholder? = nil,
+                         options: KingfisherOptionsInfo? = nil,
+                         progressBlock: DownloadProgressBlock? = nil,
+                         completionHandler: CompletionHandler? = nil) -&gt; RetrieveImageTask
+
+可以看到Resource是一个Protocol, 在Protocol中定义了URL和cacheKey, 在URL的extension中实现了Resource协议，所以我们只需传入URL对象即可
+public protocol Resource {
+    /// The key used in cache.
+    var cacheKey: String { get }
+    
+    /// The target image URL.
+    var downloadURL: URL { get }
+}
+
+extension URL: Resource {
+    public var cacheKey: String { return absoluteString }
+    public var downloadURL: URL { return self }
+}
+
+
+三、具体分析Kingfisher的工作原理
+先判断Resource是否为空， 如果为空，直接return RetrieveImageTask.empty
+ public func setImage(with resource: Resource?,
+                         placeholder: Placeholder? = nil,
+                         options: KingfisherOptionsInfo? = nil,
+                         progressBlock: DownloadProgressBlock? = nil,
+                         completionHandler: CompletionHandler? = nil) -&gt; RetrieveImageTask
+    {
+        guard let resource = resource else {
+            self.placeholder = placeholder
+            setWebURL(nil)
+            completionHandler?(nil, nil, .none, nil)
+            return .empty
+        }
+}
+
+
+我们来具体看Kingfisher的对于一张未下载图片的工作流
+// 1. UIView的Extension，提供API调用
+func setImage(with resource: Resource?,
+                         placeholder: Placeholder? = nil,
+                         options: KingfisherOptionsInfo? = nil,
+                         progressBlock: DownloadProgressBlock? = nil,
+                         completionHandler: CompletionHandler? = nil) -&gt; RetrieveImageTask
+                
+                         
+// 2. 尝试从缓存中获取Image            
+func retrieveImage(with resource: Resource,
+        options: KingfisherOptionsInfo?,
+        progressBlock: DownloadProgressBlock?,
+        completionHandler: CompletionHandler?) -&gt; RetrieveImageTask
+        
+// 3. 创建ImageDownloader，来下载Image
+func downloadAndCacheImage(with url: URL,
+                             forKey key: String,
+                      retrieveImageTask: RetrieveImageTask,
+                          progressBlock: DownloadProgressBlock?,
+                      completionHandler: CompletionHandler?,
+                                options: KingfisherOptionsInfo) -&gt; RetrieveImageDownloadTask?
+          
+// 4. Download                               
+open func downloadImage(with url: URL,
+                       retrieveImageTask: RetrieveImageTask? = nil,
+                       options: KingfisherOptionsInfo? = nil,
+                       progressBlock: ImageDownloaderProgressBlock? = nil,
+                       completionHandler: ImageDownloaderCompletionHandler? = nil) -&gt; RetrieveImageDownloadTask?
+
+
+
+下载的核心流程, 来自ImageDownloader
+
+// 1. 
+ var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeout)  
+ 
+// 2. ImageDownloader内部 创建了多个队列
+barrierQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Barrier.\(name)", attributes: .concurrent)
+
+processQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Process.\(name)", attributes: .concurrent)
+
+cancelQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Cancel.\(name)")                 
+
+
+
+" />
+    <meta property="og:description" content="Kingfisher框架的内部实现解读
+Kingfisher 是由 onevcat 编写的用于下载和缓存网络图片的轻量级Swift工具库，其中涉及到了包括GCD、Swift高级语法、缓存、硬盘读写、网络编程、图像编码、图形绘制、Gif数据生成和处理、MD5、Associated Objects的使用等大量iOS开发知识
+
+一、Kingfisher的架构
+
+
+UIImage+Extension 文件内部对 UIImage 以及 NSData 进行了拓展, 包含判定图片类型、图片解码以及Gif数据处理等操作。
+
+String+MD5 负责图片缓存时对文件名进行MD5加密操作。
+
+ImageCache 主要负责将加载过的图片缓存至本地。
+
+ImageDownloader 负责下载网络图片。
+
+KingfisherOptions 内含配置 Kingfisher 行为的部分参数，包括是否设置下载低优先级、是否强制刷新、是否仅缓存至内存、是否允许图像后台解码等设置。
+
+Resource 中的 Resource 结构体记录了图片的下载地址和缓存Key。
+
+ImageTransition 文件中的动画效果将在使用 UIImageView 的拓展 API 时被采用，其底层为UIViewAnimationOptions，此外你也可以自己传入相应地动画操作、完成闭包来配置自己的动画效果。
+
+ThreadHelper 中的dispatch_async_safely_main_queue 函数接受一个闭包，利用 NSThread.isMainThread 判定并将其放置在主线程中执行。
+
+KingfisherManager 是 Kingfisher 的主控制类，整合了图片下载及缓存操作。
+
+KingfisherOptionsInfoItem 被提供给开发者对 Kingfisher 的各种行为进行控制，包含下载设置、缓存设置、动画设置以及 KingfisherOptions 中的全部配置参数。
+
+UIImage+Kingfisher 以及 UIButton+Kingfisher 对 UIImageView 和 UIButton 进行了拓展，即主要用于提供 Kingfisher 的外部接口。
+
+二、 Kingfisher的入口
+
+我们在使用Kingfisher时，是这样调用的
+imageView.kf.setImage(with: URL(string: imageUrl), placeholder: UIImage(named: "img_default_medium"))
+
+
+kf是kingfisher.swift中 对UIImageView和UIButton的extension中都实现了KingfisherCompatible的Protocol， Protocol中定义了kf变量，用来标识当前的调用类型
+/**
+ A type that has Kingfisher extensions.
+ */
+public protocol KingfisherCompatible {
+
+    associatedtype CompatibleType
+
+    var kf: Self.CompatibleType { get }
+}
+
+extension KingfisherCompatible {
+
+    public var kf: Kingfisher.Kingfisher&lt;Self&gt; { get }
+}
+
+extension ImageView: KingfisherCompatible { }
+extension Button: KingfisherCompatible { }
+
+
+在UIImageView和UIButton的extension中有以上方法，供外部使用的API，快速设置网络图片，我们看到传入的的是Resource类型
+
+public func setImage(with resource: Resource?,
+                         placeholder: Placeholder? = nil,
+                         options: KingfisherOptionsInfo? = nil,
+                         progressBlock: DownloadProgressBlock? = nil,
+                         completionHandler: CompletionHandler? = nil) -&gt; RetrieveImageTask
+
+可以看到Resource是一个Protocol, 在Protocol中定义了URL和cacheKey, 在URL的extension中实现了Resource协议，所以我们只需传入URL对象即可
+public protocol Resource {
+    /// The key used in cache.
+    var cacheKey: String { get }
+    
+    /// The target image URL.
+    var downloadURL: URL { get }
+}
+
+extension URL: Resource {
+    public var cacheKey: String { return absoluteString }
+    public var downloadURL: URL { return self }
+}
+
+
+三、具体分析Kingfisher的工作原理
+先判断Resource是否为空， 如果为空，直接return RetrieveImageTask.empty
+ public func setImage(with resource: Resource?,
+                         placeholder: Placeholder? = nil,
+                         options: KingfisherOptionsInfo? = nil,
+                         progressBlock: DownloadProgressBlock? = nil,
+                         completionHandler: CompletionHandler? = nil) -&gt; RetrieveImageTask
+    {
+        guard let resource = resource else {
+            self.placeholder = placeholder
+            setWebURL(nil)
+            completionHandler?(nil, nil, .none, nil)
+            return .empty
+        }
+}
+
+
+我们来具体看Kingfisher的对于一张未下载图片的工作流
+// 1. UIView的Extension，提供API调用
+func setImage(with resource: Resource?,
+                         placeholder: Placeholder? = nil,
+                         options: KingfisherOptionsInfo? = nil,
+                         progressBlock: DownloadProgressBlock? = nil,
+                         completionHandler: CompletionHandler? = nil) -&gt; RetrieveImageTask
+                
+                         
+// 2. 尝试从缓存中获取Image            
+func retrieveImage(with resource: Resource,
+        options: KingfisherOptionsInfo?,
+        progressBlock: DownloadProgressBlock?,
+        completionHandler: CompletionHandler?) -&gt; RetrieveImageTask
+        
+// 3. 创建ImageDownloader，来下载Image
+func downloadAndCacheImage(with url: URL,
+                             forKey key: String,
+                      retrieveImageTask: RetrieveImageTask,
+                          progressBlock: DownloadProgressBlock?,
+                      completionHandler: CompletionHandler?,
+                                options: KingfisherOptionsInfo) -&gt; RetrieveImageDownloadTask?
+          
+// 4. Download                               
+open func downloadImage(with url: URL,
+                       retrieveImageTask: RetrieveImageTask? = nil,
+                       options: KingfisherOptionsInfo? = nil,
+                       progressBlock: ImageDownloaderProgressBlock? = nil,
+                       completionHandler: ImageDownloaderCompletionHandler? = nil) -&gt; RetrieveImageDownloadTask?
+
+
+
+下载的核心流程, 来自ImageDownloader
+
+// 1. 
+ var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeout)  
+ 
+// 2. ImageDownloader内部 创建了多个队列
+barrierQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Barrier.\(name)", attributes: .concurrent)
+
+processQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Process.\(name)", attributes: .concurrent)
+
+cancelQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Cancel.\(name)")                 
+
+
+
+" />
+    
+    <meta name="author" content="风车大战骑士" />
+
+    
+    <meta property="og:title" content="Kingfisher框架分析" />
+    <meta property="twitter:title" content="Kingfisher框架分析" />
+
+
+
+    
+  <!-- Async font loading -->
+<script>
+  window.WebFontConfig = {
+      custom: {
+          families: ['Spoqa Han Sans:100,300,400,700'],
+          urls: ['https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css']
+      },
+      timeout: 60000
+  };
+  (function(d) {
+      var wf = d.createElement('script'), s = d.scripts[0];
+      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+      s.parentNode.insertBefore(wf, s);
+  })(document);
+</script>
+
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link rel="stylesheet" type="text/css" href="/style.css" />
+  <link rel="alternate" type="application/rss+xml" title="风车大战骑士 - 生活不止眼前的苟且，还有诗和远方" href="/feed.xml" />
+  <link rel="shortcut icon" href="https://github.com/AndreHu88/AndreHu88.github.io/blob/master/images/logo.png?raw=true">
+  <script src="https://kit.fontawesome.com/56f7faf3f4.js"></script>
+
+
+  <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+
+</head>
+  <body>
+    <div class="wrapper-sidebar">
+  <header class="sidebar clearfix">
+    <div class="site-info">
+      
+        <a href="/" class="site-avatar"><img src="https://github.com/AndreHu88/AndreHu88.github.io/blob/master/images/logo.png?raw=true" /></a>
+       
+      <h1 class="site-name"><a href="/">风车大战骑士</a></h1>
+      <p class="site-description">生活不止眼前的苟且，还有诗和远方</p>
+    </div>
+  </header>
+
+  <div class="navlist">
+    <nav>
+      
+      
+      <a href="/">首页</a>
+      
+      
+      
+      <a href="/archive">归档</a>
+      
+      
+      
+      <a href="/tags">标签</a>
+      
+      
+      
+      <a href="/about">关于</a>
+      
+      
+    </nav>
+  </div>
+
+  <div class="wrapper-footer-desktop">
+    <footer class="footer">
+      <!-- Refer to https://codepen.io/ruandre/pen/howFi -->
+<ul class="svg-icon">
+
+  
+  <li><a href="https://www.weibo.com/huyong668" class="icon-1 weibo" title="Weibo"><svg viewBox="0 0 512 512"><path d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></svg></a></li>
+  
+  
+  
+
+  
+
+  
+  <li><a href="mailto:huyong229@163.com" class="icon-8 email" title="Email"><svg viewBox="0 0 512 512"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></svg><!--[if lt IE 9]><em>Email</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+  <li><a href="https://github.com/AndreHu88" class="icon-13 github" title="GitHub"><svg viewBox="0 0 512 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg><!--[if lt IE 9]><em>GitHub</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</ul>
+
+
+
+<p>Copyright(c) 2019 愿你出走半生，归来仍是少年</p>
+
+    </footer>
+  </div>
+</div>
+
+<script type="text/javascript"> 
+
+// document.addEventListener('DOMContentLoaded', function () {
+//     function audioAutoPlay() {
+//         var audio = document.getElementById('bg-music');
+//             audio.play();
+//         document.addEventListener("WeixinJSBridgeReady", function () {
+//             audio.play();
+//         }, false);
+//     }
+//     audioAutoPlay();
+// });
+
+ </script>
+
+    <div id="main" role="main" class="wrapper-content">
+      <article class="posts">
+  <h1>Kingfisher框架分析</h1>
+
+  <div clsss="meta">
+    <span class="date">
+      2019-07-21
+    </span>
+
+    <ul class="tag">
+      
+      <li>
+        <a href="http://localhost:4000/tags#iOS">
+          iOS
+        </a>
+      </li>
+      
+      <li>
+        <a href="http://localhost:4000/tags#Swift">
+          Swift
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+
+  <div class="entry">
+    <h3 id="kingfisher框架的内部实现解读">Kingfisher框架的内部实现解读</h3>
+<p>Kingfisher 是由 onevcat 编写的用于下载和缓存网络图片的轻量级Swift工具库，其中涉及到了包括GCD、Swift高级语法、缓存、硬盘读写、网络编程、图像编码、图形绘制、Gif数据生成和处理、MD5、Associated Objects的使用等大量iOS开发知识</p>
+
+<h4 id="一kingfisher的架构">一、Kingfisher的架构</h4>
+<p><img src="https://user-gold-cdn.xitu.io/2016/11/30/8a440adc43cd3da2b46c16f9ffb8c087" alt="" /></p>
+
+<p>UIImage+Extension 文件内部对 UIImage 以及 NSData 进行了拓展, 包含判定图片类型、图片解码以及Gif数据处理等操作。</p>
+
+<p>String+MD5 负责图片缓存时对文件名进行MD5加密操作。</p>
+
+<p>ImageCache 主要负责将加载过的图片缓存至本地。</p>
+
+<p>ImageDownloader 负责下载网络图片。</p>
+
+<p>KingfisherOptions 内含配置 Kingfisher 行为的部分参数，包括是否设置下载低优先级、是否强制刷新、是否仅缓存至内存、是否允许图像后台解码等设置。</p>
+
+<p>Resource 中的 Resource 结构体记录了图片的下载地址和缓存Key。</p>
+
+<p>ImageTransition 文件中的动画效果将在使用 UIImageView 的拓展 API 时被采用，其底层为UIViewAnimationOptions，此外你也可以自己传入相应地动画操作、完成闭包来配置自己的动画效果。</p>
+
+<p>ThreadHelper 中的dispatch_async_safely_main_queue 函数接受一个闭包，利用 NSThread.isMainThread 判定并将其放置在主线程中执行。</p>
+
+<p>KingfisherManager 是 Kingfisher 的主控制类，整合了图片下载及缓存操作。</p>
+
+<p>KingfisherOptionsInfoItem 被提供给开发者对 Kingfisher 的各种行为进行控制，包含下载设置、缓存设置、动画设置以及 KingfisherOptions 中的全部配置参数。</p>
+
+<p>UIImage+Kingfisher 以及 UIButton+Kingfisher 对 UIImageView 和 UIButton 进行了拓展，即主要用于提供 Kingfisher 的外部接口。</p>
+
+<h4 id="二-kingfisher的入口">二、 Kingfisher的入口</h4>
+
+<p>我们在使用Kingfisher时，是这样调用的</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>imageView.kf.setImage(with: URL(string: imageUrl), placeholder: UIImage(named: "img_default_medium"))
+</code></pre></div></div>
+
+<p>kf是kingfisher.swift中 对UIImageView和UIButton的extension中都实现了KingfisherCompatible的Protocol， Protocol中定义了kf变量，用来标识当前的调用类型</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+ A type that has Kingfisher extensions.
+ */
+public protocol KingfisherCompatible {
+
+    associatedtype CompatibleType
+
+    var kf: Self.CompatibleType { get }
+}
+
+extension KingfisherCompatible {
+
+    public var kf: Kingfisher.Kingfisher&lt;Self&gt; { get }
+}
+
+extension ImageView: KingfisherCompatible { }
+extension Button: KingfisherCompatible { }
+</code></pre></div></div>
+
+<p>在UIImageView和UIButton的extension中有以上方法，供外部使用的API，快速设置网络图片，我们看到传入的的是<code class="highlighter-rouge">Resource</code>类型</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public func setImage(with resource: Resource?,
+                         placeholder: Placeholder? = nil,
+                         options: KingfisherOptionsInfo? = nil,
+                         progressBlock: DownloadProgressBlock? = nil,
+                         completionHandler: CompletionHandler? = nil) -&gt; RetrieveImageTask
+</code></pre></div></div>
+<p>可以看到Resource是一个Protocol, 在Protocol中定义了URL和cacheKey, 在URL的extension中实现了Resource协议，所以我们只需传入URL对象即可</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public protocol Resource {
+    /// The key used in cache.
+    var cacheKey: String { get }
+    
+    /// The target image URL.
+    var downloadURL: URL { get }
+}
+
+extension URL: Resource {
+    public var cacheKey: String { return absoluteString }
+    public var downloadURL: URL { return self }
+}
+</code></pre></div></div>
+
+<h4 id="三具体分析kingfisher的工作原理">三、具体分析Kingfisher的工作原理</h4>
+<p>先判断Resource是否为空， 如果为空，直接return RetrieveImageTask.empty</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> public func setImage(with resource: Resource?,
+                         placeholder: Placeholder? = nil,
+                         options: KingfisherOptionsInfo? = nil,
+                         progressBlock: DownloadProgressBlock? = nil,
+                         completionHandler: CompletionHandler? = nil) -&gt; RetrieveImageTask
+    {
+        guard let resource = resource else {
+            self.placeholder = placeholder
+            setWebURL(nil)
+            completionHandler?(nil, nil, .none, nil)
+            return .empty
+        }
+}
+
+</code></pre></div></div>
+<p>我们来具体看Kingfisher的对于一张未下载图片的工作流</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 1. UIView的Extension，提供API调用
+func setImage(with resource: Resource?,
+                         placeholder: Placeholder? = nil,
+                         options: KingfisherOptionsInfo? = nil,
+                         progressBlock: DownloadProgressBlock? = nil,
+                         completionHandler: CompletionHandler? = nil) -&gt; RetrieveImageTask
+                
+                         
+// 2. 尝试从缓存中获取Image            
+func retrieveImage(with resource: Resource,
+        options: KingfisherOptionsInfo?,
+        progressBlock: DownloadProgressBlock?,
+        completionHandler: CompletionHandler?) -&gt; RetrieveImageTask
+        
+// 3. 创建ImageDownloader，来下载Image
+func downloadAndCacheImage(with url: URL,
+                             forKey key: String,
+                      retrieveImageTask: RetrieveImageTask,
+                          progressBlock: DownloadProgressBlock?,
+                      completionHandler: CompletionHandler?,
+                                options: KingfisherOptionsInfo) -&gt; RetrieveImageDownloadTask?
+          
+// 4. Download                               
+open func downloadImage(with url: URL,
+                       retrieveImageTask: RetrieveImageTask? = nil,
+                       options: KingfisherOptionsInfo? = nil,
+                       progressBlock: ImageDownloaderProgressBlock? = nil,
+                       completionHandler: ImageDownloaderCompletionHandler? = nil) -&gt; RetrieveImageDownloadTask?
+
+</code></pre></div></div>
+
+<p>下载的核心流程, 来自<code class="highlighter-rouge">ImageDownloader</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 1. 
+ var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeout)  
+ 
+// 2. ImageDownloader内部 创建了多个队列
+barrierQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Barrier.\(name)", attributes: .concurrent)
+
+processQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Process.\(name)", attributes: .concurrent)
+
+cancelQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Cancel.\(name)")                 
+
+</code></pre></div></div>
+
+
+  </div>
+
+  
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+
+	    var disqus_shortname = 'Jack';
+
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+</article>
+
+<div class="pagination">
+  
+    <span class="prev" >
+      <a href="http://localhost:4000/%E6%9F%A5%E7%90%86%E8%8A%92%E6%A0%BC%E4%BC%A0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+        ← 上一篇
+      </a>
+    </span>
+  
+  
+    <span class="next" >
+      <a href="http://localhost:4000/%E5%A4%8D%E7%9B%98%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+        下一篇 →
+      </a>
+    </span>
+  
+</div>
+    </div>
+
+    
+
+  </body>
+
+  <div class="wrapper-footer-mobile">
+    <footer class="footer">
+      <!-- Refer to https://codepen.io/ruandre/pen/howFi -->
+<ul class="svg-icon">
+
+  
+  <li><a href="https://www.weibo.com/huyong668" class="icon-1 weibo" title="Weibo"><svg viewBox="0 0 512 512"><path d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></svg></a></li>
+  
+  
+  
+
+  
+
+  
+  <li><a href="mailto:huyong229@163.com" class="icon-8 email" title="Email"><svg viewBox="0 0 512 512"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></svg><!--[if lt IE 9]><em>Email</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+  <li><a href="https://github.com/AndreHu88" class="icon-13 github" title="GitHub"><svg viewBox="0 0 512 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg><!--[if lt IE 9]><em>GitHub</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</ul>
+
+
+
+<p>Copyright(c) 2019 愿你出走半生，归来仍是少年</p>
+
+    </footer>
+
+
+</html>

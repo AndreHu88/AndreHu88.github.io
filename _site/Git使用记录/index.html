@@ -7,10 +7,9 @@
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+    <meta name="keywords" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
 
-      <meta name="keywords" content="Jack Hu, 胡勇，上海 胡勇，胡勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,www.sohod.cn">
-
-    <meta name="description" content="Jack Hu,胡勇，上海 胡勇，胡勇，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,www.sohod.cn">
+    <meta name="description" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
 
     
     <meta name="description" content="Git创建提交
@@ -177,18 +176,18 @@ git push origin &lt;branch name&gt;
 
 <script type="text/javascript"> 
 
-document.addEventListener('DOMContentLoaded', function () {
-    function audioAutoPlay() {
-        var audio = document.getElementById('bg-music');
-            audio.play();
-        document.addEventListener("WeixinJSBridgeReady", function () {
-            audio.play();
-        }, false);
-    }
-    audioAutoPlay();
-});
+// document.addEventListener('DOMContentLoaded', function () {
+//     function audioAutoPlay() {
+//         var audio = document.getElementById('bg-music');
+//             audio.play();
+//         document.addEventListener("WeixinJSBridgeReady", function () {
+//             audio.play();
+//         }, false);
+//     }
+//     audioAutoPlay();
+// });
 
-</script>
+ </script>
 
     <div id="main" role="main" class="wrapper-content">
       <article class="posts">
@@ -315,6 +314,24 @@ tag主要用于发布版本的管理，一个版本发布之后，我们可以�
 <h4 id="git更新与合并">Git更新与合并</h4>
 <p>更新你的本地仓库至最新改动
 git pull</p>
+
+<h4 id="git代理">Git代理</h4>
+<p>当git clone时特别慢时，可以为git 设置代理</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config --global http.proxy http://127.0.0.1:1080
+git config --global https.proxy https://127.0.0.1:1080
+git config --global http.proxy 'socks5://127.0.0.1:1080' 
+git config --global https.proxy 'socks5://127.0.0.1:1080'
+</code></pre></div></div>
+
+<p>取消代理</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config --global --unset http.proxy
+git config --global --unset https.proxy
+</code></pre></div></div>
+
+<p>取消设置GitHub的代理</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config --global --unset http.https://github.com.proxy
+</code></pre></div></div>
 
 
   </div>

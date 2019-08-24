@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>IM技术的整理 – 风车大战骑士 – 生活不止眼前的苟且，还有诗和远方</title>
+
+      <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+    <meta name="keywords" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
+
+    <meta name="description" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
+
+    
+    <meta name="description" content="通信协议
+一套典型的IM通信协议设计分为三层：应用层、安全层、传输层
+
+IM应用层协议
+应用层协议选型，常见的有三种：
+
+  文本协议
+  二进制协议
+  流式XML协议
+
+
+1. 文本协议
+文本协议是指 “贴近人类书面语言表达”的通讯传输协议，典型的是http
+Accept: */*
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36
+
+
+文本协议的特点
+
+  可读性好，便于调试
+  解析效率一般（按照:分割，key value形式）
+  对二进制支持不好(图片 / 视频 / 语音)
+
+
+2. 二进制协议
+二进制协议一般定长包头和可扩展变长包体 ，每个字段固定了含义 
+例: IP协议的前4个bit表示协议版本号（Version）
+
+
+
+二进制协议特点
+
+  可读性差，难于调试
+  扩展性不好 ，如果要扩展字段，旧版协议就不兼容了，所以一般设计时会有一个Version字段
+  解析效率高(没有解析代价)
+  对二进制支持不好(图片 / 视频 / 语音)
+
+
+3. XML协议
+XMPP使用XML协议，但XML使用太消耗流量
+&lt;message
+to=’[url=mailto:romeo@example.net]romeo@example.net[/url]’
+from=’[url=mailto:juliet@example.com]juliet@example.com[/url]’
+type=’chat’
+xml : lang=’en’&gt;
+&lt;body&gt;Wherefore art thou, Romeo?&lt;/body&gt;
+&lt;/message&gt;
+
+
+XML协议特点
+
+  a. 它是准标准协议，可以跨域互通
+  b. XML的优点，可读性好，扩展性好
+  c. 解析代价超高（dom解析）
+  d. 有效数据传输率超低（大量的标签）
+
+
+4. 实际使用协议
+一般常见的做法是：
+
+  定长二进制包头，可扩展变长包体。包体可以使用用文本、XML等扩展性好的协议。
+  包头负责传输和解析效率，与业务无关。包体保证扩展性，与业务相关。
+
+
+//sizeof(cs_essay-header)=16
+struct cs_essay-header{
+    uint32_t version;
+    uint32_t magic_num;
+    uint32_t cmd;
+    uint32_t len;
+    uint8_t data[];
+}__attribute__((packed));
+
+
+
+  前4个字节是version
+  接下来的4个字节是个“魔法数字（magic_num）， 包头放几个约定好的特殊字符，包尾放几个约定好的特殊字符 约定好，发给你的协议，某几个字节位置，是0x 01020304 ，才是正常报文
+  接下来是command（命令号），用来区分是keepalive报文、业务报文、密钥交换报文等
+  len（包体长度），告知服务端要接收多长的包体
+
+
+Google开源的ProtoBuf协议具有更多有点
+
+  现成的解析库种类多
+  现成的解析库种类多
+  在工业界已广泛应用
+
+
+例： 登录请求包传入的是用户名与密码，登录响应包返回的是用户的uid
+
+message CUserLoginReq{
+    optional string username = 1;
+    optional string passwd = 2;
+}
+
+message CUserLoginResp{
+    optional uint64 uid =1;
+}
+
+
+IM安全层
+
+im协议，消息的保密性非常重要 ，谁都不希望自己聊天内容被看到，所以安全层是必不可少的
+
+SSL加密
+证书管理麻烦，代价比较高
+自定义加密策略
+自定义加密核心在于秘钥的生成，管理， 秘钥的管理大概有三种方式
+固定秘钥
+服务端和客户端约定好一个密钥，同时约定好一个加密算法（eg：AES ），每次客户端im在发送前，就用约定好的算法，以及约定好的密钥加密再传输，服务端收到报文后，用约定好的算法，约定好的密钥再解密。这种方式，密钥和算法对程序员都是透明的。
+一人一秘钥
+简单说来就是每个人的密钥是固定的，但是每个人之间又不同，其实就是在固定密钥的算法中包含用户的某一特殊属性，比如用户uid、手机号、qq号等。
+动态秘钥
+动态密钥，一Session一密钥的安全性更高，每次会话前协商密钥。密钥协商的过程要经过2次非对称密钥的随机生成，1次对称加密密钥的随机生成
+
+IM传输层
+TCP / UDP
+
+一般大厂的做法的TCP和UDP混合使用
+
+“无线环境下，UDP更好，可以做到状态无关，而TCP不稳定，进出电梯就要断线，用户体验不好”
+
+" />
+    <meta property="og:description" content="通信协议
+一套典型的IM通信协议设计分为三层：应用层、安全层、传输层
+
+IM应用层协议
+应用层协议选型，常见的有三种：
+
+  文本协议
+  二进制协议
+  流式XML协议
+
+
+1. 文本协议
+文本协议是指 “贴近人类书面语言表达”的通讯传输协议，典型的是http
+Accept: */*
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36
+
+
+文本协议的特点
+
+  可读性好，便于调试
+  解析效率一般（按照:分割，key value形式）
+  对二进制支持不好(图片 / 视频 / 语音)
+
+
+2. 二进制协议
+二进制协议一般定长包头和可扩展变长包体 ，每个字段固定了含义 
+例: IP协议的前4个bit表示协议版本号（Version）
+
+
+
+二进制协议特点
+
+  可读性差，难于调试
+  扩展性不好 ，如果要扩展字段，旧版协议就不兼容了，所以一般设计时会有一个Version字段
+  解析效率高(没有解析代价)
+  对二进制支持不好(图片 / 视频 / 语音)
+
+
+3. XML协议
+XMPP使用XML协议，但XML使用太消耗流量
+&lt;message
+to=’[url=mailto:romeo@example.net]romeo@example.net[/url]’
+from=’[url=mailto:juliet@example.com]juliet@example.com[/url]’
+type=’chat’
+xml : lang=’en’&gt;
+&lt;body&gt;Wherefore art thou, Romeo?&lt;/body&gt;
+&lt;/message&gt;
+
+
+XML协议特点
+
+  a. 它是准标准协议，可以跨域互通
+  b. XML的优点，可读性好，扩展性好
+  c. 解析代价超高（dom解析）
+  d. 有效数据传输率超低（大量的标签）
+
+
+4. 实际使用协议
+一般常见的做法是：
+
+  定长二进制包头，可扩展变长包体。包体可以使用用文本、XML等扩展性好的协议。
+  包头负责传输和解析效率，与业务无关。包体保证扩展性，与业务相关。
+
+
+//sizeof(cs_essay-header)=16
+struct cs_essay-header{
+    uint32_t version;
+    uint32_t magic_num;
+    uint32_t cmd;
+    uint32_t len;
+    uint8_t data[];
+}__attribute__((packed));
+
+
+
+  前4个字节是version
+  接下来的4个字节是个“魔法数字（magic_num）， 包头放几个约定好的特殊字符，包尾放几个约定好的特殊字符 约定好，发给你的协议，某几个字节位置，是0x 01020304 ，才是正常报文
+  接下来是command（命令号），用来区分是keepalive报文、业务报文、密钥交换报文等
+  len（包体长度），告知服务端要接收多长的包体
+
+
+Google开源的ProtoBuf协议具有更多有点
+
+  现成的解析库种类多
+  现成的解析库种类多
+  在工业界已广泛应用
+
+
+例： 登录请求包传入的是用户名与密码，登录响应包返回的是用户的uid
+
+message CUserLoginReq{
+    optional string username = 1;
+    optional string passwd = 2;
+}
+
+message CUserLoginResp{
+    optional uint64 uid =1;
+}
+
+
+IM安全层
+
+im协议，消息的保密性非常重要 ，谁都不希望自己聊天内容被看到，所以安全层是必不可少的
+
+SSL加密
+证书管理麻烦，代价比较高
+自定义加密策略
+自定义加密核心在于秘钥的生成，管理， 秘钥的管理大概有三种方式
+固定秘钥
+服务端和客户端约定好一个密钥，同时约定好一个加密算法（eg：AES ），每次客户端im在发送前，就用约定好的算法，以及约定好的密钥加密再传输，服务端收到报文后，用约定好的算法，约定好的密钥再解密。这种方式，密钥和算法对程序员都是透明的。
+一人一秘钥
+简单说来就是每个人的密钥是固定的，但是每个人之间又不同，其实就是在固定密钥的算法中包含用户的某一特殊属性，比如用户uid、手机号、qq号等。
+动态秘钥
+动态密钥，一Session一密钥的安全性更高，每次会话前协商密钥。密钥协商的过程要经过2次非对称密钥的随机生成，1次对称加密密钥的随机生成
+
+IM传输层
+TCP / UDP
+
+一般大厂的做法的TCP和UDP混合使用
+
+“无线环境下，UDP更好，可以做到状态无关，而TCP不稳定，进出电梯就要断线，用户体验不好”
+
+" />
+    
+    <meta name="author" content="风车大战骑士" />
+
+    
+    <meta property="og:title" content="IM技术的整理" />
+    <meta property="twitter:title" content="IM技术的整理" />
+
+
+
+    
+  <!-- Async font loading -->
+<script>
+  window.WebFontConfig = {
+      custom: {
+          families: ['Spoqa Han Sans:100,300,400,700'],
+          urls: ['https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css']
+      },
+      timeout: 60000
+  };
+  (function(d) {
+      var wf = d.createElement('script'), s = d.scripts[0];
+      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+      s.parentNode.insertBefore(wf, s);
+  })(document);
+</script>
+
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link rel="stylesheet" type="text/css" href="/style.css" />
+  <link rel="alternate" type="application/rss+xml" title="风车大战骑士 - 生活不止眼前的苟且，还有诗和远方" href="/feed.xml" />
+  <link rel="shortcut icon" href="https://github.com/AndreHu88/AndreHu88.github.io/blob/master/images/logo.png?raw=true">
+  <script src="https://kit.fontawesome.com/56f7faf3f4.js"></script>
+
+
+  <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+
+</head>
+  <body>
+    <div class="wrapper-sidebar">
+  <header class="sidebar clearfix">
+    <div class="site-info">
+      
+        <a href="/" class="site-avatar"><img src="https://github.com/AndreHu88/AndreHu88.github.io/blob/master/images/logo.png?raw=true" /></a>
+       
+      <h1 class="site-name"><a href="/">风车大战骑士</a></h1>
+      <p class="site-description">生活不止眼前的苟且，还有诗和远方</p>
+    </div>
+  </header>
+
+  <div class="navlist">
+    <nav>
+      
+      
+      <a href="/">首页</a>
+      
+      
+      
+      <a href="/archive">归档</a>
+      
+      
+      
+      <a href="/tags">标签</a>
+      
+      
+      
+      <a href="/about">关于</a>
+      
+      
+    </nav>
+  </div>
+
+  <div class="wrapper-footer-desktop">
+    <footer class="footer">
+      <!-- Refer to https://codepen.io/ruandre/pen/howFi -->
+<ul class="svg-icon">
+
+  
+  <li><a href="https://www.weibo.com/huyong668" class="icon-1 weibo" title="Weibo"><svg viewBox="0 0 512 512"><path d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></svg></a></li>
+  
+  
+  
+
+  
+
+  
+  <li><a href="mailto:huyong229@163.com" class="icon-8 email" title="Email"><svg viewBox="0 0 512 512"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></svg><!--[if lt IE 9]><em>Email</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+  <li><a href="https://github.com/AndreHu88" class="icon-13 github" title="GitHub"><svg viewBox="0 0 512 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg><!--[if lt IE 9]><em>GitHub</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</ul>
+
+
+
+<p>Copyright(c) 2019 愿你出走半生，归来仍是少年</p>
+
+    </footer>
+  </div>
+</div>
+
+<script type="text/javascript"> 
+
+// document.addEventListener('DOMContentLoaded', function () {
+//     function audioAutoPlay() {
+//         var audio = document.getElementById('bg-music');
+//             audio.play();
+//         document.addEventListener("WeixinJSBridgeReady", function () {
+//             audio.play();
+//         }, false);
+//     }
+//     audioAutoPlay();
+// });
+
+ </script>
+
+    <div id="main" role="main" class="wrapper-content">
+      <article class="posts">
+  <h1>IM技术的整理</h1>
+
+  <div clsss="meta">
+    <span class="date">
+      2019-08-04
+    </span>
+
+    <ul class="tag">
+      
+      <li>
+        <a href="http://localhost:4000/tags#架构">
+          架构
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+
+  <div class="entry">
+    <h2 id="通信协议">通信协议</h2>
+<p>一套典型的IM通信协议设计分为三层：应用层、安全层、传输层</p>
+
+<h3 id="im应用层协议">IM应用层协议</h3>
+<p>应用层协议选型，常见的有三种：</p>
+<ol>
+  <li>文本协议</li>
+  <li>二进制协议</li>
+  <li>流式XML协议</li>
+</ol>
+
+<h4 id="1-文本协议">1. 文本协议</h4>
+<p>文本协议是指 “贴近人类书面语言表达”的通讯传输协议，典型的是http</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Accept: */*
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36
+</code></pre></div></div>
+
+<p>文本协议的特点</p>
+<ul>
+  <li>可读性好，便于调试</li>
+  <li>解析效率一般（按照:分割，key value形式）</li>
+  <li>对二进制支持不好(图片 / 视频 / 语音)</li>
+</ul>
+
+<h4 id="2-二进制协议">2. 二进制协议</h4>
+<p>二进制协议一般定长包头和可扩展变长包体 ，每个字段固定了含义 
+例: IP协议的前4个bit表示协议版本号（Version）</p>
+
+<p><img src="http://docs.52im.net/extend/docs/book/tcpip/vol1/3/images2/52im_1.png" alt="" /></p>
+
+<p>二进制协议特点</p>
+<ul>
+  <li>可读性差，难于调试</li>
+  <li>扩展性不好 ，如果要扩展字段，旧版协议就不兼容了，所以一般设计时会有一个Version字段</li>
+  <li>解析效率高(没有解析代价)</li>
+  <li>对二进制支持不好(图片 / 视频 / 语音)</li>
+</ul>
+
+<h4 id="3-xml协议">3. XML协议</h4>
+<p>XMPP使用XML协议，但XML使用太消耗流量</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;message
+to=’[url=mailto:romeo@example.net]romeo@example.net[/url]’
+from=’[url=mailto:juliet@example.com]juliet@example.com[/url]’
+type=’chat’
+xml : lang=’en’&gt;
+&lt;body&gt;Wherefore art thou, Romeo?&lt;/body&gt;
+&lt;/message&gt;
+</code></pre></div></div>
+
+<p>XML协议特点</p>
+<ul>
+  <li>a. 它是准标准协议，可以跨域互通</li>
+  <li>b. XML的优点，可读性好，扩展性好</li>
+  <li>c. 解析代价超高（dom解析）</li>
+  <li>d. 有效数据传输率超低（大量的标签）</li>
+</ul>
+
+<h4 id="4-实际使用协议">4. 实际使用协议</h4>
+<p>一般常见的做法是：</p>
+<ol>
+  <li>定长二进制包头，可扩展变长包体。包体可以使用用文本、XML等扩展性好的协议。</li>
+  <li>包头负责传输和解析效率，与业务无关。包体保证扩展性，与业务相关。</li>
+</ol>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//sizeof(cs_essay-header)=16
+struct cs_essay-header{
+    uint32_t version;
+    uint32_t magic_num;
+    uint32_t cmd;
+    uint32_t len;
+    uint8_t data[];
+}__attribute__((packed));
+</code></pre></div></div>
+
+<ul>
+  <li>前4个字节是version</li>
+  <li>接下来的4个字节是个“魔法数字（magic_num）， 包头放几个约定好的特殊字符，包尾放几个约定好的特殊字符 约定好，发给你的协议，某几个字节位置，是0x 01020304 ，才是正常报文</li>
+  <li>接下来是command（命令号），用来区分是keepalive报文、业务报文、密钥交换报文等</li>
+  <li>len（包体长度），告知服务端要接收多长的包体</li>
+</ul>
+
+<p>Google开源的ProtoBuf协议具有更多有点</p>
+<ul>
+  <li>现成的解析库种类多</li>
+  <li>现成的解析库种类多</li>
+  <li>在工业界已广泛应用</li>
+</ul>
+
+<p>例： 登录请求包传入的是用户名与密码，登录响应包返回的是用户的uid</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>message CUserLoginReq{
+    optional string username = 1;
+    optional string passwd = 2;
+}
+
+message CUserLoginResp{
+    optional uint64 uid =1;
+}
+</code></pre></div></div>
+
+<h3 id="im安全层">IM安全层</h3>
+
+<p>im协议，消息的保密性非常重要 ，谁都不希望自己聊天内容被看到，所以安全层是必不可少的</p>
+
+<h5 id="ssl加密">SSL加密</h5>
+<p>证书管理麻烦，代价比较高</p>
+<h5 id="自定义加密策略">自定义加密策略</h5>
+<p>自定义加密核心在于秘钥的生成，管理， 秘钥的管理大概有三种方式</p>
+<h6 id="固定秘钥">固定秘钥</h6>
+<p>服务端和客户端约定好一个密钥，同时约定好一个加密算法（eg：AES ），每次客户端im在发送前，就用约定好的算法，以及约定好的密钥加密再传输，服务端收到报文后，用约定好的算法，约定好的密钥再解密。这种方式，密钥和算法对程序员都是透明的。</p>
+<h6 id="一人一秘钥">一人一秘钥</h6>
+<p>简单说来就是每个人的密钥是固定的，但是每个人之间又不同，其实就是在固定密钥的算法中包含用户的某一特殊属性，比如用户uid、手机号、qq号等。</p>
+<h6 id="动态秘钥">动态秘钥</h6>
+<p>动态密钥，一Session一密钥的安全性更高，每次会话前协商密钥。密钥协商的过程要经过2次非对称密钥的随机生成，1次对称加密密钥的随机生成</p>
+
+<h3 id="im传输层">IM传输层</h3>
+<p>TCP / UDP</p>
+
+<p>一般大厂的做法的TCP和UDP混合使用</p>
+
+<p>“无线环境下，UDP更好，可以做到状态无关，而TCP不稳定，进出电梯就要断线，用户体验不好”</p>
+
+
+  </div>
+
+  
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+
+	    var disqus_shortname = 'Jack';
+
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+</article>
+
+<div class="pagination">
+  
+    <span class="prev" >
+      <a href="http://localhost:4000/%E5%A4%8D%E7%9B%98%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+        ← 上一篇
+      </a>
+    </span>
+  
+  
+    <span class="next" >
+      <a href="http://localhost:4000/springBoot%E5%AD%A6%E4%B9%A0/">
+        下一篇 →
+      </a>
+    </span>
+  
+</div>
+    </div>
+
+    
+
+  </body>
+
+  <div class="wrapper-footer-mobile">
+    <footer class="footer">
+      <!-- Refer to https://codepen.io/ruandre/pen/howFi -->
+<ul class="svg-icon">
+
+  
+  <li><a href="https://www.weibo.com/huyong668" class="icon-1 weibo" title="Weibo"><svg viewBox="0 0 512 512"><path d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></svg></a></li>
+  
+  
+  
+
+  
+
+  
+  <li><a href="mailto:huyong229@163.com" class="icon-8 email" title="Email"><svg viewBox="0 0 512 512"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></svg><!--[if lt IE 9]><em>Email</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+  <li><a href="https://github.com/AndreHu88" class="icon-13 github" title="GitHub"><svg viewBox="0 0 512 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg><!--[if lt IE 9]><em>GitHub</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</ul>
+
+
+
+<p>Copyright(c) 2019 愿你出走半生，归来仍是少年</p>
+
+    </footer>
+
+
+</html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>归档 – 风车大战骑士 – 生活不止眼前的苟且，还有诗和远方</title>
+  <title>SpringBoot学习笔记 – 风车大战骑士 – 生活不止眼前的苟且，还有诗和远方</title>
 
       <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
@@ -12,14 +12,176 @@
     <meta name="description" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
 
     
-    <meta name="description" content="生活不止眼前的苟且，还有诗和远方">
-    <meta property="og:description" content="生活不止眼前的苟且，还有诗和远方" />
+    <meta name="description" content="记录学习SpringBoot的过程
+
+Spring Boot是一个基于Java的开源框架，用于创建微服务
+
+SpringBoot的好处
+
+  避免在Spring中进行复杂的XML配置
+  以更简单的方式开发生产就绪的Spring应用程序
+  减少开发时间并独立运行应用程序
+  提供一种更简单的应用程序入门方式
+
+
+正式开始SpringBoot
+
+1.依赖SpringBoot
+
+所有Spring Boot启动程序都遵循相同的命名模式spring-boot-starter-*
+
+Spring Boot Starter Actuator依赖关系用于监视和管理应用程序。 其代码如下所示
+
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+
+Spring Boot Starter Security依赖项用于Spring Security。 其代码如下所示
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+Spring Boot Starter Web依赖项用于编写Rest端点。 其代码如下所示
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+
+Spring Boot Starter Thyme Leaf依赖项用于创建Web应用程序。 其代码如下所示
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+Spring Boot Starter Test依赖项用于编写测试用例。 其代码如下所示
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-test&lt;artifactId&gt;
+&lt;/dependency&gt;
+
+
+2. 代码结构
+
+Java推荐的包声明命名约定是反向域名。 例如 - com.jack.projectName
+
+com
+    +- jack
+        +- projectName
+            +- Application.java
+            |
+            +- Model / Bean
+            |    +- Model.java
+            +- Dao
+            |    +- Mapper.java
+            +- Controller
+            |    +- Controller.java
+            +- Service
+            |    +- Service.java
+
+
+3. 构建Restful项目
+
+@RestController注释用于定义RESTful Web服务。它提供JSON，XML和自定义响应。其语法如下所
+
+@RestController
+public class UserController {
+
+}
+
+
+" />
+    <meta property="og:description" content="记录学习SpringBoot的过程
+
+Spring Boot是一个基于Java的开源框架，用于创建微服务
+
+SpringBoot的好处
+
+  避免在Spring中进行复杂的XML配置
+  以更简单的方式开发生产就绪的Spring应用程序
+  减少开发时间并独立运行应用程序
+  提供一种更简单的应用程序入门方式
+
+
+正式开始SpringBoot
+
+1.依赖SpringBoot
+
+所有Spring Boot启动程序都遵循相同的命名模式spring-boot-starter-*
+
+Spring Boot Starter Actuator依赖关系用于监视和管理应用程序。 其代码如下所示
+
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+
+Spring Boot Starter Security依赖项用于Spring Security。 其代码如下所示
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+Spring Boot Starter Web依赖项用于编写Rest端点。 其代码如下所示
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+
+Spring Boot Starter Thyme Leaf依赖项用于创建Web应用程序。 其代码如下所示
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+Spring Boot Starter Test依赖项用于编写测试用例。 其代码如下所示
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-test&lt;artifactId&gt;
+&lt;/dependency&gt;
+
+
+2. 代码结构
+
+Java推荐的包声明命名约定是反向域名。 例如 - com.jack.projectName
+
+com
+    +- jack
+        +- projectName
+            +- Application.java
+            |
+            +- Model / Bean
+            |    +- Model.java
+            +- Dao
+            |    +- Mapper.java
+            +- Controller
+            |    +- Controller.java
+            +- Service
+            |    +- Service.java
+
+
+3. 构建Restful项目
+
+@RestController注释用于定义RESTful Web服务。它提供JSON，XML和自定义响应。其语法如下所
+
+@RestController
+public class UserController {
+
+}
+
+
+" />
     
     <meta name="author" content="风车大战骑士" />
 
     
-    <meta property="og:title" content="归档" />
-    <meta property="twitter:title" content="归档" />
+    <meta property="og:title" content="SpringBoot学习笔记" />
+    <meta property="twitter:title" content="SpringBoot学习笔记" />
 
 
 
@@ -154,337 +316,145 @@
  </script>
 
     <div id="main" role="main" class="wrapper-content">
-      <article class="page">
+      <article class="posts">
+  <h1>SpringBoot学习笔记</h1>
 
-  <h1>归档</h1>
+  <div clsss="meta">
+    <span class="date">
+      2019-08-18
+    </span>
+
+    <ul class="tag">
+      
+      <li>
+        <a href="http://localhost:4000/tags#Java">
+          Java
+        </a>
+      </li>
+      
+    </ul>
+  </div>
 
   <div class="entry">
-    
+    <h3 id="记录学习springboot的过程">记录学习SpringBoot的过程</h3>
 
-<ul class="archive">
-  
-    
-      <h2>2019</h2>
-    
+<p>Spring Boot是一个基于Java的开源框架，用于创建微服务</p>
 
-    <li>
-      
-      <a href="/%E6%9B%BE%E5%9B%BD%E8%97%A9%E4%BC%A0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
-      
-        曾国藩传读书笔记
-      </a>
-      <time>2019-08-24</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>SpringBoot的好处</p>
+<ol>
+  <li>避免在Spring中进行复杂的XML配置</li>
+  <li>以更简单的方式开发生产就绪的Spring应用程序</li>
+  <li>减少开发时间并独立运行应用程序</li>
+  <li>提供一种更简单的应用程序入门方式</li>
+</ol>
 
-    <li>
-      
-      <a href="/springBoot%E5%AD%A6%E4%B9%A0/">
-      
-        SpringBoot学习笔记
-      </a>
-      <time>2019-08-18</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<h4 id="正式开始springboot">正式开始SpringBoot</h4>
 
-    <li>
-      
-      <a href="/IM%E6%8A%80%E6%9C%AF%E7%9A%84%E6%95%B4%E7%90%86/">
-      
-        IM技术的整理
-      </a>
-      <time>2019-08-04</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<h5 id="1依赖springboot">1.依赖SpringBoot</h5>
 
-    <li>
-      
-      <a href="/%E5%A4%8D%E7%9B%98%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
-      
-        复盘内存管理
-      </a>
-      <time>2019-07-28</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>所有Spring Boot启动程序都遵循相同的命名模式<code class="highlighter-rouge">spring-boot-starter-*</code></p>
 
-    <li>
-      
-      <a href="/Kingfisher%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90/">
-      
-        Kingfisher框架分析
-      </a>
-      <time>2019-07-21</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>Spring Boot Starter Actuator依赖关系用于监视和管理应用程序。 其代码如下所示</p>
 
-    <li>
-      
-      <a href="/%E6%9F%A5%E7%90%86%E8%8A%92%E6%A0%BC%E4%BC%A0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
-      
-        查理芒格传读书笔记
-      </a>
-      <time>2019-07-14</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre></div></div>
 
-    <li>
-      
-      <a href="/%E8%B4%A2%E6%8A%A5%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/">
-      
-        财报入门学习
-      </a>
-      <time>2019-07-07</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>Spring Boot Starter Security依赖项用于Spring Security。 其代码如下所示</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre></div></div>
+<p>Spring Boot Starter Web依赖项用于编写Rest端点。 其代码如下所示</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre></div></div>
 
-    <li>
-      
-      <a href="/%E5%BD%BC%E5%BE%97%E6%9E%97%E5%A5%87%E7%AC%94%E8%AE%B0/">
-      
-        彼得林奇笔记
-      </a>
-      <time>2019-07-07</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>Spring Boot Starter Thyme Leaf依赖项用于创建Web应用程序。 其代码如下所示</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre></div></div>
+<p>Spring Boot Starter Test依赖项用于编写测试用例。 其代码如下所示</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-test&lt;artifactId&gt;
+&lt;/dependency&gt;
+</code></pre></div></div>
 
-    <li>
-      
-      <a href="/PMP%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/">
-      
-        PMP考试总结
-      </a>
-      <time>2019-06-22</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<h5 id="2-代码结构">2. 代码结构</h5>
 
-    <li>
-      
-      <a href="/Swift%E7%BB%84%E4%BB%B6%E5%8C%96/">
-      
-        Swift组件化
-      </a>
-      <time>2019-06-16</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>Java推荐的包声明命名约定是反向域名。 例如 - com.jack.projectName</p>
 
-    <li>
-      
-      <a href="/2019%E4%B9%A6%E5%8D%95/">
-      
-        2019书单
-      </a>
-      <time>2019-04-14</time>
-    </li>
-  
-    
-      
-      
-      
-        <h2>2018</h2>
-      
-    
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>com
+    +- jack
+        +- projectName
+            +- Application.java
+            |
+            +- Model / Bean
+            |    +- Model.java
+            +- Dao
+            |    +- Mapper.java
+            +- Controller
+            |    +- Controller.java
+            +- Service
+            |    +- Service.java
+</code></pre></div></div>
 
-    <li>
-      
-      <a href="/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E5%9B%BE/">
-      
-        数据结构-图
-      </a>
-      <time>2018-07-25</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<h5 id="3-构建restful项目">3. 构建Restful项目</h5>
 
-    <li>
-      
-      <a href="/OC%E6%92%B0%E5%86%99swift/">
-      
-        转战Swift
-      </a>
-      <time>2018-07-22</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<p>@RestController注释用于定义RESTful Web服务。它提供JSON，XML和自定义响应。其语法如下所</p>
 
-    <li>
-      
-      <a href="/%E4%BA%8C%E5%8F%89%E6%A0%91/">
-      
-        二叉树笔记
-      </a>
-      <time>2018-06-24</time>
-    </li>
-  
-    
-      
-      
-      
-    
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@RestController
+public class UserController {
 
-    <li>
-      
-      <a href="/%E6%99%93%E4%B9%A6%E9%A6%86%E4%B9%8B%E8%A1%8C/">
-      
-        晓书馆之行
-      </a>
-      <time>2018-06-17</time>
-    </li>
-  
-    
-      
-      
-      
-    
+}
+</code></pre></div></div>
 
-    <li>
-      
-      <a href="/%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E5%B0%8F%E8%AE%B0/">
-      
-        转场动画小记
-      </a>
-      <time>2018-03-17</time>
-    </li>
-  
-    
-      
-      
-      
-    
-
-    <li>
-      
-      <a href="/Git%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/">
-      
-        Git使用记录
-      </a>
-      <time>2018-03-03</time>
-    </li>
-  
-    
-      
-      
-      
-    
-
-    <li>
-      
-      <a href="/iOS%E7%9B%B4%E6%92%AD%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/">
-      
-        iOS直播项目总结
-      </a>
-      <time>2018-01-07</time>
-    </li>
-  
-    
-      
-      
-      
-        <h2>2017</h2>
-      
-    
-
-    <li>
-      
-      <a href="/iPhoneX%E7%9A%84%E9%80%82%E9%85%8D%E5%B0%8F%E8%AE%B0/">
-      
-        iPhoneX的适配问题
-      </a>
-      <time>2017-12-28</time>
-    </li>
-  
-    
-      
-      
-      
-    
-
-    <li>
-      
-      <a href="/Linux%E6%80%BB%E7%BB%93/">
-      
-        Linux命令总结
-      </a>
-      <time>2017-12-27</time>
-    </li>
-  
-    
-      
-      
-      
-    
-
-    <li>
-      
-      <a href="/objcRuntme/">
-      
-        objcRuntime小记
-      </a>
-      <time>2017-11-25</time>
-    </li>
-  
-</ul>
 
   </div>
+
+  
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+
+	    var disqus_shortname = 'Jack';
+
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
 </article>
 
+<div class="pagination">
+  
+    <span class="prev" >
+      <a href="http://localhost:4000/IM%E6%8A%80%E6%9C%AF%E7%9A%84%E6%95%B4%E7%90%86/">
+        ← 上一篇
+      </a>
+    </span>
+  
+  
+    <span class="next" >
+      <a href="http://localhost:4000/%E6%9B%BE%E5%9B%BD%E8%97%A9%E4%BC%A0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+        下一篇 →
+      </a>
+    </span>
+  
+</div>
     </div>
 
     
