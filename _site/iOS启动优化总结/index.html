@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>风车大战骑士 – 生活不止眼前的苟且，还有诗和远方</title>
+  <title>iOS 启动优化总结 – 风车大战骑士 – 生活不止眼前的苟且，还有诗和远方</title>
 
       <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
@@ -12,10 +12,132 @@
     <meta name="description" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
 
     
-    <meta name="description" content="生活不止眼前的苟且，还有诗和远方">
-    <meta property="og:description" content="生活不止眼前的苟且，还有诗和远方" />
+    <meta name="description" content="启动过程
+
+注： 本Blog的总结来自阅读美团iOS Team的学习，部分图片来自美团 Team(侵权删)
+
+
+加载过程  从Exec()到Main()
+
+真正的加载过程从exec()函数开始，exec()是一个系统调用。操作系统首先为进程分配一段内存空间，然后执行如下操作：
+
+
+  把App对应的可执行文件加载到内存。
+  把Dyld加载到内存。
+  Dyld进行动态链接。
+
+
+
+
+Dyld在各阶段处理的任务
+
+  加载动态库
+  Rebase和Bind
+  Objc setup
+  Initializers
+
+
+
+  
+    
+      加载动态库
+      从Header中获取所需要加载的动态的所依赖动态库列表，递归依赖集合
+    
+  
+  
+    
+      Rebase Bind
+      Rebase在Image内部调整指针的指向 Bind是指向Image外部的内容，指向外部的指针被Symbol绑定，Dyld要去符号表中查找对于的实现
+    
+    
+      Objc setup
+      注册Class 插入Category的方法列表   保证每个Selector唯一
+    
+    
+      Initializers
+      Objc的Load方法  C++的构造函数属性函数  非基本类型的C++静态全局变量的创建(通常是类或结构体)
+    
+  
+
+
+最后Dyld会调用main()函数，main()函数调用UIApplication()
+可能影响main()函数启动过程的一些因素
+
+  动态库越多，加载越慢
+  Objc类方法越多，加载越慢
+  Objc load方法越多，加载越慢
+  C++静态对象越多，加载越慢
+  C的Constructor方法越多，加载越慢
+
+
+" />
+    <meta property="og:description" content="启动过程
+
+注： 本Blog的总结来自阅读美团iOS Team的学习，部分图片来自美团 Team(侵权删)
+
+
+加载过程  从Exec()到Main()
+
+真正的加载过程从exec()函数开始，exec()是一个系统调用。操作系统首先为进程分配一段内存空间，然后执行如下操作：
+
+
+  把App对应的可执行文件加载到内存。
+  把Dyld加载到内存。
+  Dyld进行动态链接。
+
+
+
+
+Dyld在各阶段处理的任务
+
+  加载动态库
+  Rebase和Bind
+  Objc setup
+  Initializers
+
+
+
+  
+    
+      加载动态库
+      从Header中获取所需要加载的动态的所依赖动态库列表，递归依赖集合
+    
+  
+  
+    
+      Rebase Bind
+      Rebase在Image内部调整指针的指向 Bind是指向Image外部的内容，指向外部的指针被Symbol绑定，Dyld要去符号表中查找对于的实现
+    
+    
+      Objc setup
+      注册Class 插入Category的方法列表   保证每个Selector唯一
+    
+    
+      Initializers
+      Objc的Load方法  C++的构造函数属性函数  非基本类型的C++静态全局变量的创建(通常是类或结构体)
+    
+  
+
+
+最后Dyld会调用main()函数，main()函数调用UIApplication()
+可能影响main()函数启动过程的一些因素
+
+  动态库越多，加载越慢
+  Objc类方法越多，加载越慢
+  Objc load方法越多，加载越慢
+  C++静态对象越多，加载越慢
+  C的Constructor方法越多，加载越慢
+
+
+" />
     
     <meta name="author" content="风车大战骑士" />
+
+    
+    <meta property="og:title" content="iOS 启动优化总结" />
+    <meta property="twitter:title" content="iOS 启动优化总结" />
+
+
 
     
   <!-- Async font loading -->
@@ -152,334 +274,122 @@
  </script>
 
     <div id="main" role="main" class="wrapper-content">
+      <article class="posts">
+  <h1>iOS 启动优化总结</h1>
+
+  <div clsss="meta">
+    <span class="date">
+      2019-09-21
+    </span>
+
+    <ul class="tag">
       
+      <li>
+        <a href="http://localhost:4000/tags#iOS">
+          iOS
+        </a>
+      </li>
+      
+    </ul>
+  </div>
 
+  <div class="entry">
+    <h4 id="启动过程">启动过程</h4>
 
-<!-- <embed src="/music/bg.mp3" hidden="true" autostart="true" loop="true"> -->
+<p>注： 本Blog的总结来自阅读美团iOS Team的学习，部分图片来自美团 Team(侵权删)
+<img src="https://p0.meituan.net/travelcube/52635c087684765c9ee5b134c50226da136906.png" alt="" /></p>
 
-<div class="posts">
-  
-    <article class="post">
-      <h1>
-        <a href="/%E8%B4%A2%E6%8A%A5%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/">财报入门学习</a>
-      </h1>
+<h5 id="加载过程--从exec到main">加载过程  从Exec()到Main()</h5>
 
-      <div clsss="meta">
-        <span class="date">
-          2019-07-07
-        </span>
+<p>真正的加载过程从exec()函数开始，exec()是一个系统调用。操作系统首先为进程分配一段内存空间，然后执行如下操作：</p>
 
-        <ul class="tag">
-          
-          <li>
-            <a href="http://localhost:4000/tags#金融">
-              金融
-            </a>
-          </li>
-          
-        </ul>
-      </div>
-
-      <div class="entry">
-        <h4 id="记录金融入门学习">记录金融入门学习</h4>
-<blockquote>
-  <p><strong>巴菲特：</strong>买股票的本质是投资公司</p>
-</blockquote>
-
-<blockquote>
-  <p><strong>彼得林奇：</strong>当你读不懂某一公司的财务情况时，不要投资。股市的最大的亏损源于投资了在资产负债方面很糟糕的公司。先看资产负债表...
-      </div>
-
-      <a href="/%E8%B4%A2%E6%8A%A5%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/" class="read-more">Read More</a>
-    </article>
-  
-    <article class="post">
-      <h1>
-        <a href="/%E5%BD%BC%E5%BE%97%E6%9E%97%E5%A5%87%E7%AC%94%E8%AE%B0/">彼得林奇笔记</a>
-      </h1>
-
-      <div clsss="meta">
-        <span class="date">
-          2019-07-07
-        </span>
-
-        <ul class="tag">
-          
-          <li>
-            <a href="http://localhost:4000/tags#金融">
-              金融
-            </a>
-          </li>
-          
-          <li>
-            <a href="http://localhost:4000/tags#读书笔记">
-              读书笔记
-            </a>
-          </li>
-          
-        </ul>
-      </div>
-
-      <div class="entry">
-        <h2 id="彼得林奇投资风格">彼得林奇投资风格</h2>
-
-<h3 id="彼得林奇对公司的分类">彼得林奇对公司的分类</h3>
-
-<ul>
-  <li>缓慢增长型</li>
-  <li>稳定增长型</li>
-  <li>快速增长型</li>
-  <li>周期型</li>
-  <li>隐蔽资产型</li>
-  <li>困境反转型</li>
-</ul>
-
-<h3 id="缓慢增长型">...
-      </div>
-
-      <a href="/%E5%BD%BC%E5%BE%97%E6%9E%97%E5%A5%87%E7%AC%94%E8%AE%B0/" class="read-more">Read More</a>
-    </article>
-  
-    <article class="post">
-      <h1>
-        <a href="/PMP%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/">PMP考试总结</a>
-      </h1>
-
-      <div clsss="meta">
-        <span class="date">
-          2019-06-22
-        </span>
-
-        <ul class="tag">
-          
-          <li>
-            <a href="http://localhost:4000/tags#PMP">
-              PMP
-            </a>
-          </li>
-          
-        </ul>
-      </div>
-
-      <div class="entry">
-        <h3 id="记录下在备考pmp的一些知识">记录下在备考PMP的一些知识</h3>
-
-<h4 id="pmp十大知识领域">PMP十大知识领域</h4>
 <ol>
-  <li>整合管理</li>
-  <li>范围管理</li>
-  <li>进度管理</li>
-  <li>成本管理</li>
-  <li>质量管理</li>
-  <li>资源管理</li>
-  <li>沟通管理</li>
- ...
-      </div>
+  <li>把App对应的可执行文件加载到内存。</li>
+  <li>把Dyld加载到内存。</li>
+  <li>Dyld进行动态链接。</li>
+</ol>
 
-      <a href="/PMP%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/" class="read-more">Read More</a>
-    </article>
+<p><img src="https://p0.meituan.net/travelcube/db061a267f6dc2b14ff7f9120020a5c261253.png" alt="" /></p>
+
+<p>Dyld在各阶段处理的任务</p>
+<ol>
+  <li>加载动态库</li>
+  <li>Rebase和Bind</li>
+  <li>Objc setup</li>
+  <li>Initializers</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">加载动态库</th>
+      <th style="text-align: center">从Header中获取所需要加载的动态的所依赖动态库列表，递归依赖集合</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">Rebase Bind</td>
+      <td style="text-align: center">Rebase在Image内部调整指针的指向 Bind是指向Image外部的内容，指向外部的指针被Symbol绑定，Dyld要去符号表中查找对于的实现</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Objc setup</td>
+      <td style="text-align: center">注册Class 插入Category的方法列表   保证每个Selector唯一</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Initializers</td>
+      <td style="text-align: center">Objc的Load方法  C++的构造函数属性函数  非基本类型的C++静态全局变量的创建(通常是类或结构体)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>最后Dyld会调用main()函数，main()函数调用UIApplication()<br />
+可能影响main()函数启动过程的一些因素</p>
+<ol>
+  <li>动态库越多，加载越慢</li>
+  <li>Objc类方法越多，加载越慢</li>
+  <li>Objc load方法越多，加载越慢</li>
+  <li>C++静态对象越多，加载越慢</li>
+  <li>C的Constructor方法越多，加载越慢</li>
+</ol>
+
+
+  </div>
+
   
-    <article class="post">
-      <h1>
-        <a href="/Swift%E7%BB%84%E4%BB%B6%E5%8C%96/">Swift组件化</a>
-      </h1>
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
 
-      <div clsss="meta">
-        <span class="date">
-          2019-06-16
-        </span>
+	    var disqus_shortname = 'Jack';
 
-        <ul class="tag">
-          
-          <li>
-            <a href="http://localhost:4000/tags#iOS">
-              iOS
-            </a>
-          </li>
-          
-          <li>
-            <a href="http://localhost:4000/tags#Swift">
-              Swift
-            </a>
-          </li>
-          
-        </ul>
-      </div>
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
 
-      <div class="entry">
-        <h3 id="ios组件化方案">iOS组件化方案</h3>
-
-<p>将程序中功能相对独立的部分打包在一起形成模块，并且减少模块之间的直接依赖。</p>
-
-<h4 id="为什么要组件化">为什么要组件化</h4>
-<p>随着业务复杂度不断增加，工程越来越庞大，开发人员逐渐增多，单一工程的开发模式会出现一系列问题：</p>
-
-<ul>
-  <li>耦合严重：组件之间依赖过于复杂，维护成本高...
-      </div>
-
-      <a href="/Swift%E7%BB%84%E4%BB%B6%E5%8C%96/" class="read-more">Read More</a>
-    </article>
-  
-    <article class="post">
-      <h1>
-        <a href="/2019%E4%B9%A6%E5%8D%95/">2019书单</a>
-      </h1>
-
-      <div clsss="meta">
-        <span class="date">
-          2019-04-14
-        </span>
-
-        <ul class="tag">
-          
-          <li>
-            <a href="http://localhost:4000/tags#读书笔记">
-              读书笔记
-            </a>
-          </li>
-          
-        </ul>
-      </div>
-
-      <div class="entry">
-        <h3 id="记录下2019年要看的书单">记录下2019年要看的书单</h3>
-
-<p>当才华还撑不起野心时，就多读书，多学习</p>
-
-<ul class="task-list">
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled"...
-      </div>
-
-      <a href="/2019%E4%B9%A6%E5%8D%95/" class="read-more">Read More</a>
-    </article>
-  
-    <article class="post">
-      <h1>
-        <a href="/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E5%9B%BE/">数据结构-图</a>
-      </h1>
-
-      <div clsss="meta">
-        <span class="date">
-          2018-07-25
-        </span>
-
-        <ul class="tag">
-          
-          <li>
-            <a href="http://localhost:4000/tags#数据结构">
-              数据结构
-            </a>
-          </li>
-          
-        </ul>
-      </div>
-
-      <div class="entry">
-        <h2 id="数据结构之图">数据结构之图</h2>
-<p>图是一种（包含若干个节点），每个节点可以连接 0 个或多个元素</p>
-
-<p>两个节点相连的部分称为边（edge）。节点也被称作顶点（vertice）</p>
-
-<p><img src="https://user-gold-cdn.xitu.io/2018/7/23/164c76f06793a319?imageView2/0/w...
-      </div>
-
-      <a href="/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E5%9B%BE/" class="read-more">Read More</a>
-    </article>
-  
-    <article class="post">
-      <h1>
-        <a href="/OC%E6%92%B0%E5%86%99swift/">转战Swift</a>
-      </h1>
-
-      <div clsss="meta">
-        <span class="date">
-          2018-07-22
-        </span>
-
-        <ul class="tag">
-          
-          <li>
-            <a href="http://localhost:4000/tags#iOS">
-              iOS
-            </a>
-          </li>
-          
-          <li>
-            <a href="http://localhost:4000/tags#Swift">
-              Swift
-            </a>
-          </li>
-          
-        </ul>
-      </div>
-
-      <div class="entry">
-        <h4 id="swift相对oc的优势">swift相对OC的优势</h4>
-
-<ul>
-  <li>Swift容易阅读，语法和文件结构简易化。</li>
-  <li>Swift更易于维护，文件分离后结构更清晰。</li>
-  <li>Swift更加安全，它是类型安全的语言。</li>
-  <li>Swift代码更少，简洁的语法，可以省去大量冗余代码</li>
-  <li>Swift速度更...
-      </div>
-
-      <a href="/OC%E6%92%B0%E5%86%99swift/" class="read-more">Read More</a>
-    </article>
-  
-    <article class="post">
-      <h1>
-        <a href="/%E4%BA%8C%E5%8F%89%E6%A0%91/">二叉树笔记</a>
-      </h1>
-
-      <div clsss="meta">
-        <span class="date">
-          2018-06-24
-        </span>
-
-        <ul class="tag">
-          
-          <li>
-            <a href="http://localhost:4000/tags#数据结构">
-              数据结构
-            </a>
-          </li>
-          
-        </ul>
-      </div>
-
-      <div class="entry">
-        <h4 id="树一种非线性的存储结构具有一对多关系的元素的集合">“树”：一种非线性的存储结构，具有“一对多”关系的元素的集合</h4>
-<p>n(n &gt;= 0)个结点的有限集合，n=0时是一棵空树，对于一棵非空树具有以下特性</p>
-
-<ul>
-  <li>有且仅有一个根节点(ROOT)</li>
-  <li>当n&gt;1时，其余的结点可分为m(m&gt;0)个互不相交的有限集，...
-      </div>
-
-      <a href="/%E4%BA%8C%E5%8F%89%E6%A0%91/" class="read-more">Read More</a>
-    </article>
-  
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
+
+</article>
 
 <div class="pagination">
   
-    <span class="prev">
-      <a href="/" class="prev">
-        ← 上一页
+    <span class="prev" >
+      <a href="http://localhost:4000/%E6%9B%BE%E5%9B%BD%E8%97%A9%E4%BC%A0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+        ← 上一篇
       </a>
     </span>
   
   
-    <span class="next">
-      <a href="/page3/" class="next">
-        下一页 →
+    <span class="next" >
+      <a href="http://localhost:4000/%E6%96%B0%E5%86%A0%E6%9C%9F%E9%97%B4%E7%9A%84%E6%97%A5%E8%AE%B0/">
+        下一篇 →
       </a>
     </span>
   
 </div>
-
     </div>
 
     
