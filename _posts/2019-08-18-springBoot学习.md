@@ -88,12 +88,75 @@ com
 
 @RestController注释用于定义RESTful Web服务。它提供JSON，XML和自定义响应。其语法如下所
 
+封装一个公共的返回对象，方便返回
+```
+
+public class CommonResult<T> {
+    private long code;
+    private String message;
+    private T data;
+    
+    // 对接口的返回常用的类型做封装
+    public static <T> CommonResult<T> success(T data) {
+        return new CommonResult<T>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), data);
+    }
+
+    public static <T> CommonResult<T> success(T data, String message) {
+        return new CommonResult<T>(ResultCode.SUCCESS.getCode(), message, data);
+    }
+}
+```
+
+SpringBoot的注解整理
+```
+// 读取环境或应用程序属性值
+@Value("${property_key_name}")
+
+// 定义RESTful Web服务。它提供JSON，XML和自定义响应
+@RestController
+
+// 注释用于定义访问REST端点的Request URI
+@RequestMapping(value = "/apiName")
+
+// 注释用于定义请求正文内容类型
+ public RequestResult userRegister(@RequestBody User user) {
+    return RequestResult.success("注册成功");
+    }
+    
+// 批注用于定义自定义或动态请求URI
+@PathVariable
+public ResponseEntity<Object> updateProduct(@PathVariable("id") String id) {
+
+}
+
+// 注释用于从请求URL读取请求参数
+@RequestParam
+
+
+```
+
+开始编写接口
 ```
 @RestController
 public class UserController {
 
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult login(@RequestBody UmsAdminLoginParam umsAdminLoginParam, BindingResult result) {
+        String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword());
+        if (token == null) {
+            return CommonResult.validateFailed("用户名或密码错误");
+        }
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("token", token);
+        tokenMap.put("tokenHead", tokenHead);
+        return CommonResult.success(tokenMap);
+    }
 }
 ```
+
+
 
 
 
