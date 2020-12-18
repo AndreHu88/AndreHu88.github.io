@@ -1,0 +1,59 @@
+I"�<h4 id="启动过程">启动过程</h4>
+
+<p>注： 本Blog的总结来自阅读美团iOS Team的学习，部分图片来自美团 Team(侵权删)
+<img src="https://p0.meituan.net/travelcube/52635c087684765c9ee5b134c50226da136906.png" alt="" /></p>
+
+<h5 id="加载过程--从exec到main">加载过程  从Exec()到Main()</h5>
+
+<p>真正的加载过程从exec()函数开始，exec()是一个系统调用。操作系统首先为进程分配一段内存空间，然后执行如下操作：</p>
+
+<ol>
+  <li>把App对应的可执行文件加载到内存。</li>
+  <li>把Dyld加载到内存。</li>
+  <li>Dyld进行动态链接。</li>
+</ol>
+
+<p><img src="https://p0.meituan.net/travelcube/db061a267f6dc2b14ff7f9120020a5c261253.png" alt="" /></p>
+
+<p>Dyld在各阶段处理的任务</p>
+<ol>
+  <li>加载动态库</li>
+  <li>Rebase和Bind</li>
+  <li>Objc setup</li>
+  <li>Initializers</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">加载动态库</th>
+      <th style="text-align: center">从Header中获取所需要加载的动态的所依赖动态库列表，递归依赖集合</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">Rebase Bind</td>
+      <td style="text-align: center">Rebase在Image内部调整指针的指向 Bind是指向Image外部的内容，指向外部的指针被Symbol绑定，Dyld要去符号表中查找对于的实现</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Objc setup</td>
+      <td style="text-align: center">注册Class 插入Category的方法列表   保证每个Selector唯一</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Initializers</td>
+      <td style="text-align: center">Objc的Load方法  C++的构造函数属性函数  非基本类型的C++静态全局变量的创建(通常是类或结构体)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>最后Dyld会调用main()函数，main()函数调用UIApplication()<br />
+可能影响main()函数启动过程的一些因素</p>
+<ol>
+  <li>动态库越多，加载越慢</li>
+  <li>Objc类方法越多，加载越慢</li>
+  <li>Objc load方法越多，加载越慢</li>
+  <li>C++静态对象越多，加载越慢</li>
+  <li>C的Constructor方法越多，加载越慢</li>
+</ol>
+
+:ET

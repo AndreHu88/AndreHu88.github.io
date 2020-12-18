@@ -474,37 +474,37 @@ public class UserController {
 
 <h5 id="1依赖springboot">1.依赖SpringBoot</h5>
 
-<p>所有Spring Boot启动程序都遵循相同的命名模式<code class="highlighter-rouge">spring-boot-starter-*</code></p>
+<p>所有Spring Boot启动程序都遵循相同的命名模式<code class="language-plaintext highlighter-rouge">spring-boot-starter-*</code></p>
 
 <p>Spring Boot Starter Actuator依赖关系用于监视和管理应用程序。 其代码如下所示</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;
 </code></pre></div></div>
 
 <p>Spring Boot Starter Security依赖项用于Spring Security。 其代码如下所示</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
 &lt;/dependency&gt;
 </code></pre></div></div>
 <p>Spring Boot Starter Web依赖项用于编写Rest端点。 其代码如下所示</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
 &lt;/dependency&gt;
 </code></pre></div></div>
 
 <p>Spring Boot Starter Thyme Leaf依赖项用于创建Web应用程序。 其代码如下所示</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
    &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
 &lt;/dependency&gt;
 </code></pre></div></div>
 <p>Spring Boot Starter Test依赖项用于编写测试用例。 其代码如下所示</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dependency&gt;
    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
    &lt;artifactId&gt;spring-boot-starter-test&lt;artifactId&gt;
 &lt;/dependency&gt;
@@ -514,7 +514,7 @@ public class UserController {
 
 <p>Java推荐的包声明命名约定是反向域名。 例如 - com.jack.projectName</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>com
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>com
     +- jack
         +- projectName
             +- Application.java
@@ -534,7 +534,7 @@ public class UserController {
 <p>@RestController注释用于定义RESTful Web服务。它提供JSON，XML和自定义响应。其语法如下所</p>
 
 <p>封装一个公共的返回对象，方便返回</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 public class CommonResult&lt;T&gt; {
     private long code;
     private String message;
@@ -552,7 +552,7 @@ public class CommonResult&lt;T&gt; {
 </code></pre></div></div>
 
 <p>SpringBoot的注解整理</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 读取环境或应用程序属性值
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 读取环境或应用程序属性值
 @Value("${property_key_name}")
 
 // 定义RESTful Web服务。它提供JSON，XML和自定义响应
@@ -579,7 +579,7 @@ public ResponseEntity&lt;Object&gt; updateProduct(@PathVariable("id") String id)
 </code></pre></div></div>
 
 <p>开始编写接口</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@RestController
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@RestController
 public class UserController {
 
 

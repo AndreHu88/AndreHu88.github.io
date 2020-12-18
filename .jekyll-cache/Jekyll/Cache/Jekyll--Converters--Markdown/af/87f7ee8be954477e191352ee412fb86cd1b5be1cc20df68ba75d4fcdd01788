@@ -1,0 +1,19 @@
+I"�<h4 id="git创建提交">Git创建提交</h4>
+
+<p>创建新仓库
+<code class="language-plaintext highlighter-rouge">git init</code></p>
+
+<p>添加文件
+<code class="language-plaintext highlighter-rouge">git add &lt;filename&gt;</code>
+<code class="language-plaintext highlighter-rouge">git add *</code></p>
+
+<p>提交文件
+<code class="language-plaintext highlighter-rouge">git commit -m "commit info"</code></p>
+
+<p>添加远程仓库
+<code class="language-plaintext highlighter-rouge">git remote add origin &lt;server&gt;</code></p>
+
+<p>提交到远程仓库
+<code class="language-plaintext highlighter-rouge">git push origin &lt;branch name&gt;</code></p>
+
+:ET

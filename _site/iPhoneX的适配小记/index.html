@@ -306,9 +306,9 @@ viewWillLayoutSubviews
   <div class="entry">
     <h3 id="记录一次iphone-x的适配过程做个总结">记录一次iPhone X的适配过程，做个总结</h3>
 
-<p>自iOS11后，苹果推出<code class="highlighter-rouge">iPhone X</code>。由于<code class="highlighter-rouge">iPhoneX</code>的尺寸，外观不太常规，所以适配自然就不太一样。而且iOS11后，有些API做了些改变。</p>
+<p>自iOS11后，苹果推出<code class="language-plaintext highlighter-rouge">iPhone X</code>。由于<code class="language-plaintext highlighter-rouge">iPhoneX</code>的尺寸，外观不太常规，所以适配自然就不太一样。而且iOS11后，有些API做了些改变。</p>
 
-<p>在Xcode中，我打印了<code class="highlighter-rouge">iPhone X</code>的一些尺寸信息</p>
+<p>在Xcode中，我打印了<code class="language-plaintext highlighter-rouge">iPhone X</code>的一些尺寸信息</p>
 
 <pre><code class="language-objective-c">StatusBarHeight:44.000000
 TabBarHeight:83.000000
@@ -317,7 +317,7 @@ ScreenHeight:812.000000
 frame: [0, 0, 375, 812]
 </code></pre>
 
-<p>再次打印<code class="highlighter-rouge">Phone7</code>的尺寸信息</p>
+<p>再次打印<code class="language-plaintext highlighter-rouge">Phone7</code>的尺寸信息</p>
 
 <pre><code class="language-objective-c">StatusBarHeight:20.000000
 TabBarHeight:49.000000
@@ -339,7 +339,7 @@ UIView增加了safeAreaInsets属性
 ViewController增加了additionalSafeAreaInsets属性
 </code></pre>
 
-<p>经过几次实验发现，<code class="highlighter-rouge">viewSafeAreaInsetsDidChange</code>在TabBar的VC不会调用此方法，在非TabBar的Controller会调用此方法，方法的调用顺序如下</p>
+<p>经过几次实验发现，<code class="language-plaintext highlighter-rouge">viewSafeAreaInsetsDidChange</code>在TabBar的VC不会调用此方法，在非TabBar的Controller会调用此方法，方法的调用顺序如下</p>
 
 <pre><code class="language-objective-c">viewDidLoad
 viewWillAppear
@@ -347,7 +347,7 @@ viewSafeAreaInsetsDidChange
 viewWillLayoutSubviews
 </code></pre>
 
-<p>只有在调用了<code class="highlighter-rouge">viewSafeAreaInsetsDidChange</code>后才能获取到<code class="highlighter-rouge">UIEdgeInsets</code></p>
+<p>只有在调用了<code class="language-plaintext highlighter-rouge">viewSafeAreaInsetsDidChange</code>后才能获取到<code class="language-plaintext highlighter-rouge">UIEdgeInsets</code></p>
 
 <p>在iOS11后我们要更改部分宏的定义</p>
 

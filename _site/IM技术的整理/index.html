@@ -435,7 +435,7 @@ TCP / UDP
 
 <h4 id="1-文本协议">1. 文本协议</h4>
 <p>文本协议是指 “贴近人类书面语言表达”的通讯传输协议，典型的是http</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Accept: */*
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Accept: */*
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36
 </code></pre></div></div>
 
@@ -462,7 +462,7 @@ User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (
 
 <h4 id="3-xml协议">3. XML协议</h4>
 <p>XMPP使用XML协议，但XML使用太消耗流量</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;message
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;message
 to=’[url=mailto:romeo@example.net]romeo@example.net[/url]’
 from=’[url=mailto:juliet@example.com]juliet@example.com[/url]’
 type=’chat’
@@ -486,7 +486,7 @@ xml : lang=’en’&gt;
   <li>包头负责传输和解析效率，与业务无关。包体保证扩展性，与业务相关。</li>
 </ol>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//sizeof(cs_essay-header)=16
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//sizeof(cs_essay-header)=16
 struct cs_essay-header{
     uint32_t version;
     uint32_t magic_num;
@@ -512,7 +512,7 @@ struct cs_essay-header{
 
 <p>例： 登录请求包传入的是用户名与密码，登录响应包返回的是用户的uid</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>message CUserLoginReq{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>message CUserLoginReq{
     optional string username = 1;
     optional string passwd = 2;
 }

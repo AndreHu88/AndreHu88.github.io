@@ -1,0 +1,123 @@
+I"�<h2 id="通信协议">通信协议</h2>
+<p>一套典型的IM通信协议设计分为三层：应用层、安全层、传输层</p>
+
+<h3 id="im应用层协议">IM应用层协议</h3>
+<p>应用层协议选型，常见的有三种：</p>
+<ol>
+  <li>文本协议</li>
+  <li>二进制协议</li>
+  <li>流式XML协议</li>
+</ol>
+
+<h4 id="1-文本协议">1. 文本协议</h4>
+<p>文本协议是指 “贴近人类书面语言表达”的通讯传输协议，典型的是http</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Accept: */*
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36
+</code></pre></div></div>
+
+<p>文本协议的特点</p>
+<ul>
+  <li>可读性好，便于调试</li>
+  <li>解析效率一般（按照:分割，key value形式）</li>
+  <li>对二进制支持不好(图片 / 视频 / 语音)</li>
+</ul>
+
+<h4 id="2-二进制协议">2. 二进制协议</h4>
+<p>二进制协议一般定长包头和可扩展变长包体 ，每个字段固定了含义 
+例: IP协议的前4个bit表示协议版本号（Version）</p>
+
+<p><img src="http://docs.52im.net/extend/docs/book/tcpip/vol1/3/images2/52im_1.png" alt="" /></p>
+
+<p>二进制协议特点</p>
+<ul>
+  <li>可读性差，难于调试</li>
+  <li>扩展性不好 ，如果要扩展字段，旧版协议就不兼容了，所以一般设计时会有一个Version字段</li>
+  <li>解析效率高(没有解析代价)</li>
+  <li>对二进制支持不好(图片 / 视频 / 语音)</li>
+</ul>
+
+<h4 id="3-xml协议">3. XML协议</h4>
+<p>XMPP使用XML协议，但XML使用太消耗流量</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;message
+to=’[url=mailto:romeo@example.net]romeo@example.net[/url]’
+from=’[url=mailto:juliet@example.com]juliet@example.com[/url]’
+type=’chat’
+xml : lang=’en’&gt;
+&lt;body&gt;Wherefore art thou, Romeo?&lt;/body&gt;
+&lt;/message&gt;
+</code></pre></div></div>
+
+<p>XML协议特点</p>
+<ul>
+  <li>a. 它是准标准协议，可以跨域互通</li>
+  <li>b. XML的优点，可读性好，扩展性好</li>
+  <li>c. 解析代价超高（dom解析）</li>
+  <li>d. 有效数据传输率超低（大量的标签）</li>
+</ul>
+
+<h4 id="4-实际使用协议">4. 实际使用协议</h4>
+<p>一般常见的做法是：</p>
+<ol>
+  <li>定长二进制包头，可扩展变长包体。包体可以使用用文本、XML等扩展性好的协议。</li>
+  <li>包头负责传输和解析效率，与业务无关。包体保证扩展性，与业务相关。</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//sizeof(cs_essay-header)=16
+struct cs_essay-header{
+    uint32_t version;
+    uint32_t magic_num;
+    uint32_t cmd;
+    uint32_t len;
+    uint8_t data[];
+}__attribute__((packed));
+</code></pre></div></div>
+
+<ul>
+  <li>前4个字节是version</li>
+  <li>接下来的4个字节是个“魔法数字（magic_num）， 包头放几个约定好的特殊字符，包尾放几个约定好的特殊字符 约定好，发给你的协议，某几个字节位置，是0x 01020304 ，才是正常报文</li>
+  <li>接下来是command（命令号），用来区分是keepalive报文、业务报文、密钥交换报文等</li>
+  <li>len（包体长度），告知服务端要接收多长的包体</li>
+</ul>
+
+<p>Google开源的ProtoBuf协议具有更多有点</p>
+<ul>
+  <li>现成的解析库种类多</li>
+  <li>现成的解析库种类多</li>
+  <li>在工业界已广泛应用</li>
+</ul>
+
+<p>例： 登录请求包传入的是用户名与密码，登录响应包返回的是用户的uid</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>message CUserLoginReq{
+    optional string username = 1;
+    optional string passwd = 2;
+}
+
+message CUserLoginResp{
+    optional uint64 uid =1;
+}
+</code></pre></div></div>
+
+<h3 id="im安全层">IM安全层</h3>
+
+<p>im协议，消息的保密性非常重要 ，谁都不希望自己聊天内容被看到，所以安全层是必不可少的</p>
+
+<h5 id="ssl加密">SSL加密</h5>
+<p>证书管理麻烦，代价比较高</p>
+<h5 id="自定义加密策略">自定义加密策略</h5>
+<p>自定义加密核心在于秘钥的生成，管理， 秘钥的管理大概有三种方式</p>
+<h6 id="固定秘钥">固定秘钥</h6>
+<p>服务端和客户端约定好一个密钥，同时约定好一个加密算法（eg：AES ），每次客户端im在发送前，就用约定好的算法，以及约定好的密钥加密再传输，服务端收到报文后，用约定好的算法，约定好的密钥再解密。这种方式，密钥和算法对程序员都是透明的。</p>
+<h6 id="一人一秘钥">一人一秘钥</h6>
+<p>简单说来就是每个人的密钥是固定的，但是每个人之间又不同，其实就是在固定密钥的算法中包含用户的某一特殊属性，比如用户uid、手机号、qq号等。</p>
+<h6 id="动态秘钥">动态秘钥</h6>
+<p>动态密钥，一Session一密钥的安全性更高，每次会话前协商密钥。密钥协商的过程要经过2次非对称密钥的随机生成，1次对称加密密钥的随机生成</p>
+
+<h3 id="im传输层">IM传输层</h3>
+<p>TCP / UDP</p>
+
+<p>一般大厂的做法的TCP和UDP混合使用</p>
+
+<p>“无线环境下，UDP更好，可以做到状态无关，而TCP不稳定，进出电梯就要断线，用户体验不好”</p>
+
+:ET

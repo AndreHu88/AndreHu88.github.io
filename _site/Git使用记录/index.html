@@ -217,20 +217,20 @@ git push origin &lt;branch name&gt;
     <h4 id="git创建提交">Git创建提交</h4>
 
 <p>创建新仓库
-<code class="highlighter-rouge">git init</code></p>
+<code class="language-plaintext highlighter-rouge">git init</code></p>
 
 <p>添加文件
-<code class="highlighter-rouge">git add &lt;filename&gt;</code>
-<code class="highlighter-rouge">git add *</code></p>
+<code class="language-plaintext highlighter-rouge">git add &lt;filename&gt;</code>
+<code class="language-plaintext highlighter-rouge">git add *</code></p>
 
 <p>提交文件
-<code class="highlighter-rouge">git commit -m "commit info"</code></p>
+<code class="language-plaintext highlighter-rouge">git commit -m "commit info"</code></p>
 
 <p>添加远程仓库
-<code class="highlighter-rouge">git remote add origin &lt;server&gt;</code></p>
+<code class="language-plaintext highlighter-rouge">git remote add origin &lt;server&gt;</code></p>
 
 <p>提交到远程仓库
-<code class="highlighter-rouge">git push origin &lt;branch name&gt;</code></p>
+<code class="language-plaintext highlighter-rouge">git push origin &lt;branch name&gt;</code></p>
 
 <hr />
 
@@ -242,31 +242,31 @@ git push origin &lt;branch name&gt;
 
 <p>创建并切换到Dev分支</p>
 
-<p><code class="highlighter-rouge">git checkout -b Dev</code></p>
+<p><code class="language-plaintext highlighter-rouge">git checkout -b Dev</code></p>
 
 <p>切换回主分支:</p>
 
-<p><code class="highlighter-rouge">git checkout master</code></p>
+<p><code class="language-plaintext highlighter-rouge">git checkout master</code></p>
 
 <p>删除Dev分支</p>
 
-<p><code class="highlighter-rouge">git branch -d Dev</code></p>
+<p><code class="language-plaintext highlighter-rouge">git branch -d Dev</code></p>
 
 <p>拉取远程Dev分支</p>
 
-<p><code class="highlighter-rouge">git fetch origin Dev</code></p>
+<p><code class="language-plaintext highlighter-rouge">git fetch origin Dev</code></p>
 
 <p>拉取远程dev分支，并创建本地dev分支</p>
 
-<p><code class="highlighter-rouge">git checkout -b dev origin/dev</code></p>
+<p><code class="language-plaintext highlighter-rouge">git checkout -b dev origin/dev</code></p>
 
 <p>把某个分支的内容拉取到本地</p>
 
-<p><code class="highlighter-rouge">git pull origin Dev</code></p>
+<p><code class="language-plaintext highlighter-rouge">git pull origin Dev</code></p>
 
 <p>查看分支</p>
 
-<p><code class="highlighter-rouge">git branch</code></p>
+<p><code class="language-plaintext highlighter-rouge">git branch</code></p>
 
 <hr />
 <h4 id="git-tag">Git Tag</h4>
@@ -277,25 +277,25 @@ tag主要用于发布版本的管理，一个版本发布之后，我们可以�
 
 <p>查看标签</p>
 
-<p><code class="highlighter-rouge">git tag</code></p>
+<p><code class="language-plaintext highlighter-rouge">git tag</code></p>
 
 <p>创建本地Tag</p>
 
-<p><code class="highlighter-rouge">git tag &lt;tagName&gt;</code></p>
+<p><code class="language-plaintext highlighter-rouge">git tag &lt;tagName&gt;</code></p>
 
 <p>创建Tag到远程仓库</p>
 
-<p><code class="highlighter-rouge">git push origin &lt;tagName&gt;</code></p>
+<p><code class="language-plaintext highlighter-rouge">git push origin &lt;tagName&gt;</code></p>
 
-<p><code class="highlighter-rouge">git push origin --tags</code></p>
+<p><code class="language-plaintext highlighter-rouge">git push origin --tags</code></p>
 
 <p>本地 tag 的删除：</p>
 
-<p><code class="highlighter-rouge">git tag -d &lt;tagName&gt;</code></p>
+<p><code class="language-plaintext highlighter-rouge">git tag -d &lt;tagName&gt;</code></p>
 
 <p>远程 tag 的删除：</p>
 
-<p><code class="highlighter-rouge">git push origin :&lt;tagName&gt;</code></p>
+<p><code class="language-plaintext highlighter-rouge">git push origin :&lt;tagName&gt;</code></p>
 
 <hr />
 
@@ -305,13 +305,13 @@ tag主要用于发布版本的管理，一个版本发布之后，我们可以�
 </blockquote>
 
 <p>回退到上一个版本
-<code class="highlighter-rouge">git reset --hard HEAD^</code></p>
+<code class="language-plaintext highlighter-rouge">git reset --hard HEAD^</code></p>
 
-<p>我们可以用<code class="highlighter-rouge">git log</code>查看版本库的状态</p>
+<p>我们可以用<code class="language-plaintext highlighter-rouge">git log</code>查看版本库的状态</p>
 
 <p>Git的版本回退速度非常快，因为Git在内部有个指向当前版本的HEAD指针，当你回退版本的时候，Git仅仅是把HEAD从指向旧的版本</p>
 
-<p>Git提供了一个命令<code class="highlighter-rouge">git reflog</code>用来记录你的每一次命令</p>
+<p>Git提供了一个命令<code class="language-plaintext highlighter-rouge">git reflog</code>用来记录你的每一次命令</p>
 
 <hr />
 
@@ -321,7 +321,7 @@ git pull</p>
 
 <h4 id="git代理">Git代理</h4>
 <p>当git clone时特别慢时，可以为git 设置代理</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config --global http.proxy http://127.0.0.1:1080
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config --global http.proxy http://127.0.0.1:1080
 git config --global https.proxy https://127.0.0.1:1080
 git config --global http.proxy 'socks5://127.0.0.1:1080' 
 git config --global https.proxy 'socks5://127.0.0.1:1080'
@@ -329,12 +329,12 @@ git config --global https.proxy 'socks5://127.0.0.1:1080'
 
 <p>取消代理</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config --global --unset http.proxy
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config --global --unset http.proxy
 git config --global --unset https.proxy
 </code></pre></div></div>
 
 <p>取消设置GitHub的代理</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config --global --unset http.https://github.com.proxy
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config --global --unset http.https://github.com.proxy
 </code></pre></div></div>
 
 

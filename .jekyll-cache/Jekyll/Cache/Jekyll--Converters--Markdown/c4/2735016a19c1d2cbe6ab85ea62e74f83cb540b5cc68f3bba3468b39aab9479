@@ -1,0 +1,245 @@
+I"�2<h5 id="apm监控卡顿并上报有两种方案">APM监控卡顿并上报有两种方案：</h5>
+<ol>
+  <li>监听Runloop状态回调， 子线程ping主线程
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    if (currentMode-&gt;_observerMask &amp; kCFRunLoopEntry )
+        // 通知 Observers: RunLoop 即将进入 loop
+        __CFRunLoopDoObservers(rl, currentMode, kCFRunLoopEntry);
+    // 进入loop
+    result = __CFRunLoopRun(rl, currentMode, seconds, returnAfterSourceHandled, previousMode);
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>开启do while 循环保活线程，通知Observers, Runloop触发timer回调，然后执行被加入的Block
+```
+  if (rlm-&gt;_observerMask &amp; kCFRunLoopBeforeTimers)
+     //  通知 Observers: RunLoop 即将触发 Timer 回调
+     __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeTimers);</p>
+
+    <p>if (rlm-&gt;_observerMask &amp; kCFRunLoopBeforeSources)
+     //  通知 Observers: RunLoop 即将触发 Source 回调
+     __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeSources);
+ // 执行被加入的block
+ __CFRunLoopDoBlocks(rl, rlm);</p>
+  </li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3. runloop触发source0的回调，如果source1是ready状态，会跳转到handle_msg去处理消息, 如果有 Source1 (基于port) 处于 ready 状态，直接处理这个 Source1 然后跳转去处理消息
+
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (MACH_PORT_NULL != dispatchPort &amp;&amp; !didDispatchPortLastTime) {
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+    msg = (mach_msg_header_t *)msg_buffer;
+    
+    if (__CFRunLoopServiceMachPort(dispatchPort, &amp;msg, sizeof(msg_buffer), &amp;livePort, 0, &amp;voucherState, NULL)) {
+        goto handle_msg;
+    }
+#elif DEPLOYMENT_TARGET_WINDOWS
+    if (__CFRunLoopWaitForMultipleObjects(NULL, &amp;dispatchPort, 0, 0, &amp;livePort, NULL)) {
+        goto handle_msg;
+    }
+#endif
+}
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>4. 回调触发后，通知Observer进入休眠状态
+</code></pre></div></div>
+<p>Boolean poll = sourceHandledThisLoop || (0ULL == timeout_context-&gt;termTSR);
+ // 通知 Observers: RunLoop 的线程即将进入休眠(sleep)
+ if (!poll &amp;&amp; (rlm-&gt;_observerMask &amp; kCFRunLoopBeforeWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeWaiting);
+     __CFRunLoopSetSleeping(rl);</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>5. 休眠后，等待mach_port消息，以便再次唤醒
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>do {
+    if (kCFUseCollectableAllocator) {
+        // objc_clear_stack(0);
+        // &lt;rdar://problem/16393959&gt;
+        memset(msg_buffer, 0, sizeof(msg_buffer));
+    }
+    msg = (mach_msg_header_t *)msg_buffer;
+    
+    __CFRunLoopServiceMachPort(waitSet, &amp;msg, sizeof(msg_buffer), &amp;livePort, poll ? 0 : TIMEOUT_INFINITY, &amp;voucherState, &amp;voucherCopy);
+    
+    if (modeQueuePort != MACH_PORT_NULL &amp;&amp; livePort == modeQueuePort) {
+        // Drain the internal queue. If one of the callout blocks sets the timerFired flag, break out and service the timer.
+        while (_dispatch_runloop_root_queue_perform_4CF(rlm-&gt;_queue));
+        if (rlm-&gt;_timerFired) {
+            // Leave livePort as the queue port, and service timers below
+            rlm-&gt;_timerFired = false;
+            break;
+        } else {
+            if (msg &amp;&amp; msg != (mach_msg_header_t *)msg_buffer) free(msg);
+        }
+    } else {
+        // Go ahead and leave the inner loop.
+        break;
+    }
+} while (1);
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+6. 唤醒时通知Observer， Runloop的线程刚刚被唤醒了
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 通知 Observers: RunLoop 的线程刚刚被唤醒了
+if (!poll &amp;&amp; (rlm-&gt;_observerMask &amp; kCFRunLoopAfterWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopAfterWaiting);
+    // 处理消息
+    handle_msg:;
+    __CFRunLoopSetIgnoreWakeUps(rl);  ```
+</code></pre></div></div>
+
+<ol>
+  <li>Runloop唤醒后，处理唤醒时收到的消息</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>///如果是Timer处理回调
+///如果是dispatch，处理block
+///如果是source1， 处理事件
+
+ #if USE_MK_TIMER_TOO
+         // 如果一个 Timer 到时间了，触发这个Timer的回调
+         else if (rlm-&gt;_timerPort != MACH_PORT_NULL &amp;&amp; livePort == rlm-&gt;_timerPort) {
+             CFRUNLOOP_WAKEUP_FOR_TIMER();
+             // On Windows, we have observed an issue where the timer port is set before the time which we requested it to be set. For example, we set the fire time to be TSR 167646765860, but it is actually observed firing at TSR 167646764145, which is 1715 ticks early. The result is that, when __CFRunLoopDoTimers checks to see if any of the run loop timers should be firing, it appears to be 'too early' for the next timer, and no timers are handled.
+             // In this case, the timer port has been automatically reset (since it was returned from MsgWaitForMultipleObjectsEx), and if we do not re-arm it, then no timers will ever be serviced again unless something adjusts the timer list (e.g. adding or removing timers). The fix for the issue is to reset the timer here if CFRunLoopDoTimers did not handle a timer itself. 9308754
+             if (!__CFRunLoopDoTimers(rl, rlm, mach_absolute_time())) {
+                 // Re-arm the next timer
+                 __CFArmNextTimerInMode(rlm, rl);
+             }
+         }
+ #endif
+         //  如果有dispatch到main_queue的block，执行block
+         else if (livePort == dispatchPort) {
+             CFRUNLOOP_WAKEUP_FOR_DISPATCH();
+             __CFRunLoopModeUnlock(rlm);
+             __CFRunLoopUnlock(rl);
+             _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)6, NULL);
+ #if DEPLOYMENT_TARGET_WINDOWS
+             void *msg = 0;
+ #endif
+             __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__(msg);
+             _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)0, NULL);
+             __CFRunLoopLock(rl);
+             __CFRunLoopModeLock(rlm);
+             sourceHandledThisLoop = true;
+             didDispatchPortLastTime = true;
+         }
+         // 如果一个 Source1 (基于port) 发出事件了，处理这个事件
+         else {
+             CFRUNLOOP_WAKEUP_FOR_SOURCE();
+             
+             // If we received a voucher from this mach_msg, then put a copy of the new voucher into TSD. CFMachPortBoost will look in the TSD for the voucher. By using the value in the TSD we tie the CFMachPortBoost to this received mach_msg explicitly without a chance for anything in between the two pieces of code to set the voucher again.
+             voucher_t previousVoucher = _CFSetTSD(__CFTSDKeyMachMessageHasVoucher, (void *)voucherCopy, os_release);
+
+             CFRunLoopSourceRef rls = __CFRunLoopModeFindSourceForMachPort(rl, rlm, livePort);
+             if (rls) {
+ #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+         mach_msg_header_t *reply = NULL;
+         sourceHandledThisLoop = __CFRunLoopDoSource1(rl, rlm, rls, msg, msg-&gt;msgh_size, &amp;reply) || sourceHandledThisLoop;
+         if (NULL != reply) {
+             (void)mach_msg(reply, MACH_SEND_MSG, reply-&gt;msgh_size, 0, MACH_PORT_NULL, 0, MACH_PORT_NULL);
+             CFAllocatorDeallocate(kCFAllocatorSystemDefault, reply);
+         }
+ #elif DEPLOYMENT_TARGET_WINDOWS
+                 sourceHandledThisLoop = __CFRunLoopDoSource1(rl, rlm, rls) || sourceHandledThisLoop;
+ #endif
+
+</code></pre></div></div>
+<ol>
+  <li>根据当前runloop状态判断是否需要进入下一个loop, 当被外部强制停止或者loop超时，就不继续下一个loop,  否则进入下一个loop</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+    if (sourceHandledThisLoop &amp;&amp; stopAfterHandle) {
+        // 进入loop时参数说处理完事件就返回
+        retVal = kCFRunLoopRunHandledSource;
+        } else if (timeout_context-&gt;termTSR &lt; mach_absolute_time()) {
+            // 超出传入参数标记的超时时间了
+            retVal = kCFRunLoopRunTimedOut;
+    } else if (__CFRunLoopIsStopped(rl)) {
+            __CFRunLoopUnsetStopped(rl);
+        // 被外部调用者强制停止了
+        retVal = kCFRunLoopRunStopped;
+    } else if (rlm-&gt;_stopped) {
+        rlm-&gt;_stopped = false;
+        retVal = kCFRunLoopRunStopped;
+    } else if (__CFRunLoopModeIsEmpty(rl, rlm, previousMode)) {
+        // source/timer一个都没有
+        retVal = kCFRunLoopRunFinished;
+    }
+
+ */
+
+/// Source1是runloop用来处理Mach port传来的系统的事件的，  Source0是用来处理用户事件的
+/// 检测runloop，一旦发现在进入睡眠前的KCFRunLoopBeforeSources到唤醒后 KCFRunLoopAfterWaiting的时间过长，说明Runloop卡顿了， 开启一个子线程，不断的去循环检测，如果在n次都超过了预定好的阈值， 认为是卡顿了， 然后进行dump当前的堆栈并上报
+
+/**
+ 通过 long dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout)  方法判断是否阻塞主线程，Returns zero on success, or non-zero if the timeout occurred.  返回非0则代表超时阻塞了主线程
+ */
+
+
+
+//MARK: 子线程ping主线程监听的方式
+///开启一个子线程，创建一个初始值为0的信号量， 一个bool标志位，将设置为NO的标志位的任务派发到主线程中去， 子线程休眠阈值到后判断是否被主线程成功，如果没成功认为是主线程卡顿
+/*
+ 
+ while (self.isCancelled == NO) {
+ 
+     @autoreleasepool {
+         __block BOOL isMainThreadNoRespond = YES;
+         
+         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+         
+         dispatch_async(dispatch_get_main_queue(), ^{
+             isMainThreadNoRespond = NO;
+             dispatch_semaphore_signal(semaphore);
+         });
+         
+         [NSThread sleepForTimeInterval:self.threshold];
+         
+         if (isMainThreadNoRespond) {
+             if (self.handlerBlock) {
+                 self.handlerBlock(); // 外部在 block 内部 dump 堆栈（下面会讲），数据上报
+             }
+         }
+         
+         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+     }
+ }
+
+</code></pre></div></div>
+
+<h5 id="启动时间监控">启动时间监控</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 . pre-main阶段影响因素
+/**
+ 1. 动态库越多，启动越慢
+ 2. Objc类越好,  函数越多，启动越慢
+ 3. 可执行文件越大，启动越慢
+ 4. Objc的load方法越多，启动越慢
+ */
+
+/**
+    struct thread_basic_info {
+        time_value_t    user_time;      /* user run time（用户运行时长） */
+        time_value_t    system_time;    /* system run time（系统运行时长） */
+        integer_t       cpu_usage;      /* scaled cpu usage percentage（CPU使用率，上限1000） */
+        policy_t        policy;         /* scheduling policy in effect（有效调度策略） */
+        integer_t       run_state;      /* run state (运行状态，见下) */
+        integer_t       flags;          /* various flags (各种各样的标记) */
+        integer_t       suspend_count;  /* suspend count for thread（线程挂起次数） */
+        integer_t       sleep_time;     /* number of seconds that thread
+                                         *  has been sleeping（休眠时间） */
+    };
+ */
+
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>OOM 超出了内存分配
+/// 收到低内存警告不一定会 Crash，因为有6秒钟的系统判断时间，6秒内内存下降了则不会 crash。发生 OOM 也不一定会收到低内存警告
+/**
+ 合理使用autoreleasepool, autoreleasepool对象是在Runloop结束时释放，在ARC下， 如果我们不断的申请内存， 我们需要手动的添加autoreleasepool， 避免短时间内内存猛涨发生OOM
+ 内存分配:  malloc用的是 malloc_zone_malloc,  calloc用的是malloc_zone_calloc
+  在处理图片缩放时，ImageIO占用内存会比直接处理图片缩放小
+ */
+</code></pre></div></div>
+:ET

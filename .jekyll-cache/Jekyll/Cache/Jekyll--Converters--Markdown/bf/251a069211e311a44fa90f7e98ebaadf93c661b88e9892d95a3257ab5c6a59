@@ -1,0 +1,162 @@
+I"�#<h4 id="记录金融入门学习">记录金融入门学习</h4>
+<blockquote>
+  <p><strong>巴菲特：</strong>买股票的本质是投资公司</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>彼得林奇：</strong>当你读不懂某一公司的财务情况时，不要投资。股市的最大的亏损源于投资了在资产负债方面很糟糕的公司。先看资产负债表，搞清该公司是否有偿债能力，然后再投钱冒险</p>
+</blockquote>
+
+<h5 id="金融书籍记录">金融书籍记录</h5>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />彼得林奇 <在华尔街的崛起></在华尔街的崛起></li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />查理芒格 <查理芒格传></查理芒格传></li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />瑞达利欧 <原则></原则></li>
+</ul>
+
+<h5 id="财务报表学习">财务报表学习</h5>
+<p>财务报表分三类</p>
+<ol>
+  <li>利润表</li>
+  <li>资产负债表</li>
+  <li>现金流量表</li>
+</ol>
+
+<p>在看公司公司财报前，先看会计师审计报告，在年报的第十一节，《审计意见》，审计意见反映了审计师的心声
+<img src="http://fdfs.xmcdn.com/group49/M0A/82/E6/wKgKl1vyIimQcOpPAAFtInzQd2A978_mobile_large.png" alt="" /></p>
+
+<h5 id="利润表">利润表</h5>
+<p>形象解释
+<img src="http://fdfs.xmcdn.com/group53/M09/02/0A/wKgLfFv7l6OyBzn2AAFRrI5yisI426_mobile_large.png" alt="" /></p>
+
+<p>净利润中包含了企业的应收账款，所以并不能单单以净利润在决定公司运营好坏，还需结合现金流量表和资产负债表</p>
+<ul>
+  <li>扣非净利润</li>
+  <li>归属于母公司所有者的净利润</li>
+</ul>
+
+<h5 id="资产负债表">资产负债表</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">资产</th>
+      <th style="text-align: center"> </th>
+      <th style="text-align: center"> </th>
+      <th style="text-align: center"> </th>
+      <th style="text-align: center">负债</th>
+      <th style="text-align: center"> </th>
+      <th style="text-align: center"> </th>
+      <th style="text-align: center"> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">流动资产</td>
+      <td style="text-align: center">说明</td>
+      <td style="text-align: center">非流动资产</td>
+      <td style="text-align: center">说明</td>
+      <td style="text-align: center">负债</td>
+      <td style="text-align: center">说明</td>
+      <td style="text-align: center">所有者权益</td>
+      <td style="text-align: center">说明</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">货币资金</td>
+      <td style="text-align: center">企业的现金存款</td>
+      <td style="text-align: center">固定资产</td>
+      <td style="text-align: center">非货币资产，(房屋，设备，机器等)</td>
+      <td style="text-align: center">银行负债</td>
+      <td style="text-align: center">银行贷款</td>
+      <td style="text-align: center">股东出钱</td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center">应收账款</td>
+      <td style="text-align: center">发了货，还没结账，(坏账准备)</td>
+      <td style="text-align: center">生物性资产</td>
+      <td style="text-align: center">农林牧渔行业</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center">存货</td>
+      <td style="text-align: center">看行业，更新快的行业存货少好</td>
+      <td style="text-align: center">无形资产</td>
+      <td style="text-align: center">专利权，著作权，土地使用权</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>表格在手机上会有变形，截图如下</p>
+
+<p><img src="https://s2.ax1x.com/2019/07/12/ZfWbHP.png" alt="" /></p>
+
+<p><img src="http://fdfs.xmcdn.com/group53/M07/D7/2D/wKgLcVwKI92jI9JaAAGHfFHmyt0046_mobile_large.png" alt="" /></p>
+
+<h5 id="现金流量表">现金流量表</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">序号</th>
+      <th style="text-align: center">类别</th>
+      <th style="text-align: center">说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">经营活动产生的现金流量</td>
+      <td style="text-align: center">利润表收入支出现金的变化</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">投资活动产生的现金流量</td>
+      <td style="text-align: center">资产负债表的固定资产变动情况</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">筹资活动产生的现金流量</td>
+      <td style="text-align: center">资产负债表的负债和所有者权益变动情况</td>
+    </tr>
+  </tbody>
+</table>
+
+<h6 id="1-经营活动现金流">1. 经营活动现金流</h6>
+<p>有公开数据的企业，直接看企业经营活动产生的现金流，这是现金流量表的核心。因为刚刚我们刚讲了，企业的经营能力才是我们投资者最应该看重的。而经营活动现金流，就代表着经营能力的强弱。</p>
+
+<p>如果经营活动现金流量净额，长期为负的话（银行证券保险除外），代表企业日子不太好过，入不敷出，这类企业不用考虑投资。只有经营活动现金流量净额是正数，说明它才是一家正常的企业。</p>
+
+<h6 id="2-投资活动现金流">2. 投资活动现金流</h6>
+<p><img src="http://fdfs.xmcdn.com/group52/M01/59/BF/wKgLcFwZzTmDkUDgAAFRpaHBRiY184_mobile_large.png" alt="" /></p>
+
+<h6 id="3-筹资活动中了解企业的融资情况">3. 筹资活动中了解企业的融资情况</h6>
+<p><img src="http://fdfs.xmcdn.com/group52/M01/59/E3/wKgLe1wZzTqS3C3gAADXdXRFjFY717_mobile_large.png" alt="" /></p>
+
+<h6 id="类型一的企业">类型一、“+++”的企业</h6>
+
+<p>三项都为正的企业。表明上看起来，这样的公司特别不错。经营活动现金为正数，现金源源不断。但是有一个问题，就是企业经营赚了钱以后，为什么不向外投资呢？反而还需要筹资呢？难道都把钱放在银行账户上数钱玩吗？这类型的企业，要么就是即将大规模的开展对外大规模的投资活动，所以在筹集本钱。要么就很可能是起了歹心，借着上市公司的躯壳在赚钱。所以，如果是这三项都是正的企业，建议我们要谨慎观察一下。如果查阅很多材料，都看不出来企业有大投资的动作。建议这类型的企业，我们也淘汰掉。</p>
+
+<h6 id="类型二-的企业">类型二、“++-”的企业</h6>
+
+<p>这类型的企业，经营活动现金流为正，说明企业经营情况还不错。投资活动现金流为正，说明以前投资的资产，带来了利息等方面的收入。或者是变卖了资产，产生了收入。一般来说，资产带来的收益比较多，因为企业变卖资产的情况很小。筹资活动现金流为负数，要么就是还了贷款，要么就是给股东分红。这类的企业，如果投资现金流，不是变卖资产所得。而经营现金流和投资现金流，足以覆盖筹资现金流的流出。我们就可以初步判断，这家公司是健康发展的。</p>
+
+<h6 id="类型三-的企业">类型三、“+-+”的企业</h6>
+
+<p>这类企业，经营活动现金流同样为正，说明企业赚钱。同时筹资活动现金流为正，但是投资活动现金流是负。说明企业现在正在大力的扩大规模。需要把钱投入到新的项目中。这类企业有一个问题，就是所投资的项目如果创造辉煌，企业会高速的增长。反之，企业如果投资失败，会影响企业后期的发展。</p>
+
+<p>这类型的企业，很考验我们对行业发展的一个判断。</p>
+
+<h6 id="类型四的企业">类型四、“+–”的企业</h6>
+
+<p>经营活动现金流为正，同样说明企业赚钱。投资活动现金流为负，说明企业也在稳步的扩张。筹资活动现金流为负，说明企业还了贷款，或者给股东分红了。也就是说，企业靠着经营现金流的流入，实施了投资，并且同时还了贷款或给股东分红。这类型的企业是四种画像里面最好的企业，这种企业自我造血能力最强。靠着自己赚的钱可以去投资其他的项目，同时赚的钱还可以给股东分红或者偿还贷款。这类企业是最具备投资价值的</p>
+
+:ET

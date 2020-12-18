@@ -1,0 +1,95 @@
+I"!<h5 id="socket长连接的创建与维护">Socket长连接的创建与维护</h5>
+
+<ul>
+  <li>所有数据收发流程，均通过Socket长连接完成，如何维护一个稳定Socket通道，是IM系统是否稳定的重要一环</li>
+</ul>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/4499332-08346cb09a4d9c97.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+
+<p>用连接请求接口，会开始连接的创建过程，创建成功后，会完成鉴权操作，当创建和鉴权都完成后，会开启消息收发线程，为了维持长连接，会有心跳机制，特别的，会开启一个心跳轮询线程。</p>
+
+<ul>
+  <li>心跳机制，是IM系统设计中的常见概念，简单的解释就是每隔若干时间发送一个固定信息给服务端，服务端收到后及时回复一个固定信息，如果服务端若干时间内没有收到客户端心跳信息则视客户端断开，同理如果客户端若干时间没有收到服务端心跳回值则视服务端断开</li>
+</ul>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/4499332-543f9422faad06d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+
+<p>当长连接创建成功后，会开启一个轮询线程，每隔一段时间发送心跳消息给服务器端，以维持长连接</p>
+
+<ul>
+  <li>重连流程
+<img src="https://upload-images.jianshu.io/upload_images/4499332-21aa979e280bb85f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></li>
+</ul>
+
+<h4 id="聊天会话数据加载策略">聊天会话数据加载策略</h4>
+<p>用户聊天时，需要将已经发送和接收到的聊天信息保存到本地。而不是每次都拉取历史数据。以达到节约流量和无网络状态下也查看数据的效果</p>
+
+<ul>
+  <li>
+    <p>IM会话首次请求数据流程
+<img src="https://upload-images.jianshu.io/upload_images/4499332-521b1c2cae77ae39.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+  </li>
+  <li>
+    <p>IM下拉获取历史数据流程
+<img src="https://upload-images.jianshu.io/upload_images/4499332-a7e9213bba7026ce.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+  </li>
+  <li>
+    <p>IM单条消息发送持久化方案
+<img src="https://upload-images.jianshu.io/upload_images/4499332-3aa4b8107e5ca390.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+  </li>
+  <li>
+    <p>IM单条数据重发流程
+<img src="https://upload-images.jianshu.io/upload_images/4499332-f8177e4089dc6d9d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+  </li>
+</ul>
+
+<h5 id="消息回执">消息回执</h5>
+<p>发送方增加已送到和未送达的状态，接收方收到消息后，给服务器返回已收到消息的通知，服务器再推送给发送方该状态，如果没有收到接收方回执，服务器可尝试重新推送。发送方接受到接收方的收到回执后，更新发送状态已发送，如果未收到，则显示未送达。为了防止接收方回执丢失，接收方接收消息时候，可维护本地去重队列</p>
+
+<h4 id="im消息的逻辑流程">IM消息的逻辑流程</h4>
+
+<ol>
+  <li>消息接收：
+网络模块通过跟IM服务端保持的长连接接收IM消息；</li>
+  <li>消息入库：
+网络模块会将IM消息存入本地数据库，即信件投入了韩梅梅家的邮箱。网络模块就是邮递员，本地数据库就是韩梅梅家的邮箱；</li>
+  <li>消息展示：
+界面模块获取发送人头像，和消息内容一起显示在聊天界面上。</li>
+</ol>
+
+<h4 id="传输层协议-传输格式">传输层协议 传输格式</h4>
+
+<p>数据协议存在文本协议和二进制协议两种类型</p>
+<ul>
+  <li>文本协议直观、描述性强，容易理解、便与调试，并且协议修改方便，但是数据冗余较多，安全性稍差；</li>
+  <li>二进制协议格式精简、冗余数据少，窃听成本更高，但是数据不直观、调试略微复杂，使用、升级维护都需要约定好规则。</li>
+</ul>
+
+<p>为优化App的网络请求速度和减小数据包大小，并配合接入层后台往C++框架改造，我们App的接入层网络数据传输协议切换成了二进制协议。协议数据包的定义统一采用协议头+业务包体(协议内容)的方式，协议头中用若干比特位定义协议版本号、数据包长度等信息</p>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/4499332-da1cba77e49d3863.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="请求结构体" /></p>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/4499332-7ce50dff6e3aa29d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="响应结构体" /></p>
+
+<p>请求协议的协议头中包含业务标志、协议版本号和数据包长度，服务端只处理以业务标志开头的数据包：</p>
+
+<ol>
+  <li>截取协议头后，用PkgReq结构体解析协议头中指定长度的数据包。</li>
+  <li>PkgReq包括明文的协议包头PkgReqHead和密文的二进制流。</li>
+  <li>PkgReqHead中会包括客户端生成的请求序列号，密文的加密方式、压缩方式等信息，用这些信息解开加密压缩过的PkgReqBody。</li>
+  <li>PkgReqBody包含通用请求数据ReqHead和业务请求数据ReqBody数组。</li>
+  <li>ReqHead中主要包括用户的设备信息、App版本信息、账号信息、网络环境等等基础信息，ReqBody则是具体请求命令字和业务请求结构体的封装。</li>
+  <li>若是多个命令字的合并请求则会有多个ReqBody，而ReqHead只需要有一份。</li>
+  <li>后台路由层根据ReqBody中的命令字cmdid将ReqBody中的businessReqBody字段转发到具体的后台服务进行处理。</li>
+  <li>并且ReqHead中设计了guid字段，后台会存储用户的设备信息并且给用户分配唯一的guid，客户端拿到guid之后，后续的请求就不需要上报不变的设备信息字段，只需要上传guid，后端可以根据guid按需获取用户设备信息，减小请求数据量。</li>
+</ol>
+
+<p>响应协议与请求协议的整体结构类似，由于响应需要返回错误码或返回码给客户端，并且存在合并请求，因此设计了两层返回码。在RspHead中有整体返回码iRet，作为路由层整体的处理结果；每个RspBody中还有ret，作为该命令字对应的后台服务的返回结果。每个RspBody中的businessRspBody在iRet和ret同时有效时才能用该命令字对应的响应结构体进行解包</p>
+
+<h4 id="传输安全">传输安全</h4>
+
+<p>二进制协议方案与文本协议方案类似，都需要考虑数据安全性的问题。二进制协议由于传输的数据包是二进制流，抓包并不能直接看到结构体，例如我们采用的jce协议，必须知道完整的数据格式才能解析出原始数据。在我们的方案中还采用了https、对协议中的内容数据PkgReqBody/PkgRspBody进行先压缩后加密等操作保证安全性</p>
+
+<p>二进制协议方案中，采用的AES加密，与文本协议不同的是采用AES的GCM模式。AES作为一种分组对称加密算法，需要对明文进行分组，分组长度可为128或256bits，有ECB，CBC，CTR等多种模式，这里不做具体介绍。GCM模式可以提供对消息的加密和完整性校验，具体原理这里不作详细介绍，可以参考文章《<a href="https://blog.csdn.net/t0mato_/article/details/53160772">什么是 AES-GCM加密算法</a>》。AES-GCM加密也需要密钥key、初始向量iv，并且加密之后除了得到密文，还会得到消息校验码。在数据接收方可以通过这个校验码校验密文是否有篡改。在具体实现中，为增强安全性，iv由请求序列号和key按照一定规则动态生成，并将加密得到的校验码填写在协议包头PkgReqHead/PkgRspHead中，在解密时需要作为验证条件</p>
+
+:ET

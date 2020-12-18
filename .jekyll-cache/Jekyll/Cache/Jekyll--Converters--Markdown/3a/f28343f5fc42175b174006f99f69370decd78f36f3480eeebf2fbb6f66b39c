@@ -1,0 +1,26 @@
+I"<h4 id="swift相对oc的优势">swift相对OC的优势</h4>
+
+<ul>
+  <li>Swift容易阅读，语法和文件结构简易化。</li>
+  <li>Swift更易于维护，文件分离后结构更清晰。</li>
+  <li>Swift更加安全，它是类型安全的语言。</li>
+  <li>Swift代码更少，简洁的语法，可以省去大量冗余代码</li>
+  <li>Swift速度更快，运算性能更高。</li>
+  <li>Swift是面向协议的语言</li>
+  <li>swift 用户自己创建的Class，不需要Import， 只需Import第三方即可</li>
+</ul>
+
+<h4 id="swift相对oc的劣势">swift相对OC的劣势</h4>
+<ul>
+  <li>Swift没有OC的Runtime特性</li>
+  <li>OC可以和C++混编</li>
+</ul>
+
+<h4 id="swift总结">swift总结</h4>
+<ol>
+  <li>swift严格区分类型， Int 和 CGFloat 不可进行运算，必须转化为同一类型</li>
+  <li>swift可选类型使用非常多， 在可选类型进行强制取值时，一定要判空，否则会抛异常， 区分? 和！在解包时可以使用  <code class="language-plaintext highlighter-rouge"> if let</code>  和  <code class="language-plaintext highlighter-rouge">guard</code></li>
+  <li>swift引用了区间运算符 <code class="language-plaintext highlighter-rouge">...</code> 和 <code class="language-plaintext highlighter-rouge">..&lt;</code></li>
+</ol>
+
+:ET

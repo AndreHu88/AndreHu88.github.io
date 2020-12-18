@@ -1,0 +1,95 @@
+I";<h5 id="记录苹果iap内购的流程">记录苹果IAP内购的流程</h5>
+
+<ol>
+  <li>
+    <p>先在Apple Developer官网，签署相关的协议， 完善相应的信息</p>
+  </li>
+  <li>
+    <p>在APP下添加内购项目， 选择内购产品的类型， 共四种类型，下面有总结</p>
+  </li>
+  <li>
+    <p>输入商品相应的信息，产品id， 建议用bundleID加商品id, 组成的字符串，保证唯一性</p>
+  </li>
+  <li>
+    <p>选择价格，上传审核图和审核信息， 保存</p>
+  </li>
+  <li>
+    <p>商品显示可用后，即可开始Coding, coding完成后提交审核方可真实使用</p>
+  </li>
+</ol>
+
+<h6 id="内购商品类型-解释">内购商品类型 解释</h6>
+<blockquote>
+  <p>1.消耗型商品
+顾名思义, 可以消耗使用的商品, 比如游戏中的金币, 钻石等, 可以用来购买应用内虚拟物品的货币。</p>
+</blockquote>
+
+<blockquote>
+  <p>2.非消耗型商品
+无法被消耗的商品，比如一些教育型APP中的课程, 再比如一些赛车游戏中的赛道, 这类商品需要在审核添加恢复购买按钮, 用于用户购买过后再误删除或其他原因卸载APP后的恢复流程, 否则提交审核会被拒绝。</p>
+</blockquote>
+
+<blockquote>
+  <p>3.非续期订阅
+此类商品与消耗型商品类似, 比如一个月的会员, 一个季度的会员等,与消耗型商品的差异在于, 这类商品在验证凭证时需要传递共享秘钥</p>
+</blockquote>
+
+<blockquote>
+  <p>4.自动续期订阅
+这类商品和其他商品的流程也有些许不同, 应用比如视频APP中的连续包月会员, 此类商品到期会自动扣费, 服务器的验证逻辑也会有所不同,流程可以参考这篇文章</p>
+</blockquote>
+
+<h5 id="iap原理解释">IAP原理解释</h5>
+<ol>
+  <li>
+    <p>IAP的支付方式和微信，支付宝等的第三方支付的方式完全不同，下面分别记录下支付的区别，</p>
+  </li>
+  <li>
+    <p>微信支付宝等第三方支付主要以Server驱动相应的业务，客户端流程大概如下 (用户选择商品 -&gt; 服务端生成订单 -&gt; 生成第三方需要的签名等相关信息给到客户端 -&gt; 客户端调起第三方应用支付 -&gt; 第三方回调客户端 -&gt; 客户端向Server查询最终支付结果 -&gt; 支付完成)</p>
+  </li>
+  <li>
+    <p>IAP的方式不同，IAP主要是以客户端驱动， Server仅仅用来校验Apple返回的支付凭证， Apple提供相应的代理方法， 告知客户端支付的进行状态， 因为客户端的情况复杂， 再加上IAP的国外服务器返回的问题，所以在IAP过程中，会出现很多奇怪的问题，下面开始逐步记录如何进行IAP</p>
+  </li>
+</ol>
+
+<h5 id="iap-coding">IAP Coding</h5>
+<ol>
+  <li>需要引入 <code class="language-plaintext highlighter-rouge">import StoreKit</code>， IAP所有的方法都在这个框架内部</li>
+  <li>根据产品的id查询IAP服务器上的相应的商品信息, 方法如下， 传入productIdentifiers
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let request = SKProductsRequest(productIdentifiers: productIdentifiers)
+     request.delegate = self
+     request.start()
+</code></pre></div>    </div>
+  </li>
+  <li>实现delegate方法，  <code class="language-plaintext highlighter-rouge">SKProductsRequestDelegate</code>, 回调如下</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
+
+   let products : [SKProduct] = response.products
+   
+   /// 可以从product中获取到如下信息
+   DLog("product price: \(product.price)")
+   DLog("product description: \(product.description)")
+   DLog("product productIdentifier: \(product.productIdentifier)")
+   DLog("product title: \(product.localizedTitle)")
+   DLog("applicationUsername: \(IAPOrder.applicationUsername ?? "")")
+   
+ /// 开始支付
+ let payment = SKMutablePayment(product: product)
+/// 发起支付时候指定用户的username, 在掉单时候验证防止切换账号导致充值错误
+  payment.applicationUsername = IAPOrder.applicationUsername
+SKPaymentQueue.default().add(payment)
+}
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>我们需要实现 <code class="language-plaintext highlighter-rouge">SKProductsRequestDelegate</code></p>
+  </li>
+  <li>
+    <p>在需要实现IAP的Class监听IAP的Observer， <code class="language-plaintext highlighter-rouge">SKPaymentTransactionObserver</code>, 这个Observer主要负责监听IAP的各种状态</p>
+  </li>
+</ul>
+
+:ET

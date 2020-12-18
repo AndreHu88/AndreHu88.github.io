@@ -1,0 +1,124 @@
+I"�<h3 id="ls显示文件">ls显示文件</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ls -a 显示所有文件包括隐藏文件
+ls -l 显示文件属性，包括大小，日期，符号连接，是否可读写及是否可执行
+ls -lh 显示文件的大小，以容易理解的格式印出文件大小 (例如 1K 234M2G)
+ls -lt 显示文件，按照修改时间排序
+</code></pre></div></div>
+
+<h3 id="rm删除文件">rm删除文件</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rm file　删除某一个文件
+rm -f file 删除时候不进行提示。可以于r参数配合使用
+rm -r 就是向下递归，不管有多少级目录，一并删除
+rm -f 就是直接强行删除，不作任何提示的意思
+rm -rf dir　删除当前目录下叫dir的整个目录
+</code></pre></div></div>
+
+<h3 id="系统-用户">系统 用户</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>w 当前登录用户的详细信息
+who 显示登录用户
+date 显示当前时间
+cal  显示当月日历
+pwd  显示当前路径
+open .   可以在finder中打开当前文件夹(Mac)
+bash .sh 运行脚本
+</code></pre></div></div>
+
+<h3 id="网络相关">网络相关</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ifconfig 获取本机IP
+netstat 显示网络状态
+nslookup 域名检查排错
+netstat -an  查看网络端口信息
+netstat -nr 查看路由表信息，比route快
+</code></pre></div></div>
+
+<h3 id="关机操作">关机操作</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>reboot　  重新启动计算机
+shutdown -r now  重新启动计算机，停止服务后重新启动计算机
+shutdown -h now  关闭计算机，停止服务后再关闭系统
+halt   关闭计算机
+一般用shutdown -r now,在重启系统是，关闭相关服务，shutdown -h now也是如此。
+</code></pre></div></div>
+<h3 id="chown-改变文件或目录的所有者">chown 改变文件或目录的所有者</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chown user1 /dir　将/dir目录设置为user1所有
+chown -R user1.user1 /dir　将/dir目录下所有文件和目录，设置为user1所有,组为user1。-R递归到下面的每个文件和目录
+</code></pre></div></div>
+
+<h3 id="chmod-改变用户的权限">chmod 改变用户的权限</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod a+x file　将file文件设置为可执行，脚本类文件一定要这样设置一个，否则得用bash file才能执行
+chmod 666 file　将文件file设置为可读写
+chmod 750 file 将文件file设置为，所有者为完全权限，同组可以读和执行，其他无权限
+</code></pre></div></div>
+
+<h3 id="mac下执行shell脚本">mac下执行shell脚本</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./name.sh
+如果执行报没有权限，chmod 777 name.sh
+bash name.sh
+</code></pre></div></div>
+
+<h3 id="apache--linux自带apache">apache	 Linux自带Apache</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /ect/apache2		配置文件
+cd /usr/bin			程序
+cd /Library/WebServer/Documents		默认根目录
+sudo apachectl -k start 	开启Apache服务
+sudo apachectl -k restart 	重启Apache服务
+sudo apachectl -k stop	 	关闭Apache服务
+</code></pre></div></div>
+
+<h3 id="mysql的操作">mysql的操作</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service mysql start  开启MySQL服务
+usr/local/mysql/bin/mysql	默认安装目录
+alias mysql=/usr/local/mysql/bin/mysql
+alias mysqladmin=/usr/local/mysql/bin/mysqladmin
+export PATH=${PATH}:/usr/local/mysql/bin  添加用户环境变量 .bash_profile
+
+//如果用HomeBrew安装
+mysql.server  {start|stop|restart|reload|force-reload|status}  [ MySQL server options
+</code></pre></div></div>
+<h3 id="jekyll">jekyll</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle exec jekyll serve 		本地编译并开启服务
+//单张图片居中
+&lt;center&gt;
+	&lt;img src="xxxxx.jpg" alt = "树" style="width:80%" /&gt;
+&lt;/center&gt;
+
+//两张图片并排
+&lt;figure class="half"&gt;
+    &lt;img src="http://xxx.jpg"&gt;
+    &lt;img src="http://yyy.jpg"&gt;
+&lt;/figure&gt;
+
+//三张图片并排
+&lt;figure class="third"&gt;
+    &lt;img src="http://xxx.jpg"&gt;
+    &lt;img src="http://yyy.jpg"&gt;
+    &lt;img src="http://zzz.jpg"&gt;
+&lt;/figure&gt;
+</code></pre></div></div>
+
+<h3 id="markdown">markdown</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 这是 H1
+## 这是 H2
+###### 这是 H6
+&gt; 区块引用
+* + -  无序列表
+数字.   1. 有序列表
+***  ---  分割线
+[This link](http://example.net/) 链接
+**  ** 加粗
+![Alt text](/path/to/img.jpg) 图片
+
+</code></pre></div></div>
+
+:ET

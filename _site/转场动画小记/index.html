@@ -475,7 +475,7 @@ toView.transform =
 
   <div class="entry">
     <h3 id="1-简单push动画和present动画">1. 简单push动画和present动画</h3>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@""];
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController.view.layer addAnimation:[self pushAnimation] forKey:@""];
 [self.navigationController pushViewController:[] animated:NO];
 
 [self.view.window.layer addAnimation:[self presentAnimation] forKey:nil];
@@ -487,7 +487,7 @@ toView.transform =
 <p>自定义push动画，然后在push时添加到navigationController中
 CATransition -&gt; CAAnimation -&gt; NSObject</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    CATransition *transition = [CATransition animation];
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    CATransition *transition = [CATransition animation];
     transition.duration = 0.6;
     transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
     
@@ -514,7 +514,7 @@ CATransition -&gt; CAAnimation -&gt; NSObject</p>
   <li>1.需要当前的navigationController遵循<UINavigationControllerDelegate>并实现其代理方法</UINavigationControllerDelegate></li>
 </ul>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//可以在此代理方法中判断当前是push还是pop
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//可以在此代理方法中判断当前是push还是pop
 -  (nullable id &lt;UIViewControllerAnimatedTransitioning&gt;)navigationController:(UINavigationController *)navigationController
                                    animationControllerForOperation:(UINavigationControllerOperation)operation
                                                 fromViewController:(UIViewController *)fromVC
@@ -526,7 +526,7 @@ CATransition -&gt; CAAnimation -&gt; NSObject</p>
 代理方法主要有以下2个</UIViewControllerAnimatedTransitioning></li>
 </ul>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// This is used for percent driven interactive transitions, as well as for
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// This is used for percent driven interactive transitions, as well as for
 // container controllers that have companion animations that might need to
 // synchronize with the main animation.
 //返回动画的时长
@@ -537,7 +537,7 @@ CATransition -&gt; CAAnimation -&gt; NSObject</p>
 - (void)animateTransition:(id &lt;UIViewControllerContextTransitioning&gt;)transitionContext;
 </code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//转场过渡的容器view
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//转场过渡的容器view
 UIView *containerView = [transitionContext containerView];
 //FromVC
 UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
@@ -577,7 +577,7 @@ else{
   <li>1.push动画,将将push的view做仿射变换</li>
 </ul>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)animateTransition:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)animateTransition:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext;
 
 //转场过渡的容器view
 UIView *containerView = [transitionContext containerView];

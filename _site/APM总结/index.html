@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>APM总结 – 风车大战骑士 – 生活不止眼前的苟且，还有诗和远方</title>
+
+      <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+    <meta name="keywords" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
+
+    <meta name="description" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
+
+    
+    <meta name="description" content="APM监控卡顿并上报有两种方案：
+
+  监听Runloop状态回调， 子线程ping主线程
+        if (currentMode-&gt;_observerMask &amp; kCFRunLoopEntry )
+        // 通知 Observers: RunLoop 即将进入 loop
+        __CFRunLoopDoObservers(rl, currentMode, kCFRunLoopEntry);
+    // 进入loop
+    result = __CFRunLoopRun(rl, currentMode, seconds, returnAfterSourceHandled, previousMode);
+    
+  
+  
+    开启do while 循环保活线程，通知Observers, Runloop触发timer回调，然后执行被加入的Block
+```
+  if (rlm-&gt;_observerMask &amp; kCFRunLoopBeforeTimers)
+     //  通知 Observers: RunLoop 即将触发 Timer 回调
+     __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeTimers);
+
+    if (rlm-&gt;_observerMask &amp; kCFRunLoopBeforeSources)
+     //  通知 Observers: RunLoop 即将触发 Source 回调
+     __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeSources);
+ // 执行被加入的block
+ __CFRunLoopDoBlocks(rl, rlm);
+  
+
+
+3. runloop触发source0的回调，如果source1是ready状态，会跳转到handle_msg去处理消息, 如果有 Source1 (基于port) 处于 ready 状态，直接处理这个 Source1 然后跳转去处理消息
+
+
+if (MACH_PORT_NULL != dispatchPort &amp;&amp; !didDispatchPortLastTime) {
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+    msg = (mach_msg_header_t *)msg_buffer;
+    
+    if (__CFRunLoopServiceMachPort(dispatchPort, &amp;msg, sizeof(msg_buffer), &amp;livePort, 0, &amp;voucherState, NULL)) {
+        goto handle_msg;
+    }
+#elif DEPLOYMENT_TARGET_WINDOWS
+    if (__CFRunLoopWaitForMultipleObjects(NULL, &amp;dispatchPort, 0, 0, &amp;livePort, NULL)) {
+        goto handle_msg;
+    }
+#endif
+}
+
+
+4. 回调触发后，通知Observer进入休眠状态
+
+Boolean poll = sourceHandledThisLoop || (0ULL == timeout_context-&gt;termTSR);
+ // 通知 Observers: RunLoop 的线程即将进入休眠(sleep)
+ if (!poll &amp;&amp; (rlm-&gt;_observerMask &amp; kCFRunLoopBeforeWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeWaiting);
+     __CFRunLoopSetSleeping(rl);
+
+5. 休眠后，等待mach_port消息，以便再次唤醒
+
+do {
+    if (kCFUseCollectableAllocator) {
+        // objc_clear_stack(0);
+        // &lt;rdar://problem/16393959&gt;
+        memset(msg_buffer, 0, sizeof(msg_buffer));
+    }
+    msg = (mach_msg_header_t *)msg_buffer;
+    
+    __CFRunLoopServiceMachPort(waitSet, &amp;msg, sizeof(msg_buffer), &amp;livePort, poll ? 0 : TIMEOUT_INFINITY, &amp;voucherState, &amp;voucherCopy);
+    
+    if (modeQueuePort != MACH_PORT_NULL &amp;&amp; livePort == modeQueuePort) {
+        // Drain the internal queue. If one of the callout blocks sets the timerFired flag, break out and service the timer.
+        while (_dispatch_runloop_root_queue_perform_4CF(rlm-&gt;_queue));
+        if (rlm-&gt;_timerFired) {
+            // Leave livePort as the queue port, and service timers below
+            rlm-&gt;_timerFired = false;
+            break;
+        } else {
+            if (msg &amp;&amp; msg != (mach_msg_header_t *)msg_buffer) free(msg);
+        }
+    } else {
+        // Go ahead and leave the inner loop.
+        break;
+    }
+} while (1);
+
+
+
+6. 唤醒时通知Observer， Runloop的线程刚刚被唤醒了
+
+// 通知 Observers: RunLoop 的线程刚刚被唤醒了
+if (!poll &amp;&amp; (rlm-&gt;_observerMask &amp; kCFRunLoopAfterWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopAfterWaiting);
+    // 处理消息
+    handle_msg:;
+    __CFRunLoopSetIgnoreWakeUps(rl);  ```
+
+
+
+  Runloop唤醒后，处理唤醒时收到的消息
+
+
+///如果是Timer处理回调
+///如果是dispatch，处理block
+///如果是source1， 处理事件
+
+ #if USE_MK_TIMER_TOO
+         // 如果一个 Timer 到时间了，触发这个Timer的回调
+         else if (rlm-&gt;_timerPort != MACH_PORT_NULL &amp;&amp; livePort == rlm-&gt;_timerPort) {
+             CFRUNLOOP_WAKEUP_FOR_TIMER();
+             // On Windows, we have observed an issue where the timer port is set before the time which we requested it to be set. For example, we set the fire time to be TSR 167646765860, but it is actually observed firing at TSR 167646764145, which is 1715 ticks early. The result is that, when __CFRunLoopDoTimers checks to see if any of the run loop timers should be firing, it appears to be 'too early' for the next timer, and no timers are handled.
+             // In this case, the timer port has been automatically reset (since it was returned from MsgWaitForMultipleObjectsEx), and if we do not re-arm it, then no timers will ever be serviced again unless something adjusts the timer list (e.g. adding or removing timers). The fix for the issue is to reset the timer here if CFRunLoopDoTimers did not handle a timer itself. 9308754
+             if (!__CFRunLoopDoTimers(rl, rlm, mach_absolute_time())) {
+                 // Re-arm the next timer
+                 __CFArmNextTimerInMode(rlm, rl);
+             }
+         }
+ #endif
+         //  如果有dispatch到main_queue的block，执行block
+         else if (livePort == dispatchPort) {
+             CFRUNLOOP_WAKEUP_FOR_DISPATCH();
+             __CFRunLoopModeUnlock(rlm);
+             __CFRunLoopUnlock(rl);
+             _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)6, NULL);
+ #if DEPLOYMENT_TARGET_WINDOWS
+             void *msg = 0;
+ #endif
+             __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__(msg);
+             _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)0, NULL);
+             __CFRunLoopLock(rl);
+             __CFRunLoopModeLock(rlm);
+             sourceHandledThisLoop = true;
+             didDispatchPortLastTime = true;
+         }
+         // 如果一个 Source1 (基于port) 发出事件了，处理这个事件
+         else {
+             CFRUNLOOP_WAKEUP_FOR_SOURCE();
+             
+             // If we received a voucher from this mach_msg, then put a copy of the new voucher into TSD. CFMachPortBoost will look in the TSD for the voucher. By using the value in the TSD we tie the CFMachPortBoost to this received mach_msg explicitly without a chance for anything in between the two pieces of code to set the voucher again.
+             voucher_t previousVoucher = _CFSetTSD(__CFTSDKeyMachMessageHasVoucher, (void *)voucherCopy, os_release);
+
+             CFRunLoopSourceRef rls = __CFRunLoopModeFindSourceForMachPort(rl, rlm, livePort);
+             if (rls) {
+ #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+         mach_msg_header_t *reply = NULL;
+         sourceHandledThisLoop = __CFRunLoopDoSource1(rl, rlm, rls, msg, msg-&gt;msgh_size, &amp;reply) || sourceHandledThisLoop;
+         if (NULL != reply) {
+             (void)mach_msg(reply, MACH_SEND_MSG, reply-&gt;msgh_size, 0, MACH_PORT_NULL, 0, MACH_PORT_NULL);
+             CFAllocatorDeallocate(kCFAllocatorSystemDefault, reply);
+         }
+ #elif DEPLOYMENT_TARGET_WINDOWS
+                 sourceHandledThisLoop = __CFRunLoopDoSource1(rl, rlm, rls) || sourceHandledThisLoop;
+ #endif
+
+
+
+  根据当前runloop状态判断是否需要进入下一个loop, 当被外部强制停止或者loop超时，就不继续下一个loop,  否则进入下一个loop
+
+
+/**
+    if (sourceHandledThisLoop &amp;&amp; stopAfterHandle) {
+        // 进入loop时参数说处理完事件就返回
+        retVal = kCFRunLoopRunHandledSource;
+        } else if (timeout_context-&gt;termTSR &lt; mach_absolute_time()) {
+            // 超出传入参数标记的超时时间了
+            retVal = kCFRunLoopRunTimedOut;
+    } else if (__CFRunLoopIsStopped(rl)) {
+            __CFRunLoopUnsetStopped(rl);
+        // 被外部调用者强制停止了
+        retVal = kCFRunLoopRunStopped;
+    } else if (rlm-&gt;_stopped) {
+        rlm-&gt;_stopped = false;
+        retVal = kCFRunLoopRunStopped;
+    } else if (__CFRunLoopModeIsEmpty(rl, rlm, previousMode)) {
+        // source/timer一个都没有
+        retVal = kCFRunLoopRunFinished;
+    }
+
+ */
+
+/// Source1是runloop用来处理Mach port传来的系统的事件的，  Source0是用来处理用户事件的
+/// 检测runloop，一旦发现在进入睡眠前的KCFRunLoopBeforeSources到唤醒后 KCFRunLoopAfterWaiting的时间过长，说明Runloop卡顿了， 开启一个子线程，不断的去循环检测，如果在n次都超过了预定好的阈值， 认为是卡顿了， 然后进行dump当前的堆栈并上报
+
+/**
+ 通过 long dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout)  方法判断是否阻塞主线程，Returns zero on success, or non-zero if the timeout occurred.  返回非0则代表超时阻塞了主线程
+ */
+
+
+
+//MARK: 子线程ping主线程监听的方式
+///开启一个子线程，创建一个初始值为0的信号量， 一个bool标志位，将设置为NO的标志位的任务派发到主线程中去， 子线程休眠阈值到后判断是否被主线程成功，如果没成功认为是主线程卡顿
+/*
+ 
+ while (self.isCancelled == NO) {
+ 
+     @autoreleasepool {
+         __block BOOL isMainThreadNoRespond = YES;
+         
+         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+         
+         dispatch_async(dispatch_get_main_queue(), ^{
+             isMainThreadNoRespond = NO;
+             dispatch_semaphore_signal(semaphore);
+         });
+         
+         [NSThread sleepForTimeInterval:self.threshold];
+         
+         if (isMainThreadNoRespond) {
+             if (self.handlerBlock) {
+                 self.handlerBlock(); // 外部在 block 内部 dump 堆栈（下面会讲），数据上报
+             }
+         }
+         
+         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+     }
+ }
+
+
+
+启动时间监控
+
+1 . pre-main阶段影响因素
+/**
+ 1. 动态库越多，启动越慢
+ 2. Objc类越好,  函数越多，启动越慢
+ 3. 可执行文件越大，启动越慢
+ 4. Objc的load方法越多，启动越慢
+ */
+
+/**
+    struct thread_basic_info {
+        time_value_t    user_time;      /* user run time（用户运行时长） */
+        time_value_t    system_time;    /* system run time（系统运行时长） */
+        integer_t       cpu_usage;      /* scaled cpu usage percentage（CPU使用率，上限1000） */
+        policy_t        policy;         /* scheduling policy in effect（有效调度策略） */
+        integer_t       run_state;      /* run state (运行状态，见下) */
+        integer_t       flags;          /* various flags (各种各样的标记) */
+        integer_t       suspend_count;  /* suspend count for thread（线程挂起次数） */
+        integer_t       sleep_time;     /* number of seconds that thread
+                                         *  has been sleeping（休眠时间） */
+    };
+ */
+
+
+
+OOM 超出了内存分配
+/// 收到低内存警告不一定会 Crash，因为有6秒钟的系统判断时间，6秒内内存下降了则不会 crash。发生 OOM 也不一定会收到低内存警告
+/**
+ 合理使用autoreleasepool, autoreleasepool对象是在Runloop结束时释放，在ARC下， 如果我们不断的申请内存， 我们需要手动的添加autoreleasepool， 避免短时间内内存猛涨发生OOM
+ 内存分配:  malloc用的是 malloc_zone_malloc,  calloc用的是malloc_zone_calloc
+  在处理图片缩放时，ImageIO占用内存会比直接处理图片缩放小
+ */
+
+" />
+    <meta property="og:description" content="APM监控卡顿并上报有两种方案：
+
+  监听Runloop状态回调， 子线程ping主线程
+        if (currentMode-&gt;_observerMask &amp; kCFRunLoopEntry )
+        // 通知 Observers: RunLoop 即将进入 loop
+        __CFRunLoopDoObservers(rl, currentMode, kCFRunLoopEntry);
+    // 进入loop
+    result = __CFRunLoopRun(rl, currentMode, seconds, returnAfterSourceHandled, previousMode);
+    
+  
+  
+    开启do while 循环保活线程，通知Observers, Runloop触发timer回调，然后执行被加入的Block
+```
+  if (rlm-&gt;_observerMask &amp; kCFRunLoopBeforeTimers)
+     //  通知 Observers: RunLoop 即将触发 Timer 回调
+     __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeTimers);
+
+    if (rlm-&gt;_observerMask &amp; kCFRunLoopBeforeSources)
+     //  通知 Observers: RunLoop 即将触发 Source 回调
+     __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeSources);
+ // 执行被加入的block
+ __CFRunLoopDoBlocks(rl, rlm);
+  
+
+
+3. runloop触发source0的回调，如果source1是ready状态，会跳转到handle_msg去处理消息, 如果有 Source1 (基于port) 处于 ready 状态，直接处理这个 Source1 然后跳转去处理消息
+
+
+if (MACH_PORT_NULL != dispatchPort &amp;&amp; !didDispatchPortLastTime) {
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+    msg = (mach_msg_header_t *)msg_buffer;
+    
+    if (__CFRunLoopServiceMachPort(dispatchPort, &amp;msg, sizeof(msg_buffer), &amp;livePort, 0, &amp;voucherState, NULL)) {
+        goto handle_msg;
+    }
+#elif DEPLOYMENT_TARGET_WINDOWS
+    if (__CFRunLoopWaitForMultipleObjects(NULL, &amp;dispatchPort, 0, 0, &amp;livePort, NULL)) {
+        goto handle_msg;
+    }
+#endif
+}
+
+
+4. 回调触发后，通知Observer进入休眠状态
+
+Boolean poll = sourceHandledThisLoop || (0ULL == timeout_context-&gt;termTSR);
+ // 通知 Observers: RunLoop 的线程即将进入休眠(sleep)
+ if (!poll &amp;&amp; (rlm-&gt;_observerMask &amp; kCFRunLoopBeforeWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeWaiting);
+     __CFRunLoopSetSleeping(rl);
+
+5. 休眠后，等待mach_port消息，以便再次唤醒
+
+do {
+    if (kCFUseCollectableAllocator) {
+        // objc_clear_stack(0);
+        // &lt;rdar://problem/16393959&gt;
+        memset(msg_buffer, 0, sizeof(msg_buffer));
+    }
+    msg = (mach_msg_header_t *)msg_buffer;
+    
+    __CFRunLoopServiceMachPort(waitSet, &amp;msg, sizeof(msg_buffer), &amp;livePort, poll ? 0 : TIMEOUT_INFINITY, &amp;voucherState, &amp;voucherCopy);
+    
+    if (modeQueuePort != MACH_PORT_NULL &amp;&amp; livePort == modeQueuePort) {
+        // Drain the internal queue. If one of the callout blocks sets the timerFired flag, break out and service the timer.
+        while (_dispatch_runloop_root_queue_perform_4CF(rlm-&gt;_queue));
+        if (rlm-&gt;_timerFired) {
+            // Leave livePort as the queue port, and service timers below
+            rlm-&gt;_timerFired = false;
+            break;
+        } else {
+            if (msg &amp;&amp; msg != (mach_msg_header_t *)msg_buffer) free(msg);
+        }
+    } else {
+        // Go ahead and leave the inner loop.
+        break;
+    }
+} while (1);
+
+
+
+6. 唤醒时通知Observer， Runloop的线程刚刚被唤醒了
+
+// 通知 Observers: RunLoop 的线程刚刚被唤醒了
+if (!poll &amp;&amp; (rlm-&gt;_observerMask &amp; kCFRunLoopAfterWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopAfterWaiting);
+    // 处理消息
+    handle_msg:;
+    __CFRunLoopSetIgnoreWakeUps(rl);  ```
+
+
+
+  Runloop唤醒后，处理唤醒时收到的消息
+
+
+///如果是Timer处理回调
+///如果是dispatch，处理block
+///如果是source1， 处理事件
+
+ #if USE_MK_TIMER_TOO
+         // 如果一个 Timer 到时间了，触发这个Timer的回调
+         else if (rlm-&gt;_timerPort != MACH_PORT_NULL &amp;&amp; livePort == rlm-&gt;_timerPort) {
+             CFRUNLOOP_WAKEUP_FOR_TIMER();
+             // On Windows, we have observed an issue where the timer port is set before the time which we requested it to be set. For example, we set the fire time to be TSR 167646765860, but it is actually observed firing at TSR 167646764145, which is 1715 ticks early. The result is that, when __CFRunLoopDoTimers checks to see if any of the run loop timers should be firing, it appears to be 'too early' for the next timer, and no timers are handled.
+             // In this case, the timer port has been automatically reset (since it was returned from MsgWaitForMultipleObjectsEx), and if we do not re-arm it, then no timers will ever be serviced again unless something adjusts the timer list (e.g. adding or removing timers). The fix for the issue is to reset the timer here if CFRunLoopDoTimers did not handle a timer itself. 9308754
+             if (!__CFRunLoopDoTimers(rl, rlm, mach_absolute_time())) {
+                 // Re-arm the next timer
+                 __CFArmNextTimerInMode(rlm, rl);
+             }
+         }
+ #endif
+         //  如果有dispatch到main_queue的block，执行block
+         else if (livePort == dispatchPort) {
+             CFRUNLOOP_WAKEUP_FOR_DISPATCH();
+             __CFRunLoopModeUnlock(rlm);
+             __CFRunLoopUnlock(rl);
+             _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)6, NULL);
+ #if DEPLOYMENT_TARGET_WINDOWS
+             void *msg = 0;
+ #endif
+             __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__(msg);
+             _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)0, NULL);
+             __CFRunLoopLock(rl);
+             __CFRunLoopModeLock(rlm);
+             sourceHandledThisLoop = true;
+             didDispatchPortLastTime = true;
+         }
+         // 如果一个 Source1 (基于port) 发出事件了，处理这个事件
+         else {
+             CFRUNLOOP_WAKEUP_FOR_SOURCE();
+             
+             // If we received a voucher from this mach_msg, then put a copy of the new voucher into TSD. CFMachPortBoost will look in the TSD for the voucher. By using the value in the TSD we tie the CFMachPortBoost to this received mach_msg explicitly without a chance for anything in between the two pieces of code to set the voucher again.
+             voucher_t previousVoucher = _CFSetTSD(__CFTSDKeyMachMessageHasVoucher, (void *)voucherCopy, os_release);
+
+             CFRunLoopSourceRef rls = __CFRunLoopModeFindSourceForMachPort(rl, rlm, livePort);
+             if (rls) {
+ #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+         mach_msg_header_t *reply = NULL;
+         sourceHandledThisLoop = __CFRunLoopDoSource1(rl, rlm, rls, msg, msg-&gt;msgh_size, &amp;reply) || sourceHandledThisLoop;
+         if (NULL != reply) {
+             (void)mach_msg(reply, MACH_SEND_MSG, reply-&gt;msgh_size, 0, MACH_PORT_NULL, 0, MACH_PORT_NULL);
+             CFAllocatorDeallocate(kCFAllocatorSystemDefault, reply);
+         }
+ #elif DEPLOYMENT_TARGET_WINDOWS
+                 sourceHandledThisLoop = __CFRunLoopDoSource1(rl, rlm, rls) || sourceHandledThisLoop;
+ #endif
+
+
+
+  根据当前runloop状态判断是否需要进入下一个loop, 当被外部强制停止或者loop超时，就不继续下一个loop,  否则进入下一个loop
+
+
+/**
+    if (sourceHandledThisLoop &amp;&amp; stopAfterHandle) {
+        // 进入loop时参数说处理完事件就返回
+        retVal = kCFRunLoopRunHandledSource;
+        } else if (timeout_context-&gt;termTSR &lt; mach_absolute_time()) {
+            // 超出传入参数标记的超时时间了
+            retVal = kCFRunLoopRunTimedOut;
+    } else if (__CFRunLoopIsStopped(rl)) {
+            __CFRunLoopUnsetStopped(rl);
+        // 被外部调用者强制停止了
+        retVal = kCFRunLoopRunStopped;
+    } else if (rlm-&gt;_stopped) {
+        rlm-&gt;_stopped = false;
+        retVal = kCFRunLoopRunStopped;
+    } else if (__CFRunLoopModeIsEmpty(rl, rlm, previousMode)) {
+        // source/timer一个都没有
+        retVal = kCFRunLoopRunFinished;
+    }
+
+ */
+
+/// Source1是runloop用来处理Mach port传来的系统的事件的，  Source0是用来处理用户事件的
+/// 检测runloop，一旦发现在进入睡眠前的KCFRunLoopBeforeSources到唤醒后 KCFRunLoopAfterWaiting的时间过长，说明Runloop卡顿了， 开启一个子线程，不断的去循环检测，如果在n次都超过了预定好的阈值， 认为是卡顿了， 然后进行dump当前的堆栈并上报
+
+/**
+ 通过 long dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout)  方法判断是否阻塞主线程，Returns zero on success, or non-zero if the timeout occurred.  返回非0则代表超时阻塞了主线程
+ */
+
+
+
+//MARK: 子线程ping主线程监听的方式
+///开启一个子线程，创建一个初始值为0的信号量， 一个bool标志位，将设置为NO的标志位的任务派发到主线程中去， 子线程休眠阈值到后判断是否被主线程成功，如果没成功认为是主线程卡顿
+/*
+ 
+ while (self.isCancelled == NO) {
+ 
+     @autoreleasepool {
+         __block BOOL isMainThreadNoRespond = YES;
+         
+         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+         
+         dispatch_async(dispatch_get_main_queue(), ^{
+             isMainThreadNoRespond = NO;
+             dispatch_semaphore_signal(semaphore);
+         });
+         
+         [NSThread sleepForTimeInterval:self.threshold];
+         
+         if (isMainThreadNoRespond) {
+             if (self.handlerBlock) {
+                 self.handlerBlock(); // 外部在 block 内部 dump 堆栈（下面会讲），数据上报
+             }
+         }
+         
+         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+     }
+ }
+
+
+
+启动时间监控
+
+1 . pre-main阶段影响因素
+/**
+ 1. 动态库越多，启动越慢
+ 2. Objc类越好,  函数越多，启动越慢
+ 3. 可执行文件越大，启动越慢
+ 4. Objc的load方法越多，启动越慢
+ */
+
+/**
+    struct thread_basic_info {
+        time_value_t    user_time;      /* user run time（用户运行时长） */
+        time_value_t    system_time;    /* system run time（系统运行时长） */
+        integer_t       cpu_usage;      /* scaled cpu usage percentage（CPU使用率，上限1000） */
+        policy_t        policy;         /* scheduling policy in effect（有效调度策略） */
+        integer_t       run_state;      /* run state (运行状态，见下) */
+        integer_t       flags;          /* various flags (各种各样的标记) */
+        integer_t       suspend_count;  /* suspend count for thread（线程挂起次数） */
+        integer_t       sleep_time;     /* number of seconds that thread
+                                         *  has been sleeping（休眠时间） */
+    };
+ */
+
+
+
+OOM 超出了内存分配
+/// 收到低内存警告不一定会 Crash，因为有6秒钟的系统判断时间，6秒内内存下降了则不会 crash。发生 OOM 也不一定会收到低内存警告
+/**
+ 合理使用autoreleasepool, autoreleasepool对象是在Runloop结束时释放，在ARC下， 如果我们不断的申请内存， 我们需要手动的添加autoreleasepool， 避免短时间内内存猛涨发生OOM
+ 内存分配:  malloc用的是 malloc_zone_malloc,  calloc用的是malloc_zone_calloc
+  在处理图片缩放时，ImageIO占用内存会比直接处理图片缩放小
+ */
+
+" />
+    
+    <meta name="author" content="风车大战骑士" />
+
+    
+    <meta property="og:title" content="APM总结" />
+    <meta property="twitter:title" content="APM总结" />
+
+
+
+    
+  <!-- Async font loading -->
+<script>
+  window.WebFontConfig = {
+      custom: {
+          families: ['Spoqa Han Sans:100,300,400,700'],
+          urls: ['https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css']
+      },
+      timeout: 60000
+  };
+  (function(d) {
+      var wf = d.createElement('script'), s = d.scripts[0];
+      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+      s.parentNode.insertBefore(wf, s);
+  })(document);
+</script>
+
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link rel="stylesheet" type="text/css" href="/style.css" />
+  <link rel="alternate" type="application/rss+xml" title="风车大战骑士 - 生活不止眼前的苟且，还有诗和远方" href="/feed.xml" />
+  <link rel="shortcut icon" href="https://github.com/AndreHu88/AndreHu88.github.io/blob/master/images/logo.png?raw=true">
+  <script src="https://kit.fontawesome.com/56f7faf3f4.js"></script>
+
+
+  <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+
+</head>
+  <body>
+    <div class="wrapper-sidebar">
+  <header class="sidebar clearfix">
+    <div class="site-info">
+      
+        <a href="/" class="site-avatar"><img src="https://github.com/AndreHu88/AndreHu88.github.io/blob/master/images/logo.png?raw=true" /></a>
+       
+      <h1 class="site-name"><a href="/">风车大战骑士</a></h1>
+      <p class="site-description">生活不止眼前的苟且，还有诗和远方</p>
+    </div>
+  </header>
+
+  <div class="navlist">
+    <nav>
+      
+      
+      <a href="/">首页</a>
+      
+      
+      
+      <a href="/archive">归档</a>
+      
+      
+      
+      <a href="/tags">标签</a>
+      
+      
+      
+      <a href="/about">关于</a>
+      
+      
+    </nav>
+  </div>
+
+  <div class="wrapper-footer-desktop">
+    <footer class="footer">
+      <!-- Refer to https://codepen.io/ruandre/pen/howFi -->
+<ul class="svg-icon">
+
+  
+  <li><a href="https://www.weibo.com/huyong668" class="icon-1 weibo" title="Weibo"><svg viewBox="0 0 512 512"><path d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></svg></a></li>
+  
+  
+  
+
+  
+
+  
+  <li><a href="mailto:huyong229@163.com" class="icon-8 email" title="Email"><svg viewBox="0 0 512 512"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></svg><!--[if lt IE 9]><em>Email</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+  <li><a href="https://github.com/AndreHu88" class="icon-13 github" title="GitHub"><svg viewBox="0 0 512 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg><!--[if lt IE 9]><em>GitHub</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</ul>
+
+
+
+<p>Copyright(c) 2019 愿你出走半生，归来仍是少年</p>
+
+    </footer>
+  </div>
+</div>
+
+<script type="text/javascript"> 
+
+// document.addEventListener('DOMContentLoaded', function () {
+//     function audioAutoPlay() {
+//         var audio = document.getElementById('bg-music');
+//             audio.play();
+//         document.addEventListener("WeixinJSBridgeReady", function () {
+//             audio.play();
+//         }, false);
+//     }
+//     audioAutoPlay();
+// });
+
+ </script>
+
+ <script type="text/javascript" src="https://v1.cnzz.com/z_stat.php?id=1278002982&web_id=1278002982">
+    console.log("visit");
+ </script>
+
+    <div id="main" role="main" class="wrapper-content">
+      <article class="posts">
+  <h1>APM总结</h1>
+
+  <div clsss="meta">
+    <span class="date">
+      2020-06-20
+    </span>
+
+    <ul class="tag">
+      
+      <li>
+        <a href="http://localhost:4000/tags#iOS">
+          iOS
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+
+  <div class="entry">
+    <h5 id="apm监控卡顿并上报有两种方案">APM监控卡顿并上报有两种方案：</h5>
+<ol>
+  <li>监听Runloop状态回调， 子线程ping主线程
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    if (currentMode-&gt;_observerMask &amp; kCFRunLoopEntry )
+        // 通知 Observers: RunLoop 即将进入 loop
+        __CFRunLoopDoObservers(rl, currentMode, kCFRunLoopEntry);
+    // 进入loop
+    result = __CFRunLoopRun(rl, currentMode, seconds, returnAfterSourceHandled, previousMode);
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>开启do while 循环保活线程，通知Observers, Runloop触发timer回调，然后执行被加入的Block
+```
+  if (rlm-&gt;_observerMask &amp; kCFRunLoopBeforeTimers)
+     //  通知 Observers: RunLoop 即将触发 Timer 回调
+     __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeTimers);</p>
+
+    <p>if (rlm-&gt;_observerMask &amp; kCFRunLoopBeforeSources)
+     //  通知 Observers: RunLoop 即将触发 Source 回调
+     __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeSources);
+ // 执行被加入的block
+ __CFRunLoopDoBlocks(rl, rlm);</p>
+  </li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3. runloop触发source0的回调，如果source1是ready状态，会跳转到handle_msg去处理消息, 如果有 Source1 (基于port) 处于 ready 状态，直接处理这个 Source1 然后跳转去处理消息
+
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (MACH_PORT_NULL != dispatchPort &amp;&amp; !didDispatchPortLastTime) {
+#if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+    msg = (mach_msg_header_t *)msg_buffer;
+    
+    if (__CFRunLoopServiceMachPort(dispatchPort, &amp;msg, sizeof(msg_buffer), &amp;livePort, 0, &amp;voucherState, NULL)) {
+        goto handle_msg;
+    }
+#elif DEPLOYMENT_TARGET_WINDOWS
+    if (__CFRunLoopWaitForMultipleObjects(NULL, &amp;dispatchPort, 0, 0, &amp;livePort, NULL)) {
+        goto handle_msg;
+    }
+#endif
+}
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>4. 回调触发后，通知Observer进入休眠状态
+</code></pre></div></div>
+<p>Boolean poll = sourceHandledThisLoop || (0ULL == timeout_context-&gt;termTSR);
+ // 通知 Observers: RunLoop 的线程即将进入休眠(sleep)
+ if (!poll &amp;&amp; (rlm-&gt;_observerMask &amp; kCFRunLoopBeforeWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeWaiting);
+     __CFRunLoopSetSleeping(rl);</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>5. 休眠后，等待mach_port消息，以便再次唤醒
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>do {
+    if (kCFUseCollectableAllocator) {
+        // objc_clear_stack(0);
+        // &lt;rdar://problem/16393959&gt;
+        memset(msg_buffer, 0, sizeof(msg_buffer));
+    }
+    msg = (mach_msg_header_t *)msg_buffer;
+    
+    __CFRunLoopServiceMachPort(waitSet, &amp;msg, sizeof(msg_buffer), &amp;livePort, poll ? 0 : TIMEOUT_INFINITY, &amp;voucherState, &amp;voucherCopy);
+    
+    if (modeQueuePort != MACH_PORT_NULL &amp;&amp; livePort == modeQueuePort) {
+        // Drain the internal queue. If one of the callout blocks sets the timerFired flag, break out and service the timer.
+        while (_dispatch_runloop_root_queue_perform_4CF(rlm-&gt;_queue));
+        if (rlm-&gt;_timerFired) {
+            // Leave livePort as the queue port, and service timers below
+            rlm-&gt;_timerFired = false;
+            break;
+        } else {
+            if (msg &amp;&amp; msg != (mach_msg_header_t *)msg_buffer) free(msg);
+        }
+    } else {
+        // Go ahead and leave the inner loop.
+        break;
+    }
+} while (1);
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+6. 唤醒时通知Observer， Runloop的线程刚刚被唤醒了
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 通知 Observers: RunLoop 的线程刚刚被唤醒了
+if (!poll &amp;&amp; (rlm-&gt;_observerMask &amp; kCFRunLoopAfterWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopAfterWaiting);
+    // 处理消息
+    handle_msg:;
+    __CFRunLoopSetIgnoreWakeUps(rl);  ```
+</code></pre></div></div>
+
+<ol>
+  <li>Runloop唤醒后，处理唤醒时收到的消息</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>///如果是Timer处理回调
+///如果是dispatch，处理block
+///如果是source1， 处理事件
+
+ #if USE_MK_TIMER_TOO
+         // 如果一个 Timer 到时间了，触发这个Timer的回调
+         else if (rlm-&gt;_timerPort != MACH_PORT_NULL &amp;&amp; livePort == rlm-&gt;_timerPort) {
+             CFRUNLOOP_WAKEUP_FOR_TIMER();
+             // On Windows, we have observed an issue where the timer port is set before the time which we requested it to be set. For example, we set the fire time to be TSR 167646765860, but it is actually observed firing at TSR 167646764145, which is 1715 ticks early. The result is that, when __CFRunLoopDoTimers checks to see if any of the run loop timers should be firing, it appears to be 'too early' for the next timer, and no timers are handled.
+             // In this case, the timer port has been automatically reset (since it was returned from MsgWaitForMultipleObjectsEx), and if we do not re-arm it, then no timers will ever be serviced again unless something adjusts the timer list (e.g. adding or removing timers). The fix for the issue is to reset the timer here if CFRunLoopDoTimers did not handle a timer itself. 9308754
+             if (!__CFRunLoopDoTimers(rl, rlm, mach_absolute_time())) {
+                 // Re-arm the next timer
+                 __CFArmNextTimerInMode(rlm, rl);
+             }
+         }
+ #endif
+         //  如果有dispatch到main_queue的block，执行block
+         else if (livePort == dispatchPort) {
+             CFRUNLOOP_WAKEUP_FOR_DISPATCH();
+             __CFRunLoopModeUnlock(rlm);
+             __CFRunLoopUnlock(rl);
+             _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)6, NULL);
+ #if DEPLOYMENT_TARGET_WINDOWS
+             void *msg = 0;
+ #endif
+             __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__(msg);
+             _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)0, NULL);
+             __CFRunLoopLock(rl);
+             __CFRunLoopModeLock(rlm);
+             sourceHandledThisLoop = true;
+             didDispatchPortLastTime = true;
+         }
+         // 如果一个 Source1 (基于port) 发出事件了，处理这个事件
+         else {
+             CFRUNLOOP_WAKEUP_FOR_SOURCE();
+             
+             // If we received a voucher from this mach_msg, then put a copy of the new voucher into TSD. CFMachPortBoost will look in the TSD for the voucher. By using the value in the TSD we tie the CFMachPortBoost to this received mach_msg explicitly without a chance for anything in between the two pieces of code to set the voucher again.
+             voucher_t previousVoucher = _CFSetTSD(__CFTSDKeyMachMessageHasVoucher, (void *)voucherCopy, os_release);
+
+             CFRunLoopSourceRef rls = __CFRunLoopModeFindSourceForMachPort(rl, rlm, livePort);
+             if (rls) {
+ #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI
+         mach_msg_header_t *reply = NULL;
+         sourceHandledThisLoop = __CFRunLoopDoSource1(rl, rlm, rls, msg, msg-&gt;msgh_size, &amp;reply) || sourceHandledThisLoop;
+         if (NULL != reply) {
+             (void)mach_msg(reply, MACH_SEND_MSG, reply-&gt;msgh_size, 0, MACH_PORT_NULL, 0, MACH_PORT_NULL);
+             CFAllocatorDeallocate(kCFAllocatorSystemDefault, reply);
+         }
+ #elif DEPLOYMENT_TARGET_WINDOWS
+                 sourceHandledThisLoop = __CFRunLoopDoSource1(rl, rlm, rls) || sourceHandledThisLoop;
+ #endif
+
+</code></pre></div></div>
+<ol>
+  <li>根据当前runloop状态判断是否需要进入下一个loop, 当被外部强制停止或者loop超时，就不继续下一个loop,  否则进入下一个loop</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+    if (sourceHandledThisLoop &amp;&amp; stopAfterHandle) {
+        // 进入loop时参数说处理完事件就返回
+        retVal = kCFRunLoopRunHandledSource;
+        } else if (timeout_context-&gt;termTSR &lt; mach_absolute_time()) {
+            // 超出传入参数标记的超时时间了
+            retVal = kCFRunLoopRunTimedOut;
+    } else if (__CFRunLoopIsStopped(rl)) {
+            __CFRunLoopUnsetStopped(rl);
+        // 被外部调用者强制停止了
+        retVal = kCFRunLoopRunStopped;
+    } else if (rlm-&gt;_stopped) {
+        rlm-&gt;_stopped = false;
+        retVal = kCFRunLoopRunStopped;
+    } else if (__CFRunLoopModeIsEmpty(rl, rlm, previousMode)) {
+        // source/timer一个都没有
+        retVal = kCFRunLoopRunFinished;
+    }
+
+ */
+
+/// Source1是runloop用来处理Mach port传来的系统的事件的，  Source0是用来处理用户事件的
+/// 检测runloop，一旦发现在进入睡眠前的KCFRunLoopBeforeSources到唤醒后 KCFRunLoopAfterWaiting的时间过长，说明Runloop卡顿了， 开启一个子线程，不断的去循环检测，如果在n次都超过了预定好的阈值， 认为是卡顿了， 然后进行dump当前的堆栈并上报
+
+/**
+ 通过 long dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout)  方法判断是否阻塞主线程，Returns zero on success, or non-zero if the timeout occurred.  返回非0则代表超时阻塞了主线程
+ */
+
+
+
+//MARK: 子线程ping主线程监听的方式
+///开启一个子线程，创建一个初始值为0的信号量， 一个bool标志位，将设置为NO的标志位的任务派发到主线程中去， 子线程休眠阈值到后判断是否被主线程成功，如果没成功认为是主线程卡顿
+/*
+ 
+ while (self.isCancelled == NO) {
+ 
+     @autoreleasepool {
+         __block BOOL isMainThreadNoRespond = YES;
+         
+         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+         
+         dispatch_async(dispatch_get_main_queue(), ^{
+             isMainThreadNoRespond = NO;
+             dispatch_semaphore_signal(semaphore);
+         });
+         
+         [NSThread sleepForTimeInterval:self.threshold];
+         
+         if (isMainThreadNoRespond) {
+             if (self.handlerBlock) {
+                 self.handlerBlock(); // 外部在 block 内部 dump 堆栈（下面会讲），数据上报
+             }
+         }
+         
+         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+     }
+ }
+
+</code></pre></div></div>
+
+<h5 id="启动时间监控">启动时间监控</h5>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 . pre-main阶段影响因素
+/**
+ 1. 动态库越多，启动越慢
+ 2. Objc类越好,  函数越多，启动越慢
+ 3. 可执行文件越大，启动越慢
+ 4. Objc的load方法越多，启动越慢
+ */
+
+/**
+    struct thread_basic_info {
+        time_value_t    user_time;      /* user run time（用户运行时长） */
+        time_value_t    system_time;    /* system run time（系统运行时长） */
+        integer_t       cpu_usage;      /* scaled cpu usage percentage（CPU使用率，上限1000） */
+        policy_t        policy;         /* scheduling policy in effect（有效调度策略） */
+        integer_t       run_state;      /* run state (运行状态，见下) */
+        integer_t       flags;          /* various flags (各种各样的标记) */
+        integer_t       suspend_count;  /* suspend count for thread（线程挂起次数） */
+        integer_t       sleep_time;     /* number of seconds that thread
+                                         *  has been sleeping（休眠时间） */
+    };
+ */
+
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>OOM 超出了内存分配
+/// 收到低内存警告不一定会 Crash，因为有6秒钟的系统判断时间，6秒内内存下降了则不会 crash。发生 OOM 也不一定会收到低内存警告
+/**
+ 合理使用autoreleasepool, autoreleasepool对象是在Runloop结束时释放，在ARC下， 如果我们不断的申请内存， 我们需要手动的添加autoreleasepool， 避免短时间内内存猛涨发生OOM
+ 内存分配:  malloc用的是 malloc_zone_malloc,  calloc用的是malloc_zone_calloc
+  在处理图片缩放时，ImageIO占用内存会比直接处理图片缩放小
+ */
+</code></pre></div></div>
+
+  </div>
+
+  
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+
+	    var disqus_shortname = 'Jack';
+
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+</article>
+
+<div class="pagination">
+  
+    <span class="prev" >
+      <a href="http://localhost:4000/IM%E6%80%BB%E7%BB%93/">
+        ← 上一篇
+      </a>
+    </span>
+  
+  
+    <span class="next" >
+      <a href="http://localhost:4000/%E5%94%90%E6%9C%9D%E7%AC%94%E8%AE%B0/">
+        下一篇 →
+      </a>
+    </span>
+  
+</div>
+    </div>
+
+    
+
+  </body>
+
+  <div class="wrapper-footer-mobile">
+    <footer class="footer">
+      <!-- Refer to https://codepen.io/ruandre/pen/howFi -->
+<ul class="svg-icon">
+
+  
+  <li><a href="https://www.weibo.com/huyong668" class="icon-1 weibo" title="Weibo"><svg viewBox="0 0 512 512"><path d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></svg></a></li>
+  
+  
+  
+
+  
+
+  
+  <li><a href="mailto:huyong229@163.com" class="icon-8 email" title="Email"><svg viewBox="0 0 512 512"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></svg><!--[if lt IE 9]><em>Email</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+  <li><a href="https://github.com/AndreHu88" class="icon-13 github" title="GitHub"><svg viewBox="0 0 512 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg><!--[if lt IE 9]><em>GitHub</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</ul>
+
+
+
+<p>Copyright(c) 2019 愿你出走半生，归来仍是少年</p>
+
+    </footer>
+
+
+</html>

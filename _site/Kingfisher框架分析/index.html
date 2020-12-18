@@ -495,11 +495,11 @@ cancelQueue = DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Cance
 <h4 id="二-kingfisher的入口">二、 Kingfisher的入口</h4>
 
 <p>我们在使用Kingfisher时，是这样调用的</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>imageView.kf.setImage(with: URL(string: imageUrl), placeholder: UIImage(named: "img_default_medium"))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>imageView.kf.setImage(with: URL(string: imageUrl), placeholder: UIImage(named: "img_default_medium"))
 </code></pre></div></div>
 
 <p>kf是kingfisher.swift中 对UIImageView和UIButton的extension中都实现了KingfisherCompatible的Protocol， Protocol中定义了kf变量，用来标识当前的调用类型</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
  A type that has Kingfisher extensions.
  */
 public protocol KingfisherCompatible {
@@ -518,16 +518,16 @@ extension ImageView: KingfisherCompatible { }
 extension Button: KingfisherCompatible { }
 </code></pre></div></div>
 
-<p>在UIImageView和UIButton的extension中有以上方法，供外部使用的API，快速设置网络图片，我们看到传入的的是<code class="highlighter-rouge">Resource</code>类型</p>
+<p>在UIImageView和UIButton的extension中有以上方法，供外部使用的API，快速设置网络图片，我们看到传入的的是<code class="language-plaintext highlighter-rouge">Resource</code>类型</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public func setImage(with resource: Resource?,
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public func setImage(with resource: Resource?,
                          placeholder: Placeholder? = nil,
                          options: KingfisherOptionsInfo? = nil,
                          progressBlock: DownloadProgressBlock? = nil,
                          completionHandler: CompletionHandler? = nil) -&gt; RetrieveImageTask
 </code></pre></div></div>
 <p>可以看到Resource是一个Protocol, 在Protocol中定义了URL和cacheKey, 在URL的extension中实现了Resource协议，所以我们只需传入URL对象即可</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public protocol Resource {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public protocol Resource {
     /// The key used in cache.
     var cacheKey: String { get }
     
@@ -543,7 +543,7 @@ extension URL: Resource {
 
 <h4 id="三具体分析kingfisher的工作原理">三、具体分析Kingfisher的工作原理</h4>
 <p>先判断Resource是否为空， 如果为空，直接return RetrieveImageTask.empty</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> public func setImage(with resource: Resource?,
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> public func setImage(with resource: Resource?,
                          placeholder: Placeholder? = nil,
                          options: KingfisherOptionsInfo? = nil,
                          progressBlock: DownloadProgressBlock? = nil,
@@ -559,7 +559,7 @@ extension URL: Resource {
 
 </code></pre></div></div>
 <p>我们来具体看Kingfisher的对于一张未下载图片的工作流</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 1. UIView的Extension，提供API调用
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 1. UIView的Extension，提供API调用
 func setImage(with resource: Resource?,
                          placeholder: Placeholder? = nil,
                          options: KingfisherOptionsInfo? = nil,
@@ -590,9 +590,9 @@ open func downloadImage(with url: URL,
 
 </code></pre></div></div>
 
-<p>下载的核心流程, 来自<code class="highlighter-rouge">ImageDownloader</code></p>
+<p>下载的核心流程, 来自<code class="language-plaintext highlighter-rouge">ImageDownloader</code></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 1. 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 1. 
  var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeout)  
  
 // 2. ImageDownloader内部 创建了多个队列

@@ -1,0 +1,64 @@
+I"�<h3 id="记录一次iphone-x的适配过程做个总结">记录一次iPhone X的适配过程，做个总结</h3>
+
+<p>自iOS11后，苹果推出<code class="language-plaintext highlighter-rouge">iPhone X</code>。由于<code class="language-plaintext highlighter-rouge">iPhoneX</code>的尺寸，外观不太常规，所以适配自然就不太一样。而且iOS11后，有些API做了些改变。</p>
+
+<p>在Xcode中，我打印了<code class="language-plaintext highlighter-rouge">iPhone X</code>的一些尺寸信息</p>
+
+<pre><code class="language-objective-c">StatusBarHeight:44.000000
+TabBarHeight:83.000000
+NavHeight:44.000000
+ScreenHeight:812.000000
+frame: [0, 0, 375, 812]
+</code></pre>
+
+<p>再次打印<code class="language-plaintext highlighter-rouge">Phone7</code>的尺寸信息</p>
+
+<pre><code class="language-objective-c">StatusBarHeight:20.000000
+TabBarHeight:49.000000
+NavHeight:44.000000
+frame: [0, 0, 375, 667]
+ScreenHeight:667.000000
+</code></pre>
+
+<p>首先要在launchImage中加入iPhone X的启动页，大小为1125*2436，再次启动APP发现可以全屏显示了。
+<img src="https://developer.apple.com/ios/update-apps-for-iphone-x/images/illustrations/checklist-safe-area-portrait.svg" alt="launchImage" />
+<img src="https://developer.apple.com/ios/update-apps-for-iphone-x/images/illustrations/checklist-safe-area-landscape.svg" alt="launchImage" /></p>
+
+<p>在开发中尽量把我们的内容放到图中的safeArea中</p>
+
+<p>在iOS11中增加了几个新的API。</p>
+
+<pre><code class="language-objective-c">viewSafeAreaInsetsDidChange
+UIView增加了safeAreaInsets属性
+ViewController增加了additionalSafeAreaInsets属性
+</code></pre>
+
+<p>经过几次实验发现，<code class="language-plaintext highlighter-rouge">viewSafeAreaInsetsDidChange</code>在TabBar的VC不会调用此方法，在非TabBar的Controller会调用此方法，方法的调用顺序如下</p>
+
+<pre><code class="language-objective-c">viewDidLoad
+viewWillAppear
+viewSafeAreaInsetsDidChange
+viewWillLayoutSubviews
+</code></pre>
+
+<p>只有在调用了<code class="language-plaintext highlighter-rouge">viewSafeAreaInsetsDidChange</code>后才能获取到<code class="language-plaintext highlighter-rouge">UIEdgeInsets</code></p>
+
+<p>在iOS11后我们要更改部分宏的定义</p>
+
+<pre><code class="language-objective-c">/** 底部安全区高度 */
+#define KSafeAreaBottom_Height  (KSCREEN_HEIGHT == 812.0 ? 34 : 0)
+/** tabBar高度 */
+#define KTABBAR_HEIGHT      [[UIApplication sharedApplication] statusBarFrame].size.height &gt; 20 ? 83 : 49
+/** 是否为iphoneX */
+#define IS_IPHONE_X         ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )812 ) &lt; DBL_EPSILON )
+</code></pre>
+
+<p>总结来看，总体变化有：</p>
+
+<ul>
+  <li>1.状态栏由20pt变成44pt，所以导航栏从64pt变为88pt</li>
+  <li>2.底部多出了34pt的home indicator的边距</li>
+</ul>
+
+<p>更多的适配细节还是见<a href="https://developer.apple.com/cn/ios/update-apps-for-iphone-x/">苹果人机交互指南网站</a></p>
+:ET

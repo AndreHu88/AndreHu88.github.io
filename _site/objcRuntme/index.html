@@ -434,7 +434,7 @@ obj_msgSend()实际上是找到这个函数指针，然后调用它
 
 <p>我们知道高级编程语言要想成为可执行文件的过程：高级语言 -&gt; 汇编语言 -&gt; 机器语言。机器语言是计算机唯一能识别的语言。所以从OC代码到最后的可执行文件的过程大概有：OC -&gt; C - &gt;编译(汇编) -&gt; 可执行文件 。从OC到C的过程就是由runtime来实现。通俗的将runtime就是把面向对象的类转变为面向过程的结构体</p>
 
-<p>我们导入<code class="highlighter-rouge">import &lt;objc/runtime.h&gt;</code>，查看runtime.h的头文件，会发现以下代码</p>
+<p>我们导入<code class="language-plaintext highlighter-rouge">import &lt;objc/runtime.h&gt;</code>，查看runtime.h的头文件，会发现以下代码</p>
 
 <pre><code class="language-objective-c">/// Represents an instance of a class.
 struct objc_object {
@@ -465,7 +465,7 @@ typedef struct objc_class *Class;
 /* Use `Class` instead of `struct objc_class *` */
 </code></pre>
 
-<p>通过这个代码发现，我们创建的对象其实就是一个objc_object的结构体，这个结构体只有一个成员变量(Class的isa指针)，Classs是一个结构体指针，指向objc_class。而objc的<code class="highlighter-rouge">类对象</code>就是一个<code class="highlighter-rouge">objc_class</code>的结构体,这个结构体存放的数据被称为<code class="highlighter-rouge">元数据(metadata)</code>该结构体的第一个成员变量也是<code class="highlighter-rouge">isa</code>指针，这样就说明了类本身也是一个对象，我们趁为类对象。类对象的<code class="highlighter-rouge">isa</code>指针指向的对象是<code class="highlighter-rouge">元类</code></p>
+<p>通过这个代码发现，我们创建的对象其实就是一个objc_object的结构体，这个结构体只有一个成员变量(Class的isa指针)，Classs是一个结构体指针，指向objc_class。而objc的<code class="language-plaintext highlighter-rouge">类对象</code>就是一个<code class="language-plaintext highlighter-rouge">objc_class</code>的结构体,这个结构体存放的数据被称为<code class="language-plaintext highlighter-rouge">元数据(metadata)</code>该结构体的第一个成员变量也是<code class="language-plaintext highlighter-rouge">isa</code>指针，这样就说明了类本身也是一个对象，我们趁为类对象。类对象的<code class="language-plaintext highlighter-rouge">isa</code>指针指向的对象是<code class="language-plaintext highlighter-rouge">元类</code></p>
 
 <h3 id="objc函数调用总结">objc函数调用总结</h3>
 <blockquote>

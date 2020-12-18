@@ -425,50 +425,50 @@ s.source_files的写法
 <h3 id="创建组件">创建组件</h3>
 <p>查看本地Repo</p>
 
-<p><code class="highlighter-rouge">pod repo list</code></p>
+<p><code class="language-plaintext highlighter-rouge">pod repo list</code></p>
 
 <p>添加本地远程索引库</p>
 
-<p><code class="highlighter-rouge">pod repo add specs http:xxx</code></p>
+<p><code class="language-plaintext highlighter-rouge">pod repo add specs http:xxx</code></p>
 
 <h5 id="步骤一-创建podspec">步骤一： 创建podspec</h5>
 <p>创建Pod, 会生成podspec文件</p>
 
-<p><code class="highlighter-rouge">pod lib create project</code></p>
+<p><code class="language-plaintext highlighter-rouge">pod lib create project</code></p>
 
 <h5 id="步骤二-本地验证">步骤二： 本地验证</h5>
 <p>验证本地spec是否存在错误</p>
 
-<p><code class="highlighter-rouge">pod lib lint</code></p>
+<p><code class="language-plaintext highlighter-rouge">pod lib lint</code></p>
 
 <p>如果本地spec中对依赖了私有库</p>
 
-<p><code class="highlighter-rouge">pod lib lint --sources='private spec url, https://github.com/CocoaPods/Specs.git' --allow-warnings</code></p>
+<p><code class="language-plaintext highlighter-rouge">pod lib lint --sources='private spec url, https://github.com/CocoaPods/Specs.git' --allow-warnings</code></p>
 
 <h5 id="步骤三-提交到远程">步骤三： 提交到远程</h5>
 <p>本地验证成功后，需提交到远程服务器，并打Tag，确保和spec中保持一致</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push origin master
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push origin master
 git tag 1.0
 git push --tags #上传本地所有tag
 </code></pre></div></div>
 
 <h5 id="步骤四-远程验证">步骤四: 远程验证</h5>
 
-<p><code class="highlighter-rouge">pod spec lint --allow-warnings --verbose</code></p>
+<p><code class="language-plaintext highlighter-rouge">pod spec lint --allow-warnings --verbose</code></p>
 
 <h5 id="步骤五-组件库发布">步骤五: 组件库发布</h5>
 
-<p><code class="highlighter-rouge">pod repo push RepoName xx.podspec</code></p>
+<p><code class="language-plaintext highlighter-rouge">pod repo push RepoName xx.podspec</code></p>
 
 <h5 id="步骤六-检查组件库">步骤六: 检查组件库</h5>
 
-<p>在<code class="highlighter-rouge">~/.cocoapods</code>目录下查看与Spec同名的文件夹，即为本地索引库</p>
+<p>在<code class="language-plaintext highlighter-rouge">~/.cocoapods</code>目录下查看与Spec同名的文件夹，即为本地索引库</p>
 
 <h4 id="使用组件">使用组件</h4>
 <p>在podfile中添加pod的源路径</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source 'https://github.com/CocoaPods/Specs.git' 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source 'https://github.com/CocoaPods/Specs.git' 
 source 'xxx/xxx/xxxxx.git' # 私有库 repo
 </code></pre></div></div>
 <h4 id="podspec文件">podspec文件</h4>
@@ -479,7 +479,7 @@ source 'xxx/xxx/xxxxx.git' # 私有库 repo
   <li>“**” 表示匹配所有子目录</li>
 </ul>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  s.dependency 'IQKeyboardManagerSwift', '6.3.0'
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  s.dependency 'IQKeyboardManagerSwift', '6.3.0'
   s.dependency 'Kingfisher',  '4.10.1'  
 </code></pre></div></div>
 <p>在spec中添加资源文件(图片，国际化字符串)</p>
@@ -488,7 +488,7 @@ source 'xxx/xxx/xxxxx.git' # 私有库 repo
   <li>resources</li>
 </ul>
 
-<p>官方建议使用<code class="highlighter-rouge">resource_bundles</code>，这样可以避免主工程和组件中的资源出现冲突</p>
+<p>官方建议使用<code class="language-plaintext highlighter-rouge">resource_bundles</code>，这样可以避免主工程和组件中的资源出现冲突</p>
 
 
   </div>

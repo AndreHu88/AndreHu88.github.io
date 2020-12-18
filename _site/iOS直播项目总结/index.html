@@ -591,7 +591,7 @@ HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低</
 <h5 id="编码h264">编码H.264</h5>
 <p>1.初始化VideoToolbox</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)setupVideoToolbox{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)setupVideoToolbox{
     
     dispatch_sync(_encodeQueue, ^{
         
@@ -646,7 +646,7 @@ HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低</
 </code></pre></div></div>
 <p>2.sampleBuffer回调处理</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)videoEncodeWithSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)videoEncodeWithSampleBuffer:(CMSampleBufferRef)sampleBuffer{
     
     dispatch_sync(_encodeQueue, ^{
         
@@ -677,7 +677,7 @@ HLS与RTMP对比:HLS主要是延时比较大，RTMP主要优势在于延时低</
 
 <p>3.对VideoToolbox的编码回调</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//每压缩一次都异步的调用此方法
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//每压缩一次都异步的调用此方法
 void encodingComplectionCallback(void * CM_NULLABLE outputCallbackRefCon,
                                void * CM_NULLABLE sourceFrameRefCon,
                                OSStatus status,

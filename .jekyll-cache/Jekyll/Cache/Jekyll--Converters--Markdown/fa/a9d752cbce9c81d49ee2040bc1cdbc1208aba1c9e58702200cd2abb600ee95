@@ -1,0 +1,103 @@
+I"I<h3 id="ios组件化方案">iOS组件化方案</h3>
+
+<p>将程序中功能相对独立的部分打包在一起形成模块，并且减少模块之间的直接依赖。</p>
+
+<h4 id="为什么要组件化">为什么要组件化</h4>
+<p>随着业务复杂度不断增加，工程越来越庞大，开发人员逐渐增多，单一工程的开发模式会出现一系列问题：</p>
+
+<ul>
+  <li>耦合严重：组件之间依赖过于复杂，维护成本高。</li>
+  <li>容易出现冲突：xib 或者代码冲突机会大大增加。</li>
+  <li>开发效率低：每次都需要编译整个项目。</li>
+</ul>
+
+<h4 id="组件间通信方案">组件间通信方案</h4>
+<h5 id="目前业界主要的方案有以下几种">目前业界主要的方案有以下几种</h5>
+<ul>
+  <li>Protocol注册方案</li>
+  <li>URL注册方案</li>
+  <li>Target-Action runtime调用方案</li>
+</ul>
+
+<h5 id="本博客采用target-action的方式">本博客采用Target-Action的方式</h5>
+<p>原理：</p>
+
+<p>每个组件, 提供一个统一暴露的接口文件
+额外的维护一个中间件的分类扩展（用Runtime进行解耦）
+其他地方通过target-action的方案进行交互</p>
+
+<p>特点：</p>
+
+<p>统一了组件api服务
+组件与框架之间无依赖关系
+需要额外维护中间件类扩展</p>
+
+<h3 id="创建组件">创建组件</h3>
+<p>查看本地Repo</p>
+
+<p><code class="language-plaintext highlighter-rouge">pod repo list</code></p>
+
+<p>添加本地远程索引库</p>
+
+<p><code class="language-plaintext highlighter-rouge">pod repo add specs http:xxx</code></p>
+
+<h5 id="步骤一-创建podspec">步骤一： 创建podspec</h5>
+<p>创建Pod, 会生成podspec文件</p>
+
+<p><code class="language-plaintext highlighter-rouge">pod lib create project</code></p>
+
+<h5 id="步骤二-本地验证">步骤二： 本地验证</h5>
+<p>验证本地spec是否存在错误</p>
+
+<p><code class="language-plaintext highlighter-rouge">pod lib lint</code></p>
+
+<p>如果本地spec中对依赖了私有库</p>
+
+<p><code class="language-plaintext highlighter-rouge">pod lib lint --sources='private spec url, https://github.com/CocoaPods/Specs.git' --allow-warnings</code></p>
+
+<h5 id="步骤三-提交到远程">步骤三： 提交到远程</h5>
+<p>本地验证成功后，需提交到远程服务器，并打Tag，确保和spec中保持一致</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push origin master
+git tag 1.0
+git push --tags #上传本地所有tag
+</code></pre></div></div>
+
+<h5 id="步骤四-远程验证">步骤四: 远程验证</h5>
+
+<p><code class="language-plaintext highlighter-rouge">pod spec lint --allow-warnings --verbose</code></p>
+
+<h5 id="步骤五-组件库发布">步骤五: 组件库发布</h5>
+
+<p><code class="language-plaintext highlighter-rouge">pod repo push RepoName xx.podspec</code></p>
+
+<h5 id="步骤六-检查组件库">步骤六: 检查组件库</h5>
+
+<p>在<code class="language-plaintext highlighter-rouge">~/.cocoapods</code>目录下查看与Spec同名的文件夹，即为本地索引库</p>
+
+<h4 id="使用组件">使用组件</h4>
+<p>在podfile中添加pod的源路径</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source 'https://github.com/CocoaPods/Specs.git' 
+source 'xxx/xxx/xxxxx.git' # 私有库 repo
+</code></pre></div></div>
+<h4 id="podspec文件">podspec文件</h4>
+<p>s.source_files的写法</p>
+<ul>
+  <li>“*” 表示匹配所有文件</li>
+  <li>“*.{h,m,swift}” 表示匹配所有以.h和.m结尾的文件</li>
+  <li>“**” 表示匹配所有子目录</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  s.dependency 'IQKeyboardManagerSwift', '6.3.0'
+  s.dependency 'Kingfisher',  '4.10.1'  
+</code></pre></div></div>
+<p>在spec中添加资源文件(图片，国际化字符串)</p>
+<ul>
+  <li>resource_bundles</li>
+  <li>resources</li>
+</ul>
+
+<p>官方建议使用<code class="language-plaintext highlighter-rouge">resource_bundles</code>，这样可以避免主工程和组件中的资源出现冲突</p>
+
+:ET
