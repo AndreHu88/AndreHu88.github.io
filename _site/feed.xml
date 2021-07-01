@@ -1,4 +1,144 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-18T23:05:07+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">风车大战骑士</title><subtitle>生活不止眼前的苟且，还有诗和远方</subtitle><entry><title type="html">唐朝笔记</title><link href="http://localhost:4000/%E5%94%90%E6%9C%9D%E7%AC%94%E8%AE%B0/" rel="alternate" type="text/html" title="唐朝笔记" /><published>2020-09-20T00:00:00+08:00</published><updated>2020-09-20T00:00:00+08:00</updated><id>http://localhost:4000/%E5%94%90%E6%9C%9D%E7%AC%94%E8%AE%B0</id><content type="html" xml:base="http://localhost:4000/%E5%94%90%E6%9C%9D%E7%AC%94%E8%AE%B0/">&lt;h3 id=&quot;金融读书笔记&quot;&gt;金融读书笔记&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-25T18:12:46+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">风车大战骑士</title><subtitle>生活不止眼前的苟且，还有诗和远方</subtitle><entry><title type="html">IM消息总结总结</title><link href="http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="IM消息总结总结" /><published>2020-10-20T00:00:00+08:00</published><updated>2020-10-20T00:00:00+08:00</updated><id>http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93/">&lt;h3 id=&quot;离线消息&quot;&gt;离线消息&lt;/h3&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1.  客户端登录时，服务端不推送全量离线消息，只推送离线消息计数器(数量)， 客户端显示在未读小红点
+2. 客户端拿到离线消息， 遍历会话列表， 依次将未读消息累加，然后通知服务端清空离线消息计数器的增量数据
+3. 客户端进入某会话时，上拉加载， 通过msgId分页查询离线消息
+4. 客户端收到消息并保存在本地数据库后，向服务端发送ack, 然后服务端删除离线消息表的离线消息
+ 
+ 客户端和服务端消息衔接问题： (客户端本地存储历史消息， 那么客户端下拉加载新消息时，怎么判断是加载本地历史消息，还是请求服务器加载离线消息)
+    1.  进入会话时， 根据未读消息计数器的最近的N条消息展示首页数据
+    2.  下载加载时，请求服务端， 服务端按时间倒序返回上一页的消息，只到离线数据库中的数据全部返回给客户端
+    3. 当离线消息库中没有离线消息时，返回给客户端一个标识， 客户端根据这个标识，在会话页面下一次加载时不请求服务器，直接请求本地数据库
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;### 本地缓存
+     客户端消息DB：(简易每个登录用户创建一个DB，切换用户时切换DB即可,  搭建一个完善IM体系 ， 每个DB至少对应3张表 )
+        1.  一张用户存储聊天列表信息，这里假如它叫ChatList,  用户存储每个群或者单人会话的最后一条信息 。来消息时更新该表，并更新内存数据源中列表信息。或者每次来消息时更新内存数据源中列表信息 ，退出程序或者退出聊天列表页时进行数据库更新。后者避免了频繁操作数据库，效率更高
+        2.   一张用户存储每个会话中的详细聊天记录 ，这里假如它叫MessageList。该表也是如此 ，要么接到消息立马更新数据库，要么先存入内存中，退出程序时进行数据库缓存
+        3. 一张用于存储好友或者群列表信息 ，这里假如它叫myFriends ，每次登陆或者退出，或者修改好友备注，删除好友，设置星标好友等操作都需要更新该表&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; 沙盒缓存：
+    1. 当发送或者接收图片、语音、文件信息时，需要对信息内容进行沙盒缓存。
+        沙盒缓存的目录分层 ，个人建议是在每个用户根据自己的userID在Cache中创建文件夹，该文件夹目录下创建每个会话的文件夹。
+        这样做的好处在于 ， 当你需要删除聊天列表会话或者清空聊天记录 ，或者app进行内存清理时 ，便于找到该会话的所有缓存。大致的目录结构如下   ../Cache/userID(当前用户ID)/toUserID(某个群或者单聊对象)/...（图片，语音等缓存）
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;发送消息&quot;&gt;发送消息&lt;/h3&gt;
+
+&lt;h6 id=&quot;1-文本消息表情消息&quot;&gt;1. 文本消息/表情消息&lt;/h6&gt;
+&lt;p&gt;直接调用咱们封装好的ChatManager的sendMessage方法即可 ， 发送消息时 ，需要存入或者更新ChatList和MessageList两张表。若是未连接或者发送超时 ，需要重新更新数据库存储的发送成功与否状态 ，同时更新内存数据源 ，刷新该条消息展示即可。&lt;/p&gt;
+
+&lt;p&gt;若是表情消息 ，传输过程也是以文本的方式传输 ，比如一个大笑的表情 ，可以定义为[大笑] ，当然规则自己可以和安卓端web端协商，本地根据plist文件和表情包匹配进行图文混排展示即可&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- 输入 内容
+- 发送 
+- 消息加入聊天数据源 
+- 更新数据库 
+- 展示到聊天会话中 
+ - 调用TCP发送到服务器（若超时，更新聊天数据源，更新数据库 ，刷新聊天UI）
+- 收到服务器成功回执(normalReceipt) 
+- 修改数据源该条消息发送状态(isSend) 
+- 更新数据库
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h6 id=&quot;2-语音消息&quot;&gt;2. 语音消息&lt;/h6&gt;
+
+&lt;p&gt;语音需要做相应的降噪 ，压缩等操作
+发送语音大约有两种方式 :&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;先对该条语音进行本地缓存 ， 然后全部内容均通过TCP传输并携带该条语音的相关信息，例如时长，大小等信息，具体的你得测试一条压缩后的语音体积有多大，若是过大，则需要进行分割然后以消息的方法时发送。接收语音时也进行拼接&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;对该条语音进行本地缓存 ， 语音内容使用http传输，传输到服务器生成相应的id ，获取该id再附带该条语音的相关信息 ，以TCP方式发送给对方，当对方收到该条消息时，先去下载该条信息，并根据该条语音的相关信息进行展示。同时发送或接收时，对chatinfo和chatlist表和内存数据源进行更新 ，超时或者失败再次更新&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- 长按录制 
+- 压缩转格式 
+- 缓存到沙盒 
+- 更新数据库
+- 展示到聊天会话中，展示转圈发送中状态 
+- 调用http分段式上传(若失败，刷新UI展示) 
+- 调用TCP发送该语音消息相关信息（若超时，刷新聊天UI）
+- 收到服务器成功回执 
+- 修改数据源该条消息发送状态(isSend) 
+- 修改数据源该条消息发送状态(isSend)
+- 更新数据库
+- 刷新聊天会话中该条消息UI
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h6 id=&quot;3-图片消息&quot;&gt;3. 图片消息&lt;/h6&gt;
+&lt;p&gt;图片应当分成两种大小 ， 一种是压缩得非常小的状态，一种是图片本身的大小状态。 聊天页面展示的 ，仅仅是小图 ，只有点击查看时才去加载大图。这样做的目的在于提高发送和接收的效率&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;先对该图片进行本地缓存 ， 然后全部内容均通过TCP传输 ，并携带该图片的相关信息 ，例如图片的大小 ，名字 ，宽高比等信息 。同样如果过大也需要进行分割传输。同时发送或接收时，对chatinfo和chatlist表和内存数据源进行更新 ，超时或者失败再次更新&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;先对该图片进行本地缓存 ， 然后通过http传输到服务器 ，成功后发送TCP消息 ，并携带相关消息 。接收方根据你该条图片信息进行UI布局。同时发送或接收时，对chatinfo和chatlist表和内存数据源进行更新 ，超时或者失败再次更新&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;打开相册选择图片 
+获取图片相关信息，大小，名称等，根据用户是否选择原图，考虑是否压缩 
+缓存到沙盒 
+更新数据库 
+展示到聊天会话中，根据上传显示进度 
+http分段式上传(若失败，更新聊天数据,更新数据库,刷新聊天UI) 
+调用TCP发送该图片消息相关信息（若超时，更新聊天数据源，更新数据库,刷新聊天UI）
+收到服务器成功回执 
+修改数据源该条消息发送状态(isSend) 
+更新数据库 
+刷新聊天会话中该条消息UI
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h6 id=&quot;4-视频消息&quot;&gt;4. 视频消息&lt;/h6&gt;
+
+&lt;p&gt;建议是走http上传比较好 ，因为内容一般偏大 。TCP部分仅需要传输该视频封面以及相关信息比如时长，下载地址等相关信息即可。接收方可以通过视频大小判断，如果是小视频可以接收到后默认自动下载，自动播放 ，大的视频则只展示封面，只有当用户手动点击时才去加载。具体的还是需要根据项目本身的设计而定&lt;/p&gt;
+
+&lt;h6 id=&quot;5-撤回消息&quot;&gt;5. 撤回消息&lt;/h6&gt;
+
+&lt;p&gt;撤回消息也是消息内容的一种类型 。&lt;/p&gt;
+
+&lt;p&gt;例如 A给B发送了一条消息 “你好” ，服务端会对该条消息生成一个messageID ，接收方收到该条消息的messageID和发送方的该条消息messageID一致。&lt;/p&gt;
+
+&lt;p&gt;如果发送端需要撤回该条消息 ，仅仅需要拿到该条消息messageID ，设置一下消息类型 ，发送给对方&lt;/p&gt;
+
+&lt;p&gt;当收到撤回消息的成功回执(repealReceipt)时，移除该会话的内存数据源和更新chatinfo和chatlist表 ，&lt;/p&gt;
+
+&lt;p&gt;并加载提示类型的cell进行展示例如“你撤回了一条消息”即可。接收方收到撤回消息时 ，同样移除内存数据源 ，并对数据库进行更新 ，再加载提示类型的cell例如“张三撤回了一条消息”即可&lt;/p&gt;
+
+&lt;h3 id=&quot;删除消息&quot;&gt;删除消息&lt;/h3&gt;
+
+&lt;p&gt;消息删除大概分为删除该条消息 ，删除该会话 ，清空聊天记录几种&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;删除该条消息仅仅需要移除本地数据源的消息模型 ，更新chatlist和chatinfo表即可。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;删除该会话需要移除chatlist和chatinfo该会话对应的列 ，并根据当前登录用户的userID和该会话的toUserID或者groupID移除沙盒中的缓存。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;清空聊天记录，需要更新chatlist表最后一条消息内容 ，删除chatinfo表，并删除该会话的沙盒缓存.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;注意事项&quot;&gt;注意事项&lt;/h2&gt;
+
+&lt;h5 id=&quot;如果服务器推送消息客户端没有消息回执可能存在丢消息&quot;&gt;如果服务器推送消息，客户端没有消息回执可能存在丢消息&lt;/h5&gt;
+
+&lt;p&gt;原因： 服务器对客户端的网络判断不准确。尽管客户端已经和服务端建立了心跳验证 ， 但是心跳始终是有间隔的，且TCP的连接中断也是有延迟的。例如，在此时我向服务器发送了一次心跳，然后网络失去了连接，或者网络信号不好。服务器接收到了该心跳 ，服务器认为客户端是处于连接状态的，向我推送了某个人向我发送的消息 ，然而此时我却不能收到消息，所以出现了消息丢失的情况。&lt;/p&gt;
+
+&lt;p&gt;解决办法 ：客户端向服务端发送消息，服务端会给客户端返回一个回执，告知该条消息已经发送成功。所以，客户端有必要在收到消息时，也向服务端发送一个回执，告知服务端成功收到了该条消息。而客户端，默认收到的所有消息都是离线的，只有收到客户端的接收消息的成功回执后，才会移除掉该离线消息缓存，否则将会把该条消息以离线消息方式同步推送。离线消息后面会做解释。此时的双向回执，可以把消息丢失概率降到非常低 ,基本上算是模拟了一个消息数据传输的三次握手。&lt;/p&gt;
+
+&lt;h5 id=&quot;消息乱序&quot;&gt;消息乱序&lt;/h5&gt;
+
+&lt;p&gt;原因： 客户端发送消息，该消息会默认赋值当前时间戳 ，收到安卓端或者web端发来的消息时，该时间戳是安卓和web端获取，这样就可能会出现时间戳的误差情况， 当前聊天展示顺序并没有什么问题，因为展示是收到一条展示一条。但是当退出页面重新进入时，如果拉取数据库是根据时间戳的降序拉取 ，那么就很容易出现混乱。&lt;/p&gt;
+
+&lt;p&gt;解决办法 ： 表结构设置自增ID ，消息的顺序展示以入库顺序为准 ，拉取数据库获取消息记录时，根据自增ID降序拉取 。这样就解决了乱序问题 ，至少保证了，展示的消息顺序和我聊天时的一样。尽管时间戳可能并不一样是按照严谨的降序排列的。&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">离线消息 1. 客户端登录时，服务端不推送全量离线消息，只推送离线消息计数器(数量)， 客户端显示在未读小红点 2. 客户端拿到离线消息， 遍历会话列表， 依次将未读消息累加，然后通知服务端清空离线消息计数器的增量数据 3. 客户端进入某会话时，上拉加载， 通过msgId分页查询离线消息 4. 客户端收到消息并保存在本地数据库后，向服务端发送ack, 然后服务端删除离线消息表的离线消息 客户端和服务端消息衔接问题： (客户端本地存储历史消息， 那么客户端下拉加载新消息时，怎么判断是加载本地历史消息，还是请求服务器加载离线消息) 1. 进入会话时， 根据未读消息计数器的最近的N条消息展示首页数据 2. 下载加载时，请求服务端， 服务端按时间倒序返回上一页的消息，只到离线数据库中的数据全部返回给客户端 3. 当离线消息库中没有离线消息时，返回给客户端一个标识， 客户端根据这个标识，在会话页面下一次加载时不请求服务器，直接请求本地数据库 ### 本地缓存 客户端消息DB：(简易每个登录用户创建一个DB，切换用户时切换DB即可, 搭建一个完善IM体系 ， 每个DB至少对应3张表 ) 1. 一张用户存储聊天列表信息，这里假如它叫ChatList, 用户存储每个群或者单人会话的最后一条信息 。来消息时更新该表，并更新内存数据源中列表信息。或者每次来消息时更新内存数据源中列表信息 ，退出程序或者退出聊天列表页时进行数据库更新。后者避免了频繁操作数据库，效率更高 2. 一张用户存储每个会话中的详细聊天记录 ，这里假如它叫MessageList。该表也是如此 ，要么接到消息立马更新数据库，要么先存入内存中，退出程序时进行数据库缓存 3. 一张用于存储好友或者群列表信息 ，这里假如它叫myFriends ，每次登陆或者退出，或者修改好友备注，删除好友，设置星标好友等操作都需要更新该表 沙盒缓存： 1. 当发送或者接收图片、语音、文件信息时，需要对信息内容进行沙盒缓存。 沙盒缓存的目录分层 ，个人建议是在每个用户根据自己的userID在Cache中创建文件夹，该文件夹目录下创建每个会话的文件夹。 这样做的好处在于 ， 当你需要删除聊天列表会话或者清空聊天记录 ，或者app进行内存清理时 ，便于找到该会话的所有缓存。大致的目录结构如下 ../Cache/userID(当前用户ID)/toUserID(某个群或者单聊对象)/...（图片，语音等缓存） 发送消息 1. 文本消息/表情消息 直接调用咱们封装好的ChatManager的sendMessage方法即可 ， 发送消息时 ，需要存入或者更新ChatList和MessageList两张表。若是未连接或者发送超时 ，需要重新更新数据库存储的发送成功与否状态 ，同时更新内存数据源 ，刷新该条消息展示即可。 若是表情消息 ，传输过程也是以文本的方式传输 ，比如一个大笑的表情 ，可以定义为[大笑] ，当然规则自己可以和安卓端web端协商，本地根据plist文件和表情包匹配进行图文混排展示即可 - 输入 内容 - 发送 - 消息加入聊天数据源 - 更新数据库 - 展示到聊天会话中 - 调用TCP发送到服务器（若超时，更新聊天数据源，更新数据库 ，刷新聊天UI） - 收到服务器成功回执(normalReceipt) - 修改数据源该条消息发送状态(isSend) - 更新数据库 2. 语音消息 语音需要做相应的降噪 ，压缩等操作 发送语音大约有两种方式 : 先对该条语音进行本地缓存 ， 然后全部内容均通过TCP传输并携带该条语音的相关信息，例如时长，大小等信息，具体的你得测试一条压缩后的语音体积有多大，若是过大，则需要进行分割然后以消息的方法时发送。接收语音时也进行拼接 对该条语音进行本地缓存 ， 语音内容使用http传输，传输到服务器生成相应的id ，获取该id再附带该条语音的相关信息 ，以TCP方式发送给对方，当对方收到该条消息时，先去下载该条信息，并根据该条语音的相关信息进行展示。同时发送或接收时，对chatinfo和chatlist表和内存数据源进行更新 ，超时或者失败再次更新 - 长按录制 - 压缩转格式 - 缓存到沙盒 - 更新数据库 - 展示到聊天会话中，展示转圈发送中状态 - 调用http分段式上传(若失败，刷新UI展示) - 调用TCP发送该语音消息相关信息（若超时，刷新聊天UI） - 收到服务器成功回执 - 修改数据源该条消息发送状态(isSend) - 修改数据源该条消息发送状态(isSend) - 更新数据库 - 刷新聊天会话中该条消息UI 3. 图片消息 图片应当分成两种大小 ， 一种是压缩得非常小的状态，一种是图片本身的大小状态。 聊天页面展示的 ，仅仅是小图 ，只有点击查看时才去加载大图。这样做的目的在于提高发送和接收的效率 先对该图片进行本地缓存 ， 然后全部内容均通过TCP传输 ，并携带该图片的相关信息 ，例如图片的大小 ，名字 ，宽高比等信息 。同样如果过大也需要进行分割传输。同时发送或接收时，对chatinfo和chatlist表和内存数据源进行更新 ，超时或者失败再次更新 先对该图片进行本地缓存 ， 然后通过http传输到服务器 ，成功后发送TCP消息 ，并携带相关消息 。接收方根据你该条图片信息进行UI布局。同时发送或接收时，对chatinfo和chatlist表和内存数据源进行更新 ，超时或者失败再次更新 打开相册选择图片 获取图片相关信息，大小，名称等，根据用户是否选择原图，考虑是否压缩 缓存到沙盒 更新数据库 展示到聊天会话中，根据上传显示进度 http分段式上传(若失败，更新聊天数据,更新数据库,刷新聊天UI) 调用TCP发送该图片消息相关信息（若超时，更新聊天数据源，更新数据库,刷新聊天UI） 收到服务器成功回执 修改数据源该条消息发送状态(isSend) 更新数据库 刷新聊天会话中该条消息UI 4. 视频消息 建议是走http上传比较好 ，因为内容一般偏大 。TCP部分仅需要传输该视频封面以及相关信息比如时长，下载地址等相关信息即可。接收方可以通过视频大小判断，如果是小视频可以接收到后默认自动下载，自动播放 ，大的视频则只展示封面，只有当用户手动点击时才去加载。具体的还是需要根据项目本身的设计而定 5. 撤回消息 撤回消息也是消息内容的一种类型 。 例如 A给B发送了一条消息 “你好” ，服务端会对该条消息生成一个messageID ，接收方收到该条消息的messageID和发送方的该条消息messageID一致。 如果发送端需要撤回该条消息 ，仅仅需要拿到该条消息messageID ，设置一下消息类型 ，发送给对方 当收到撤回消息的成功回执(repealReceipt)时，移除该会话的内存数据源和更新chatinfo和chatlist表 ， 并加载提示类型的cell进行展示例如“你撤回了一条消息”即可。接收方收到撤回消息时 ，同样移除内存数据源 ，并对数据库进行更新 ，再加载提示类型的cell例如“张三撤回了一条消息”即可 删除消息 消息删除大概分为删除该条消息 ，删除该会话 ，清空聊天记录几种 删除该条消息仅仅需要移除本地数据源的消息模型 ，更新chatlist和chatinfo表即可。 删除该会话需要移除chatlist和chatinfo该会话对应的列 ，并根据当前登录用户的userID和该会话的toUserID或者groupID移除沙盒中的缓存。 清空聊天记录，需要更新chatlist表最后一条消息内容 ，删除chatinfo表，并删除该会话的沙盒缓存. 注意事项 如果服务器推送消息，客户端没有消息回执可能存在丢消息 原因： 服务器对客户端的网络判断不准确。尽管客户端已经和服务端建立了心跳验证 ， 但是心跳始终是有间隔的，且TCP的连接中断也是有延迟的。例如，在此时我向服务器发送了一次心跳，然后网络失去了连接，或者网络信号不好。服务器接收到了该心跳 ，服务器认为客户端是处于连接状态的，向我推送了某个人向我发送的消息 ，然而此时我却不能收到消息，所以出现了消息丢失的情况。 解决办法 ：客户端向服务端发送消息，服务端会给客户端返回一个回执，告知该条消息已经发送成功。所以，客户端有必要在收到消息时，也向服务端发送一个回执，告知服务端成功收到了该条消息。而客户端，默认收到的所有消息都是离线的，只有收到客户端的接收消息的成功回执后，才会移除掉该离线消息缓存，否则将会把该条消息以离线消息方式同步推送。离线消息后面会做解释。此时的双向回执，可以把消息丢失概率降到非常低 ,基本上算是模拟了一个消息数据传输的三次握手。 消息乱序 原因： 客户端发送消息，该消息会默认赋值当前时间戳 ，收到安卓端或者web端发来的消息时，该时间戳是安卓和web端获取，这样就可能会出现时间戳的误差情况， 当前聊天展示顺序并没有什么问题，因为展示是收到一条展示一条。但是当退出页面重新进入时，如果拉取数据库是根据时间戳的降序拉取 ，那么就很容易出现混乱。 解决办法 ： 表结构设置自增ID ，消息的顺序展示以入库顺序为准 ，拉取数据库获取消息记录时，根据自增ID降序拉取 。这样就解决了乱序问题 ，至少保证了，展示的消息顺序和我聊天时的一样。尽管时间戳可能并不一样是按照严谨的降序排列的。</summary></entry><entry><title type="html">唐朝笔记</title><link href="http://localhost:4000/%E5%94%90%E6%9C%9D%E7%AC%94%E8%AE%B0/" rel="alternate" type="text/html" title="唐朝笔记" /><published>2020-08-20T00:00:00+08:00</published><updated>2020-08-20T00:00:00+08:00</updated><id>http://localhost:4000/%E5%94%90%E6%9C%9D%E7%AC%94%E8%AE%B0</id><content type="html" xml:base="http://localhost:4000/%E5%94%90%E6%9C%9D%E7%AC%94%E8%AE%B0/">&lt;h3 id=&quot;金融读书笔记&quot;&gt;金融读书笔记&lt;/h3&gt;
 
 &lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-1482a160b3ccdf4c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;利润表&quot; /&gt;&lt;/p&gt;
 
@@ -872,124 +1012,4 @@ public class UserController {
         return CommonResult.success(tokenMap);
     }
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="Java" /><summary type="html">记录学习SpringBoot的过程 Spring Boot是一个基于Java的开源框架，用于创建微服务 SpringBoot的好处 避免在Spring中进行复杂的XML配置 以更简单的方式开发生产就绪的Spring应用程序 减少开发时间并独立运行应用程序 提供一种更简单的应用程序入门方式 正式开始SpringBoot 1.依赖SpringBoot 所有Spring Boot启动程序都遵循相同的命名模式spring-boot-starter-* Spring Boot Starter Actuator依赖关系用于监视和管理应用程序。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-actuator&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Boot Starter Security依赖项用于Spring Security。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-security&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Boot Starter Web依赖项用于编写Rest端点。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Boot Starter Thyme Leaf依赖项用于创建Web应用程序。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-thymeleaf&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Boot Starter Test依赖项用于编写测试用例。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-test&amp;lt;artifactId&amp;gt; &amp;lt;/dependency&amp;gt; 2. 代码结构 Java推荐的包声明命名约定是反向域名。 例如 - com.jack.projectName com +- jack +- projectName +- Application.java | +- Model / Bean | +- Model.java +- Dao | +- Mapper.java +- Controller | +- Controller.java +- Service | +- Service.java 3. 构建Restful项目 @RestController注释用于定义RESTful Web服务。它提供JSON，XML和自定义响应。其语法如下所 封装一个公共的返回对象，方便返回 public class CommonResult&amp;lt;T&amp;gt; { private long code; private String message; private T data; // 对接口的返回常用的类型做封装 public static &amp;lt;T&amp;gt; CommonResult&amp;lt;T&amp;gt; success(T data) { return new CommonResult&amp;lt;T&amp;gt;(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), data); } public static &amp;lt;T&amp;gt; CommonResult&amp;lt;T&amp;gt; success(T data, String message) { return new CommonResult&amp;lt;T&amp;gt;(ResultCode.SUCCESS.getCode(), message, data); } } SpringBoot的注解整理 // 读取环境或应用程序属性值 @Value(&quot;${property_key_name}&quot;) // 定义RESTful Web服务。它提供JSON，XML和自定义响应 @RestController // 注释用于定义访问REST端点的Request URI @RequestMapping(value = &quot;/apiName&quot;) // 注释用于定义请求正文内容类型 public RequestResult userRegister(@RequestBody User user) { return RequestResult.success(&quot;注册成功&quot;); } // 批注用于定义自定义或动态请求URI @PathVariable public ResponseEntity&amp;lt;Object&amp;gt; updateProduct(@PathVariable(&quot;id&quot;) String id) { } // 注释用于从请求URL读取请求参数 @RequestParam 开始编写接口 @RestController public class UserController { @RequestMapping(value = &quot;/login&quot;, method = RequestMethod.POST) @ResponseBody public CommonResult login(@RequestBody UmsAdminLoginParam umsAdminLoginParam, BindingResult result) { String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword()); if (token == null) { return CommonResult.validateFailed(&quot;用户名或密码错误&quot;); } Map&amp;lt;String, String&amp;gt; tokenMap = new HashMap&amp;lt;&amp;gt;(); tokenMap.put(&quot;token&quot;, token); tokenMap.put(&quot;tokenHead&quot;, tokenHead); return CommonResult.success(tokenMap); } }</summary></entry><entry><title type="html">IM技术的整理</title><link href="http://localhost:4000/IM%E6%8A%80%E6%9C%AF%E7%9A%84%E6%95%B4%E7%90%86/" rel="alternate" type="text/html" title="IM技术的整理" /><published>2019-08-04T00:00:00+08:00</published><updated>2019-08-04T00:00:00+08:00</updated><id>http://localhost:4000/IM%E6%8A%80%E6%9C%AF%E7%9A%84%E6%95%B4%E7%90%86</id><content type="html" xml:base="http://localhost:4000/IM%E6%8A%80%E6%9C%AF%E7%9A%84%E6%95%B4%E7%90%86/">&lt;h2 id=&quot;通信协议&quot;&gt;通信协议&lt;/h2&gt;
-&lt;p&gt;一套典型的IM通信协议设计分为三层：应用层、安全层、传输层&lt;/p&gt;
-
-&lt;h3 id=&quot;im应用层协议&quot;&gt;IM应用层协议&lt;/h3&gt;
-&lt;p&gt;应用层协议选型，常见的有三种：&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;文本协议&lt;/li&gt;
-  &lt;li&gt;二进制协议&lt;/li&gt;
-  &lt;li&gt;流式XML协议&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&quot;1-文本协议&quot;&gt;1. 文本协议&lt;/h4&gt;
-&lt;p&gt;文本协议是指 “贴近人类书面语言表达”的通讯传输协议，典型的是http&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Accept: */*
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;文本协议的特点&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;可读性好，便于调试&lt;/li&gt;
-  &lt;li&gt;解析效率一般（按照:分割，key value形式）&lt;/li&gt;
-  &lt;li&gt;对二进制支持不好(图片 / 视频 / 语音)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;2-二进制协议&quot;&gt;2. 二进制协议&lt;/h4&gt;
-&lt;p&gt;二进制协议一般定长包头和可扩展变长包体 ，每个字段固定了含义 
-例: IP协议的前4个bit表示协议版本号（Version）&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://docs.52im.net/extend/docs/book/tcpip/vol1/3/images2/52im_1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;二进制协议特点&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;可读性差，难于调试&lt;/li&gt;
-  &lt;li&gt;扩展性不好 ，如果要扩展字段，旧版协议就不兼容了，所以一般设计时会有一个Version字段&lt;/li&gt;
-  &lt;li&gt;解析效率高(没有解析代价)&lt;/li&gt;
-  &lt;li&gt;对二进制支持不好(图片 / 视频 / 语音)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;3-xml协议&quot;&gt;3. XML协议&lt;/h4&gt;
-&lt;p&gt;XMPP使用XML协议，但XML使用太消耗流量&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;message
-to=’[url=mailto:romeo@example.net]romeo@example.net[/url]’
-from=’[url=mailto:juliet@example.com]juliet@example.com[/url]’
-type=’chat’
-xml : lang=’en’&amp;gt;
-&amp;lt;body&amp;gt;Wherefore art thou, Romeo?&amp;lt;/body&amp;gt;
-&amp;lt;/message&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;XML协议特点&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;a. 它是准标准协议，可以跨域互通&lt;/li&gt;
-  &lt;li&gt;b. XML的优点，可读性好，扩展性好&lt;/li&gt;
-  &lt;li&gt;c. 解析代价超高（dom解析）&lt;/li&gt;
-  &lt;li&gt;d. 有效数据传输率超低（大量的标签）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;4-实际使用协议&quot;&gt;4. 实际使用协议&lt;/h4&gt;
-&lt;p&gt;一般常见的做法是：&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;定长二进制包头，可扩展变长包体。包体可以使用用文本、XML等扩展性好的协议。&lt;/li&gt;
-  &lt;li&gt;包头负责传输和解析效率，与业务无关。包体保证扩展性，与业务相关。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//sizeof(cs_essay-header)=16
-struct cs_essay-header{
-    uint32_t version;
-    uint32_t magic_num;
-    uint32_t cmd;
-    uint32_t len;
-    uint8_t data[];
-}__attribute__((packed));
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;前4个字节是version&lt;/li&gt;
-  &lt;li&gt;接下来的4个字节是个“魔法数字（magic_num）， 包头放几个约定好的特殊字符，包尾放几个约定好的特殊字符 约定好，发给你的协议，某几个字节位置，是0x 01020304 ，才是正常报文&lt;/li&gt;
-  &lt;li&gt;接下来是command（命令号），用来区分是keepalive报文、业务报文、密钥交换报文等&lt;/li&gt;
-  &lt;li&gt;len（包体长度），告知服务端要接收多长的包体&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Google开源的ProtoBuf协议具有更多有点&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;现成的解析库种类多&lt;/li&gt;
-  &lt;li&gt;现成的解析库种类多&lt;/li&gt;
-  &lt;li&gt;在工业界已广泛应用&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;例： 登录请求包传入的是用户名与密码，登录响应包返回的是用户的uid&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;message CUserLoginReq{
-    optional string username = 1;
-    optional string passwd = 2;
-}
-
-message CUserLoginResp{
-    optional uint64 uid =1;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;im安全层&quot;&gt;IM安全层&lt;/h3&gt;
-
-&lt;p&gt;im协议，消息的保密性非常重要 ，谁都不希望自己聊天内容被看到，所以安全层是必不可少的&lt;/p&gt;
-
-&lt;h5 id=&quot;ssl加密&quot;&gt;SSL加密&lt;/h5&gt;
-&lt;p&gt;证书管理麻烦，代价比较高&lt;/p&gt;
-&lt;h5 id=&quot;自定义加密策略&quot;&gt;自定义加密策略&lt;/h5&gt;
-&lt;p&gt;自定义加密核心在于秘钥的生成，管理， 秘钥的管理大概有三种方式&lt;/p&gt;
-&lt;h6 id=&quot;固定秘钥&quot;&gt;固定秘钥&lt;/h6&gt;
-&lt;p&gt;服务端和客户端约定好一个密钥，同时约定好一个加密算法（eg：AES ），每次客户端im在发送前，就用约定好的算法，以及约定好的密钥加密再传输，服务端收到报文后，用约定好的算法，约定好的密钥再解密。这种方式，密钥和算法对程序员都是透明的。&lt;/p&gt;
-&lt;h6 id=&quot;一人一秘钥&quot;&gt;一人一秘钥&lt;/h6&gt;
-&lt;p&gt;简单说来就是每个人的密钥是固定的，但是每个人之间又不同，其实就是在固定密钥的算法中包含用户的某一特殊属性，比如用户uid、手机号、qq号等。&lt;/p&gt;
-&lt;h6 id=&quot;动态秘钥&quot;&gt;动态秘钥&lt;/h6&gt;
-&lt;p&gt;动态密钥，一Session一密钥的安全性更高，每次会话前协商密钥。密钥协商的过程要经过2次非对称密钥的随机生成，1次对称加密密钥的随机生成&lt;/p&gt;
-
-&lt;h3 id=&quot;im传输层&quot;&gt;IM传输层&lt;/h3&gt;
-&lt;p&gt;TCP / UDP&lt;/p&gt;
-
-&lt;p&gt;一般大厂的做法的TCP和UDP混合使用&lt;/p&gt;
-
-&lt;p&gt;“无线环境下，UDP更好，可以做到状态无关，而TCP不稳定，进出电梯就要断线，用户体验不好”&lt;/p&gt;</content><author><name></name></author><category term="架构" /><summary type="html">通信协议 一套典型的IM通信协议设计分为三层：应用层、安全层、传输层 IM应用层协议 应用层协议选型，常见的有三种： 文本协议 二进制协议 流式XML协议 1. 文本协议 文本协议是指 “贴近人类书面语言表达”的通讯传输协议，典型的是http Accept: */* User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 文本协议的特点 可读性好，便于调试 解析效率一般（按照:分割，key value形式） 对二进制支持不好(图片 / 视频 / 语音) 2. 二进制协议 二进制协议一般定长包头和可扩展变长包体 ，每个字段固定了含义 例: IP协议的前4个bit表示协议版本号（Version） 二进制协议特点 可读性差，难于调试 扩展性不好 ，如果要扩展字段，旧版协议就不兼容了，所以一般设计时会有一个Version字段 解析效率高(没有解析代价) 对二进制支持不好(图片 / 视频 / 语音) 3. XML协议 XMPP使用XML协议，但XML使用太消耗流量 &amp;lt;message to=’[url=mailto:romeo@example.net]romeo@example.net[/url]’ from=’[url=mailto:juliet@example.com]juliet@example.com[/url]’ type=’chat’ xml : lang=’en’&amp;gt; &amp;lt;body&amp;gt;Wherefore art thou, Romeo?&amp;lt;/body&amp;gt; &amp;lt;/message&amp;gt; XML协议特点 a. 它是准标准协议，可以跨域互通 b. XML的优点，可读性好，扩展性好 c. 解析代价超高（dom解析） d. 有效数据传输率超低（大量的标签） 4. 实际使用协议 一般常见的做法是： 定长二进制包头，可扩展变长包体。包体可以使用用文本、XML等扩展性好的协议。 包头负责传输和解析效率，与业务无关。包体保证扩展性，与业务相关。 //sizeof(cs_essay-header)=16 struct cs_essay-header{ uint32_t version; uint32_t magic_num; uint32_t cmd; uint32_t len; uint8_t data[]; }__attribute__((packed)); 前4个字节是version 接下来的4个字节是个“魔法数字（magic_num）， 包头放几个约定好的特殊字符，包尾放几个约定好的特殊字符 约定好，发给你的协议，某几个字节位置，是0x 01020304 ，才是正常报文 接下来是command（命令号），用来区分是keepalive报文、业务报文、密钥交换报文等 len（包体长度），告知服务端要接收多长的包体 Google开源的ProtoBuf协议具有更多有点 现成的解析库种类多 现成的解析库种类多 在工业界已广泛应用 例： 登录请求包传入的是用户名与密码，登录响应包返回的是用户的uid message CUserLoginReq{ optional string username = 1; optional string passwd = 2; } message CUserLoginResp{ optional uint64 uid =1; } IM安全层 im协议，消息的保密性非常重要 ，谁都不希望自己聊天内容被看到，所以安全层是必不可少的 SSL加密 证书管理麻烦，代价比较高 自定义加密策略 自定义加密核心在于秘钥的生成，管理， 秘钥的管理大概有三种方式 固定秘钥 服务端和客户端约定好一个密钥，同时约定好一个加密算法（eg：AES ），每次客户端im在发送前，就用约定好的算法，以及约定好的密钥加密再传输，服务端收到报文后，用约定好的算法，约定好的密钥再解密。这种方式，密钥和算法对程序员都是透明的。 一人一秘钥 简单说来就是每个人的密钥是固定的，但是每个人之间又不同，其实就是在固定密钥的算法中包含用户的某一特殊属性，比如用户uid、手机号、qq号等。 动态秘钥 动态密钥，一Session一密钥的安全性更高，每次会话前协商密钥。密钥协商的过程要经过2次非对称密钥的随机生成，1次对称加密密钥的随机生成 IM传输层 TCP / UDP 一般大厂的做法的TCP和UDP混合使用 “无线环境下，UDP更好，可以做到状态无关，而TCP不稳定，进出电梯就要断线，用户体验不好”</summary></entry></feed>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="Java" /><summary type="html">记录学习SpringBoot的过程 Spring Boot是一个基于Java的开源框架，用于创建微服务 SpringBoot的好处 避免在Spring中进行复杂的XML配置 以更简单的方式开发生产就绪的Spring应用程序 减少开发时间并独立运行应用程序 提供一种更简单的应用程序入门方式 正式开始SpringBoot 1.依赖SpringBoot 所有Spring Boot启动程序都遵循相同的命名模式spring-boot-starter-* Spring Boot Starter Actuator依赖关系用于监视和管理应用程序。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-actuator&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Boot Starter Security依赖项用于Spring Security。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-security&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Boot Starter Web依赖项用于编写Rest端点。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Boot Starter Thyme Leaf依赖项用于创建Web应用程序。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-thymeleaf&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Boot Starter Test依赖项用于编写测试用例。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-test&amp;lt;artifactId&amp;gt; &amp;lt;/dependency&amp;gt; 2. 代码结构 Java推荐的包声明命名约定是反向域名。 例如 - com.jack.projectName com +- jack +- projectName +- Application.java | +- Model / Bean | +- Model.java +- Dao | +- Mapper.java +- Controller | +- Controller.java +- Service | +- Service.java 3. 构建Restful项目 @RestController注释用于定义RESTful Web服务。它提供JSON，XML和自定义响应。其语法如下所 封装一个公共的返回对象，方便返回 public class CommonResult&amp;lt;T&amp;gt; { private long code; private String message; private T data; // 对接口的返回常用的类型做封装 public static &amp;lt;T&amp;gt; CommonResult&amp;lt;T&amp;gt; success(T data) { return new CommonResult&amp;lt;T&amp;gt;(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), data); } public static &amp;lt;T&amp;gt; CommonResult&amp;lt;T&amp;gt; success(T data, String message) { return new CommonResult&amp;lt;T&amp;gt;(ResultCode.SUCCESS.getCode(), message, data); } } SpringBoot的注解整理 // 读取环境或应用程序属性值 @Value(&quot;${property_key_name}&quot;) // 定义RESTful Web服务。它提供JSON，XML和自定义响应 @RestController // 注释用于定义访问REST端点的Request URI @RequestMapping(value = &quot;/apiName&quot;) // 注释用于定义请求正文内容类型 public RequestResult userRegister(@RequestBody User user) { return RequestResult.success(&quot;注册成功&quot;); } // 批注用于定义自定义或动态请求URI @PathVariable public ResponseEntity&amp;lt;Object&amp;gt; updateProduct(@PathVariable(&quot;id&quot;) String id) { } // 注释用于从请求URL读取请求参数 @RequestParam 开始编写接口 @RestController public class UserController { @RequestMapping(value = &quot;/login&quot;, method = RequestMethod.POST) @ResponseBody public CommonResult login(@RequestBody UmsAdminLoginParam umsAdminLoginParam, BindingResult result) { String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword()); if (token == null) { return CommonResult.validateFailed(&quot;用户名或密码错误&quot;); } Map&amp;lt;String, String&amp;gt; tokenMap = new HashMap&amp;lt;&amp;gt;(); tokenMap.put(&quot;token&quot;, token); tokenMap.put(&quot;tokenHead&quot;, tokenHead); return CommonResult.success(tokenMap); } }</summary></entry></feed>

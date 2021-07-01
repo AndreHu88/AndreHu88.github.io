@@ -1,7 +1,7 @@
 ---
 
 layout:         post
-title:          Git使用记录
+title:          Git常用记录
 date:           2018-03-03
 tags:           [Git]
 categories:
@@ -109,6 +109,9 @@ Git提供了一个命令`git reflog`用来记录你的每一次命令
 #### Git更新与合并
 更新你的本地仓库至最新改动
 git pull 
+
+#### 查看本地Git的配置列表
+`git config --global --list`
 
 #### Git代理
 当git clone时特别慢时，可以为git 设置代理

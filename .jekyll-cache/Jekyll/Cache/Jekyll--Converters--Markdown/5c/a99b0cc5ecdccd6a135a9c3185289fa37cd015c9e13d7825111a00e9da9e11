@@ -1,0 +1,127 @@
+I"�<h4 id="git创建提交">Git创建提交</h4>
+
+<p>创建新仓库
+<code class="language-plaintext highlighter-rouge">git init</code></p>
+
+<p>添加文件
+<code class="language-plaintext highlighter-rouge">git add &lt;filename&gt;</code>
+<code class="language-plaintext highlighter-rouge">git add *</code></p>
+
+<p>提交文件
+<code class="language-plaintext highlighter-rouge">git commit -m "commit info"</code></p>
+
+<p>添加远程仓库
+<code class="language-plaintext highlighter-rouge">git remote add origin &lt;server&gt;</code></p>
+
+<p>提交到远程仓库
+<code class="language-plaintext highlighter-rouge">git push origin &lt;branch name&gt;</code></p>
+
+<hr />
+
+<h4 id="git分支">Git分支</h4>
+
+<blockquote>
+  <p>分支是用来将特性开发绝缘开来的。在你创建仓库的时候，master 是“默认的”。在其他分支上进行开发，完成后再将它们合并到主分支上。</p>
+</blockquote>
+
+<p>创建并切换到Dev分支</p>
+
+<p><code class="language-plaintext highlighter-rouge">git checkout -b Dev</code></p>
+
+<p>切换回主分支:</p>
+
+<p><code class="language-plaintext highlighter-rouge">git checkout master</code></p>
+
+<p>删除Dev分支</p>
+
+<p><code class="language-plaintext highlighter-rouge">git branch -d Dev</code></p>
+
+<p>拉取远程Dev分支</p>
+
+<p><code class="language-plaintext highlighter-rouge">git fetch origin Dev</code></p>
+
+<p>拉取远程dev分支，并创建本地dev分支</p>
+
+<p><code class="language-plaintext highlighter-rouge">git checkout -b dev origin/dev</code></p>
+
+<p>把某个分支的内容拉取到本地</p>
+
+<p><code class="language-plaintext highlighter-rouge">git pull origin Dev</code></p>
+
+<p>查看分支</p>
+
+<p><code class="language-plaintext highlighter-rouge">git branch</code></p>
+
+<hr />
+<h4 id="git-tag">Git Tag</h4>
+<blockquote>
+  <p>tag是git版本库的一个标记，指向某个commit的指针
+tag主要用于发布版本的管理，一个版本发布之后，我们可以为git打上 v.1.0.1 v.1.0.2 …这样的标签</p>
+</blockquote>
+
+<p>查看标签</p>
+
+<p><code class="language-plaintext highlighter-rouge">git tag</code></p>
+
+<p>创建本地Tag</p>
+
+<p><code class="language-plaintext highlighter-rouge">git tag &lt;tagName&gt;</code></p>
+
+<p>创建Tag到远程仓库</p>
+
+<p><code class="language-plaintext highlighter-rouge">git push origin &lt;tagName&gt;</code></p>
+
+<p><code class="language-plaintext highlighter-rouge">git push origin --tags</code></p>
+
+<p>本地 tag 的删除：</p>
+
+<p><code class="language-plaintext highlighter-rouge">git tag -d &lt;tagName&gt;</code></p>
+
+<p>远程 tag 的删除：</p>
+
+<p><code class="language-plaintext highlighter-rouge">git push origin :&lt;tagName&gt;</code></p>
+
+<hr />
+
+<h4 id="版本回退">版本回退</h4>
+<blockquote>
+  <p>Git必须知道当前版本是哪个版本，在Git中，用HEAD表示当前版本，也就是最新的提交ID ，上一个版本就是HEAD\^，上上一个版本就是HEAD\^\^，当然往上100个版本写100个\^比较容易数不过来，所以写成HEAD~100</p>
+</blockquote>
+
+<p>回退到上一个版本
+<code class="language-plaintext highlighter-rouge">git reset --hard HEAD^</code></p>
+
+<p>我们可以用<code class="language-plaintext highlighter-rouge">git log</code>查看版本库的状态</p>
+
+<p>Git的版本回退速度非常快，因为Git在内部有个指向当前版本的HEAD指针，当你回退版本的时候，Git仅仅是把HEAD从指向旧的版本</p>
+
+<p>Git提供了一个命令<code class="language-plaintext highlighter-rouge">git reflog</code>用来记录你的每一次命令</p>
+
+<hr />
+
+<h4 id="git更新与合并">Git更新与合并</h4>
+<p>更新你的本地仓库至最新改动
+git pull</p>
+
+<h4 id="查看本地git的配置列表">查看本地Git的配置列表</h4>
+<p><code class="language-plaintext highlighter-rouge">git config --global --list</code></p>
+
+<h4 id="git代理">Git代理</h4>
+<p>当git clone时特别慢时，可以为git 设置代理</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config --global http.proxy http://127.0.0.1:1080
+git config --global https.proxy https://127.0.0.1:1080
+git config --global http.proxy 'socks5://127.0.0.1:1080' 
+git config --global https.proxy 'socks5://127.0.0.1:1080'
+</code></pre></div></div>
+
+<p>取消代理</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config --global --unset http.proxy
+git config --global --unset https.proxy
+</code></pre></div></div>
+
+<p>取消设置GitHub的代理</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config --global --unset http.https://github.com.proxy
+</code></pre></div></div>
+
+:ET
