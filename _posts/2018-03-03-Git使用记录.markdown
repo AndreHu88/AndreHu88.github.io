@@ -1,9 +1,9 @@
 ---
 
 layout:         post
-title:          Git常用记录
+title:          Git常用总结
 date:           2018-03-03
-tags:           [Git]
+tags:           [Linux]
 categories:
 comments: true
 

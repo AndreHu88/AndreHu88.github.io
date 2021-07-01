@@ -2,7 +2,7 @@
 layout:         post
 title:          PMP考试总结
 date:           2019-06-22
-tags:           [PMP]
+tags:           [读书笔记]
 categories:
 comments: false
 ---

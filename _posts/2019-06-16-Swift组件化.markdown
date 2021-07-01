@@ -2,7 +2,7 @@
 layout:         post
 title:          Swift组件化
 date:           2019-06-16
-tags:           [iOS, Swift]
+tags:           [iOS]
 categories:
 comments: true
 ---

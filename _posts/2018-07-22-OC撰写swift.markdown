@@ -2,7 +2,7 @@
 layout:         post
 title:          转战Swift
 date:           2018-07-22
-tags:           [iOS, Swift]
+tags:           [iOS]
 categories:
 comments: true
 ---

@@ -2,7 +2,7 @@
 layout:         post
 title:          Kingfisher框架分析
 date:           2019-07-21
-tags:           [iOS, Swift]
+tags:           [iOS]
 categories:
 comments: false
 ---

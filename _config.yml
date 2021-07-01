@@ -11,10 +11,10 @@ description: 生活不止眼前的苟且，还有诗和远方
 #
 
 # 你的博客logo图片URL，建议尺寸不超过300px × 300px
-avatar: https://github.com/AndreHu88/AndreHu88.github.io/blob/master/images/logo.png?raw=true
+avatar: https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/95b0e643fb5f4f349831b1a96fb9c06c~tplv-k3u1fbpfcp-zoom-1.image
 
 # 你的favicon（出现在浏览器tab上）图片URL，建议使用较小(64px × 64px)的图片
-favicon: https://github.com/AndreHu88/AndreHu88.github.io/blob/master/images/logo.png?raw=true
+favicon: https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/95b0e643fb5f4f349831b1a96fb9c06c~tplv-k3u1fbpfcp-zoom-1.image
 
 
 # 菜单中的按钮
@@ -50,7 +50,7 @@ footer-links:
   youtube: # channel/<your_long_string> or user/<user-name>
 
 # 站点页脚的文字
-footer-text: Copyright(c) 2019 愿你出走半生，归来仍是少年
+footer-text: Copyright(c) 2017 愿你出走半生，归来仍是少年
 
 # 输入Disqus shortname，即可添加评论区，细节可阅读文档。
 disqus: Jack  #shortname
