@@ -1,0 +1,37 @@
+---
+
+layout:         post
+title:          vim的常用总结
+date:           2020-10-24
+tags:           [工具]
+categories:
+comments: true
+
+---
+
+#### vim的简介
+
+vim一项很好用的工具, 所有的 Unix Like 系统都会内建 vi 编辑器
+
+vi编辑器有三种模式
+1. 命令模式（Command mode）
+2. 输入模式（Insert mode）
+3. 底线命令模式（Last line mode）
+
+三种模式的介绍
+* 命令模式( 敲击键盘动作会被Vim识别为命令，而非输入字符。比如我们此时按下i，并不会输入一个字符，i被当作了一个命令 )
+![](https://www.runoob.com/wp-content/uploads/2015/10/vi-vim-cheat-sheet-sch.gif)
+
+* 输入模式
+和正常的文本输入一样
+
+* 底线命令模式
+命令模式下按下:（英文冒号）就进入了底线命令模式， q 退出程序  w 保存文件， ESC键可随时退出底线命令模式
+
+
+### 详细的内容可参考菜鸟教程
+[vim详细教程](https://www.runoob.com/linux/linux-vim.htmlhttps://www.runoob.com/linux/linux-vim.html)
+
+
+
+

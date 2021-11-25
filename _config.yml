@@ -27,6 +27,8 @@ navigation:
     url: /tags
   - name: 关于
     url: /about
+  - name: 书籍
+    url: https://www.sohod.cn/book/
 
 # 每页的文章数
 paginate: 8
