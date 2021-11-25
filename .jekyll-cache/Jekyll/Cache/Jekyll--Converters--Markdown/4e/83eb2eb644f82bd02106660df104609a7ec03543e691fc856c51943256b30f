@@ -1,10 +1,10 @@
-I"!<h5 id="socket长连接的创建与维护">Socket长连接的创建与维护</h5>
+I"<h5 id="socket长连接的创建与维护">Socket长连接的创建与维护</h5>
 
 <ul>
   <li>所有数据收发流程，均通过Socket长连接完成，如何维护一个稳定Socket通道，是IM系统是否稳定的重要一环</li>
 </ul>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/4499332-08346cb09a4d9c97.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3370669f336a42688dd65794565fc414~tplv-k3u1fbpfcp-zoom-1.image" alt="" /></p>
 
 <p>用连接请求接口，会开始连接的创建过程，创建成功后，会完成鉴权操作，当创建和鉴权都完成后，会开启消息收发线程，为了维持长连接，会有心跳机制，特别的，会开启一个心跳轮询线程。</p>
 

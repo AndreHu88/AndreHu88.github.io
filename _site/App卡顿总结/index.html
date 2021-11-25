@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>APP卡顿总结 – 风车大战骑士 – 生活不止眼前的苟且，还有诗和远方</title>
+
+      <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+    <meta name="keywords" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
+
+    <meta name="description" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
+
+    
+    <meta name="description" content="什么是卡顿
+卡顿就是在应用使用过程中出现界面不响应或者界面渲染粘滞的情况。而应用界面的渲染以及事件响应是在主线程完成的，出现卡顿的原因可以归结为主线程阻塞。
+
+在开发过程中，遇到的造成主线程阻塞的原因可能是：
+
+
+  主线程在进行大量I/O操作：为了方便代码编写，直接在主线程去写入大量数据；
+  主线程在进行大量计算：代码编写不合理，主线程进行复杂计算；
+  大量UI绘制：界面过于复杂，UI绘制需要大量时间；
+  主线程在等锁：主线程需要获得锁A，但是当前某个子线程持有这个锁A，导致主线程不得不等待子线程完成任务。
+
+
+如何解决卡顿
+捕获得到卡顿当时应用的主线程堆栈，有了堆栈，就可以知道主线程在什么函数哪一行代码卡住了，是在等什么锁，还是在进行I/O操作，或者是进行复杂计算。有了堆栈，就可以对问题进行针对性解决
+
+原理分析
+主线程有一个 Runloop。Runloop 是一个 Event Loop 模型，让线程可以处于接收消息、处理事件、进入等待而不马上退出。在进入事件的前后，Runloop 会向注册的 Observer 通知相应的事件
+
+
+
+在 Runloop 的起始最开始和结束最末尾位置添加 Observer，从而获得主线程的开始和结束状态。卡顿监控起一个子线程定时检查主线程的状态，当主线程的状态运行超过一定阈值则认为主线程卡顿，从而标记为一个卡顿。
+
+
+
+主程序 Runloop 超时的阈值是 2 秒，子线程的检查周期是 1 秒。每隔 1 秒，子线程检查主线程的运行状态；如果检查到主线程 Runloop 运行超过 2 秒则认为是卡顿，并获得当前的线程快照。
+
+CPU 过高也可能导致应用出现卡顿，所以在子线程检查主线程状态的同时，如果检测到 CPU 占用过高，会捕获当前的线程快照保存到文件中。微信App认为，单核 CPU 的占用超过了 80%，此时的 CPU 占用就过高了
+
+监控APP卡顿的三种方式
+
+  FPS
+  Runloop
+  子线程ping主线程
+
+
+FPS检测APP卡顿
+通常情况下，屏幕会保持60hz/s的刷新速度，每次刷新时会发出一个屏幕刷新信号，CADisplayLink允许我们注册一个与刷新信号同步的回调处理。可以通过屏幕刷新机制来展示fps值：
+
+
+
+显示器中是固定的频率，比如iOS中是每秒60帧（60FPS），即每帧16.7ms。从上图中可以看出，每两个VSync信号之间有时间间隔（16.7ms），在这个时间内，CPU主线程计算布局，解码图片，创建视图，绘制文本，计算完成后将内容交给GPU，GPU变换，合成，渲染，放入帧缓冲区。假如16.7ms内，CPU和GPU没有来得及生产出一帧缓冲，那么这一帧会被丢弃，显示器就会保持不变，继续显示上一帧内容，这就将导致导致画面卡顿。所以无论CPU, GPU，哪个消耗时间过长，都会导致在16.7ms内无法生成一帧缓存
+
+主线程为了达到接近60fps的绘制效率，不能在UI线程有单个超过（1/60s≈16ms）的计算任务，否则就会卡顿
+
+我们可以用CADisplayLink来检测FPS，CADisplayLink则是使用帧率来作为时间间隔的单位
+
+- (void)setupDisplayLink {
+
+   //创建CADisplayLink，并添加到当前run loop的NSRunLoopCommonModes
+   _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(linkTicks:)];
+   [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+}
+
+- (void)linkTicks:(CADisplayLink *)link {
+
+   //执行次数
+   _scheduleTimes ++;
+
+   //当前时间戳
+   if(_timestamp == 0){
+       _timestamp = link.timestamp;
+   }
+   
+   CFTimeInterval timePassed = link.timestamp - _timestamp;
+
+   if(timePassed &gt;= 1.f)
+       //fps
+       CGFloat fps = _scheduleTimes/timePassed; 
+       printf("fps:%.1f, timePassed:%f\n", fps, timePassed);
+
+       //reset
+       _timestamp = link.timestamp;
+       _scheduleTimes = 0;
+   }
+} 
+
+
+我们也可以通过Xcode中的Instruments中的Core Animation来监测FPS
+
+在上述FPS指示器中，如果将CADisplayLink放置于子线程的Runloop中，将会发生什么？
+
+
+  答案是无论主线程有多么繁忙，GPU占用有多么高，FPS始终是60，原因是基于CADisplayLink的FPS指示器只能检测到当前RunLoop的FPS
+
+
+Runloop如何检测卡顿
+
+由于runloop会调起同步屏幕刷新的callback，如果loop的间隔大于16.67ms，fps自然达不到60hz。而在一个loop当中存在多个阶段，可以监控每一个阶段停留了多长时间
+
+- (void)startRunloopMonitorFreeze {
+    
+    CFRunLoopObserverRef observer = CFRunLoopObserverCreateWithHandler(CFAllocatorGetDefault(), kCFRunLoopAllActivities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+       
+        
+       ///如果CFAbsoluteTimeGetCurrent() - 上一次的时间差 比阈值大，说明卡顿了，APP处于闲置状态常驻beforeWaiting状态，判断不准确
+        
+        
+    });
+    
+    CFRunLoopAddObserver(CFRunLoopGetMain(), observer, kCFRunLoopCommonModes);
+    
+}
+
+
+这种检测方式当APP处于闲置状态Runloop常驻beforeWaiting状态，判断不准确
+
+子线程检测主线程
+
+退火算法
+
+为了降低检测带来的性能损耗，我们为检测线程增加了退火算法：
+
+
+  每次子线程检查到主线程卡顿，会先获得主线程的堆栈并保存到内存中（不会直接去获得线程快照保存到文件中）；
+  将获得的主线程堆栈与上次卡顿获得的主线程堆栈进行比对：
+    
+      如果堆栈不同，则获得当前的线程快照并写入文件中；
+      如果相同则会跳过，并按照斐波那契数列将检查时间递增直到没有遇到卡顿或者主线程卡顿堆栈不一样。
+这样，可以避免同一个卡顿写入多个文件的情况；避免检测线程遇到主线程卡死的情况下，不断写线程快照文件。
+    
+  
+
+
+如何提前耗时堆栈
+
+子线程检测到主线程 Runloop 时，会获得当前的线程快照当做卡顿文件。但是这个当前的主线程堆栈不一定是最耗时的堆栈，不一定是导致主线程超时的主要原因。
+
+比如主线程分别先后执行funcA()  funcB() funcC() funcD() 这几个方法, 子线程在检测到超出阈值时获得的线程快照，主线程的当前任务是 funcD()但其实funcB()才是耗时操作，导致主线程超时的主要原因。 卡顿监控通过主线程耗时堆栈提取来解决这个问题
+
+卡顿监控定时获取主线程堆栈，并将堆栈保存到内存的一个循环队列中。如下图，每间隔时间 t 获得一个堆栈，然后将堆栈保存到一个最大个数为 3 的循环队列中。有一个游标不断的指向最近的堆栈。
+
+微信的策略是每隔 50 毫秒获取一次主线程堆栈，保存最近 20 个主线程堆栈。这个会增加 3% 的 CPU 占用，内存占用可以忽略不计。
+
+
+
+当主线程检测到卡顿时，通过对保存到循坏队列中的堆栈进行回溯，获取最近最耗时堆栈。
+
+如下图，检测到卡顿时，内存的循环队列中记录了最近的20个主线程堆栈，需要从中找出最近最耗时的堆栈。卡顿监控用如下特征找出最近最耗时堆栈：
+
+
+  以栈顶函数为特征，认为栈顶函数相同的即整个堆栈是相同的；
+  取堆栈的间隔是相同的，堆栈的重复次数近似作为堆栈的调用耗时，重复越多，耗时越多；
+  重复次数相同的堆栈可能很有多个，取最近的一个最耗时堆栈。
+
+
+
+" />
+    <meta property="og:description" content="什么是卡顿
+卡顿就是在应用使用过程中出现界面不响应或者界面渲染粘滞的情况。而应用界面的渲染以及事件响应是在主线程完成的，出现卡顿的原因可以归结为主线程阻塞。
+
+在开发过程中，遇到的造成主线程阻塞的原因可能是：
+
+
+  主线程在进行大量I/O操作：为了方便代码编写，直接在主线程去写入大量数据；
+  主线程在进行大量计算：代码编写不合理，主线程进行复杂计算；
+  大量UI绘制：界面过于复杂，UI绘制需要大量时间；
+  主线程在等锁：主线程需要获得锁A，但是当前某个子线程持有这个锁A，导致主线程不得不等待子线程完成任务。
+
+
+如何解决卡顿
+捕获得到卡顿当时应用的主线程堆栈，有了堆栈，就可以知道主线程在什么函数哪一行代码卡住了，是在等什么锁，还是在进行I/O操作，或者是进行复杂计算。有了堆栈，就可以对问题进行针对性解决
+
+原理分析
+主线程有一个 Runloop。Runloop 是一个 Event Loop 模型，让线程可以处于接收消息、处理事件、进入等待而不马上退出。在进入事件的前后，Runloop 会向注册的 Observer 通知相应的事件
+
+
+
+在 Runloop 的起始最开始和结束最末尾位置添加 Observer，从而获得主线程的开始和结束状态。卡顿监控起一个子线程定时检查主线程的状态，当主线程的状态运行超过一定阈值则认为主线程卡顿，从而标记为一个卡顿。
+
+
+
+主程序 Runloop 超时的阈值是 2 秒，子线程的检查周期是 1 秒。每隔 1 秒，子线程检查主线程的运行状态；如果检查到主线程 Runloop 运行超过 2 秒则认为是卡顿，并获得当前的线程快照。
+
+CPU 过高也可能导致应用出现卡顿，所以在子线程检查主线程状态的同时，如果检测到 CPU 占用过高，会捕获当前的线程快照保存到文件中。微信App认为，单核 CPU 的占用超过了 80%，此时的 CPU 占用就过高了
+
+监控APP卡顿的三种方式
+
+  FPS
+  Runloop
+  子线程ping主线程
+
+
+FPS检测APP卡顿
+通常情况下，屏幕会保持60hz/s的刷新速度，每次刷新时会发出一个屏幕刷新信号，CADisplayLink允许我们注册一个与刷新信号同步的回调处理。可以通过屏幕刷新机制来展示fps值：
+
+
+
+显示器中是固定的频率，比如iOS中是每秒60帧（60FPS），即每帧16.7ms。从上图中可以看出，每两个VSync信号之间有时间间隔（16.7ms），在这个时间内，CPU主线程计算布局，解码图片，创建视图，绘制文本，计算完成后将内容交给GPU，GPU变换，合成，渲染，放入帧缓冲区。假如16.7ms内，CPU和GPU没有来得及生产出一帧缓冲，那么这一帧会被丢弃，显示器就会保持不变，继续显示上一帧内容，这就将导致导致画面卡顿。所以无论CPU, GPU，哪个消耗时间过长，都会导致在16.7ms内无法生成一帧缓存
+
+主线程为了达到接近60fps的绘制效率，不能在UI线程有单个超过（1/60s≈16ms）的计算任务，否则就会卡顿
+
+我们可以用CADisplayLink来检测FPS，CADisplayLink则是使用帧率来作为时间间隔的单位
+
+- (void)setupDisplayLink {
+
+   //创建CADisplayLink，并添加到当前run loop的NSRunLoopCommonModes
+   _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(linkTicks:)];
+   [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+}
+
+- (void)linkTicks:(CADisplayLink *)link {
+
+   //执行次数
+   _scheduleTimes ++;
+
+   //当前时间戳
+   if(_timestamp == 0){
+       _timestamp = link.timestamp;
+   }
+   
+   CFTimeInterval timePassed = link.timestamp - _timestamp;
+
+   if(timePassed &gt;= 1.f)
+       //fps
+       CGFloat fps = _scheduleTimes/timePassed; 
+       printf("fps:%.1f, timePassed:%f\n", fps, timePassed);
+
+       //reset
+       _timestamp = link.timestamp;
+       _scheduleTimes = 0;
+   }
+} 
+
+
+我们也可以通过Xcode中的Instruments中的Core Animation来监测FPS
+
+在上述FPS指示器中，如果将CADisplayLink放置于子线程的Runloop中，将会发生什么？
+
+
+  答案是无论主线程有多么繁忙，GPU占用有多么高，FPS始终是60，原因是基于CADisplayLink的FPS指示器只能检测到当前RunLoop的FPS
+
+
+Runloop如何检测卡顿
+
+由于runloop会调起同步屏幕刷新的callback，如果loop的间隔大于16.67ms，fps自然达不到60hz。而在一个loop当中存在多个阶段，可以监控每一个阶段停留了多长时间
+
+- (void)startRunloopMonitorFreeze {
+    
+    CFRunLoopObserverRef observer = CFRunLoopObserverCreateWithHandler(CFAllocatorGetDefault(), kCFRunLoopAllActivities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+       
+        
+       ///如果CFAbsoluteTimeGetCurrent() - 上一次的时间差 比阈值大，说明卡顿了，APP处于闲置状态常驻beforeWaiting状态，判断不准确
+        
+        
+    });
+    
+    CFRunLoopAddObserver(CFRunLoopGetMain(), observer, kCFRunLoopCommonModes);
+    
+}
+
+
+这种检测方式当APP处于闲置状态Runloop常驻beforeWaiting状态，判断不准确
+
+子线程检测主线程
+
+退火算法
+
+为了降低检测带来的性能损耗，我们为检测线程增加了退火算法：
+
+
+  每次子线程检查到主线程卡顿，会先获得主线程的堆栈并保存到内存中（不会直接去获得线程快照保存到文件中）；
+  将获得的主线程堆栈与上次卡顿获得的主线程堆栈进行比对：
+    
+      如果堆栈不同，则获得当前的线程快照并写入文件中；
+      如果相同则会跳过，并按照斐波那契数列将检查时间递增直到没有遇到卡顿或者主线程卡顿堆栈不一样。
+这样，可以避免同一个卡顿写入多个文件的情况；避免检测线程遇到主线程卡死的情况下，不断写线程快照文件。
+    
+  
+
+
+如何提前耗时堆栈
+
+子线程检测到主线程 Runloop 时，会获得当前的线程快照当做卡顿文件。但是这个当前的主线程堆栈不一定是最耗时的堆栈，不一定是导致主线程超时的主要原因。
+
+比如主线程分别先后执行funcA()  funcB() funcC() funcD() 这几个方法, 子线程在检测到超出阈值时获得的线程快照，主线程的当前任务是 funcD()但其实funcB()才是耗时操作，导致主线程超时的主要原因。 卡顿监控通过主线程耗时堆栈提取来解决这个问题
+
+卡顿监控定时获取主线程堆栈，并将堆栈保存到内存的一个循环队列中。如下图，每间隔时间 t 获得一个堆栈，然后将堆栈保存到一个最大个数为 3 的循环队列中。有一个游标不断的指向最近的堆栈。
+
+微信的策略是每隔 50 毫秒获取一次主线程堆栈，保存最近 20 个主线程堆栈。这个会增加 3% 的 CPU 占用，内存占用可以忽略不计。
+
+
+
+当主线程检测到卡顿时，通过对保存到循坏队列中的堆栈进行回溯，获取最近最耗时堆栈。
+
+如下图，检测到卡顿时，内存的循环队列中记录了最近的20个主线程堆栈，需要从中找出最近最耗时的堆栈。卡顿监控用如下特征找出最近最耗时堆栈：
+
+
+  以栈顶函数为特征，认为栈顶函数相同的即整个堆栈是相同的；
+  取堆栈的间隔是相同的，堆栈的重复次数近似作为堆栈的调用耗时，重复越多，耗时越多；
+  重复次数相同的堆栈可能很有多个，取最近的一个最耗时堆栈。
+
+
+
+" />
+    
+    <meta name="author" content="风车大战骑士" />
+
+    
+    <meta property="og:title" content="APP卡顿总结" />
+    <meta property="twitter:title" content="APP卡顿总结" />
+
+
+
+    
+  <!-- Async font loading -->
+<script>
+  window.WebFontConfig = {
+      custom: {
+          families: ['Spoqa Han Sans:100,300,400,700'],
+          urls: ['https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css']
+      },
+      timeout: 60000
+  };
+  (function(d) {
+      var wf = d.createElement('script'), s = d.scripts[0];
+      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+      s.parentNode.insertBefore(wf, s);
+  })(document);
+</script>
+
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link rel="stylesheet" type="text/css" href="/style.css" />
+  <link rel="alternate" type="application/rss+xml" title="风车大战骑士 - 生活不止眼前的苟且，还有诗和远方" href="/feed.xml" />
+  <link rel="shortcut icon" href="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/95b0e643fb5f4f349831b1a96fb9c06c~tplv-k3u1fbpfcp-zoom-1.image">
+  <script src="https://kit.fontawesome.com/56f7faf3f4.js"></script>
+
+
+  <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+
+</head>
+  <body>
+    <div class="wrapper-sidebar">
+  <header class="sidebar clearfix">
+    <div class="site-info">
+      
+        <a href="/" class="site-avatar"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/95b0e643fb5f4f349831b1a96fb9c06c~tplv-k3u1fbpfcp-zoom-1.image" /></a>
+       
+      <h1 class="site-name"><a href="/">风车大战骑士</a></h1>
+      <p class="site-description">生活不止眼前的苟且，还有诗和远方</p>
+    </div>
+  </header>
+
+  <div class="navlist">
+    <nav>
+      
+      
+      <a href="/">首页</a>
+      
+      
+      
+      <a href="/archive">归档</a>
+      
+      
+      
+      <a href="/tags">标签</a>
+      
+      
+      
+      <a href="/about">关于</a>
+      
+      
+      
+      <a href="https://www.sohod.cn/book/">书籍</a>
+      
+      
+    </nav>
+  </div>
+
+  <div class="wrapper-footer-desktop">
+    <footer class="footer">
+      <!-- Refer to https://codepen.io/ruandre/pen/howFi -->
+<ul class="svg-icon">
+
+  
+  <li><a href="https://www.weibo.com/huyong668" class="icon-1 weibo" title="Weibo"><svg viewBox="0 0 512 512"><path d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></svg></a></li>
+  
+  
+  
+
+  
+
+  
+  <li><a href="mailto:huyong229@163.com" class="icon-8 email" title="Email"><svg viewBox="0 0 512 512"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></svg><!--[if lt IE 9]><em>Email</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+  <li><a href="https://github.com/AndreHu88" class="icon-13 github" title="GitHub"><svg viewBox="0 0 512 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg><!--[if lt IE 9]><em>GitHub</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</ul>
+
+
+
+<p>Copyright(c) 2017 愿你出走半生，归来仍是少年</p>
+
+    </footer>
+  </div>
+</div>
+
+<script type="text/javascript"> 
+
+// document.addEventListener('DOMContentLoaded', function () {
+//     function audioAutoPlay() {
+//         var audio = document.getElementById('bg-music');
+//             audio.play();
+//         document.addEventListener("WeixinJSBridgeReady", function () {
+//             audio.play();
+//         }, false);
+//     }
+//     audioAutoPlay();
+// });
+
+ </script>
+
+ <script type="text/javascript" src="https://v1.cnzz.com/z_stat.php?id=1278002982&web_id=1278002982">
+    console.log("visit");
+ </script>
+
+    <div id="main" role="main" class="wrapper-content">
+      <article class="posts">
+  <h1>APP卡顿总结</h1>
+
+  <div clsss="meta">
+    <span class="date">
+      2021-05-02
+    </span>
+
+    <ul class="tag">
+      
+      <li>
+        <a href="http://localhost:4000/tags#iOS">
+          iOS
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+
+  <div class="entry">
+    <h3 id="什么是卡顿">什么是卡顿</h3>
+<p>卡顿就是在应用使用过程中出现界面不响应或者界面渲染粘滞的情况。而应用界面的渲染以及事件响应是在主线程完成的，出现卡顿的原因可以归结为主线程阻塞。</p>
+
+<p>在开发过程中，遇到的造成主线程阻塞的原因可能是：</p>
+
+<ul>
+  <li>主线程在进行大量I/O操作：为了方便代码编写，直接在主线程去写入大量数据；</li>
+  <li>主线程在进行大量计算：代码编写不合理，主线程进行复杂计算；</li>
+  <li>大量UI绘制：界面过于复杂，UI绘制需要大量时间；</li>
+  <li>主线程在等锁：主线程需要获得锁A，但是当前某个子线程持有这个锁A，导致主线程不得不等待子线程完成任务。</li>
+</ul>
+
+<h3 id="如何解决卡顿">如何解决卡顿</h3>
+<p>捕获得到卡顿当时应用的主线程堆栈，有了堆栈，就可以知道主线程在什么函数哪一行代码卡住了，是在等什么锁，还是在进行I/O操作，或者是进行复杂计算。有了堆栈，就可以对问题进行针对性解决</p>
+
+<h3 id="原理分析">原理分析</h3>
+<p>主线程有一个 Runloop。Runloop 是一个 Event Loop 模型，让线程可以处于接收消息、处理事件、进入等待而不马上退出。在进入事件的前后，Runloop 会向注册的 Observer 通知相应的事件</p>
+
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/aa08c9eaeb63430680df2dfb6df0785c~tplv-k3u1fbpfcp-watermark.image" alt="image.png" /></p>
+
+<p><strong>在 Runloop 的起始最开始和结束最末尾位置添加 Observer，从而获得主线程的开始和结束状态。卡顿监控起一个子线程定时检查主线程的状态，当主线程的状态运行超过一定阈值则认为主线程卡顿，从而标记为一个卡顿。</strong></p>
+
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a069194b10fa4d19901b506110517ed0~tplv-k3u1fbpfcp-watermark.image" alt="image.png" /></p>
+
+<p>主程序 Runloop 超时的阈值是 2 秒，子线程的检查周期是 1 秒。每隔 1 秒，子线程检查主线程的运行状态；如果检查到主线程 Runloop 运行超过 2 秒则认为是卡顿，并获得当前的线程快照。</p>
+
+<p>CPU 过高也可能导致应用出现卡顿，所以在子线程检查主线程状态的同时，如果检测到 CPU 占用过高，会捕获当前的线程快照保存到文件中。微信App认为，单核 CPU 的占用超过了 80%，此时的 CPU 占用就过高了</p>
+
+<h3 id="监控app卡顿的三种方式">监控APP卡顿的三种方式</h3>
+<ul>
+  <li>FPS</li>
+  <li>Runloop</li>
+  <li>子线程ping主线程</li>
+</ul>
+
+<h3 id="fps检测app卡顿">FPS检测APP卡顿</h3>
+<p>通常情况下，屏幕会保持60hz/s的刷新速度，每次刷新时会发出一个屏幕刷新信号，<code class="language-plaintext highlighter-rouge">CADisplayLink</code>允许我们注册一个与刷新信号同步的回调处理。可以通过屏幕刷新机制来展示fps值：</p>
+
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/50db4f8cf6474910832bfd7fb14a3606~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png" /></p>
+
+<p>显示器中是固定的频率，比如iOS中是每秒60帧（60FPS），即每帧16.7ms。从上图中可以看出，每两个VSync信号之间有时间间隔（16.7ms），在这个时间内，CPU主线程计算布局，解码图片，创建视图，绘制文本，计算完成后将内容交给GPU，GPU变换，合成，渲染，放入帧缓冲区。假如16.7ms内，CPU和GPU没有来得及生产出一帧缓冲，那么这一帧会被丢弃，显示器就会保持不变，继续显示上一帧内容，这就将导致导致画面卡顿。所以无论CPU, GPU，哪个消耗时间过长，都会导致在16.7ms内无法生成一帧缓存</p>
+
+<p>主线程为了达到接近60fps的绘制效率，不能在UI线程有单个超过（1/60s≈16ms）的计算任务，否则就会卡顿</p>
+
+<p>我们可以用<code class="language-plaintext highlighter-rouge">CADisplayLink</code>来检测FPS，<code class="language-plaintext highlighter-rouge">CADisplayLink</code>则是使用帧率来作为时间间隔的单位</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)setupDisplayLink {
+
+   //创建CADisplayLink，并添加到当前run loop的NSRunLoopCommonModes
+   _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(linkTicks:)];
+   [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+}
+
+- (void)linkTicks:(CADisplayLink *)link {
+
+   //执行次数
+   _scheduleTimes ++;
+
+   //当前时间戳
+   if(_timestamp == 0){
+       _timestamp = link.timestamp;
+   }
+   
+   CFTimeInterval timePassed = link.timestamp - _timestamp;
+
+   if(timePassed &gt;= 1.f)
+       //fps
+       CGFloat fps = _scheduleTimes/timePassed; 
+       printf("fps:%.1f, timePassed:%f\n", fps, timePassed);
+
+       //reset
+       _timestamp = link.timestamp;
+       _scheduleTimes = 0;
+   }
+} 
+</code></pre></div></div>
+
+<p><strong>我们也可以通过Xcode中的Instruments中的Core Animation来监测FPS</strong></p>
+
+<p><strong><em>在上述FPS指示器中，如果将CADisplayLink放置于子线程的Runloop中，将会发生什么？</em></strong></p>
+
+<blockquote>
+  <p><strong>答案是无论主线程有多么繁忙，GPU占用有多么高，FPS始终是60，原因是基于CADisplayLink的FPS指示器只能检测到当前RunLoop的FPS</strong></p>
+</blockquote>
+
+<h3 id="runloop如何检测卡顿">Runloop如何检测卡顿</h3>
+
+<p>由于runloop会调起同步屏幕刷新的callback，如果loop的间隔大于16.67ms，fps自然达不到60hz。而在一个loop当中存在多个阶段，可以监控每一个阶段停留了多长时间</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)startRunloopMonitorFreeze {
+    
+    CFRunLoopObserverRef observer = CFRunLoopObserverCreateWithHandler(CFAllocatorGetDefault(), kCFRunLoopAllActivities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+       
+        
+       ///如果CFAbsoluteTimeGetCurrent() - 上一次的时间差 比阈值大，说明卡顿了，APP处于闲置状态常驻beforeWaiting状态，判断不准确
+        
+        
+    });
+    
+    CFRunLoopAddObserver(CFRunLoopGetMain(), observer, kCFRunLoopCommonModes);
+    
+}
+</code></pre></div></div>
+
+<p>这种检测方式当APP处于闲置状态Runloop常驻beforeWaiting状态，判断不准确</p>
+
+<h3 id="子线程检测主线程">子线程检测主线程</h3>
+
+<p><strong>退火算法</strong></p>
+
+<p>为了降低检测带来的性能损耗，我们为检测线程增加了退火算法：</p>
+
+<ul>
+  <li>每次子线程检查到主线程卡顿，会先获得主线程的堆栈并保存到内存中（不会直接去获得线程快照保存到文件中）；</li>
+  <li>将获得的主线程堆栈与上次卡顿获得的主线程堆栈进行比对：
+    <ul>
+      <li>如果堆栈不同，则获得当前的线程快照并写入文件中；</li>
+      <li>如果相同则会跳过，并按照斐波那契数列将检查时间递增直到没有遇到卡顿或者主线程卡顿堆栈不一样。
+这样，可以避免同一个卡顿写入多个文件的情况；避免检测线程遇到主线程卡死的情况下，不断写线程快照文件。</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>如何提前耗时堆栈</strong></p>
+
+<p>子线程检测到主线程 Runloop 时，会获得当前的线程快照当做卡顿文件。但是这个当前的主线程堆栈不一定是最耗时的堆栈，不一定是导致主线程超时的主要原因。</p>
+
+<p>比如主线程分别先后执行<code class="language-plaintext highlighter-rouge">funcA()  funcB() funcC() funcD()</code> 这几个方法, 子线程在检测到超出阈值时获得的线程快照，主线程的当前任务是 <code class="language-plaintext highlighter-rouge">funcD()</code>但其实<code class="language-plaintext highlighter-rouge">funcB()</code>才是耗时操作，导致主线程超时的主要原因。 卡顿监控通过主线程耗时堆栈提取来解决这个问题</p>
+
+<p>卡顿监控定时获取主线程堆栈，并将堆栈保存到内存的一个循环队列中。如下图，每间隔时间 t 获得一个堆栈，然后将堆栈保存到一个最大个数为 3 的循环队列中。有一个游标不断的指向最近的堆栈。</p>
+
+<p>微信的策略是每隔 50 毫秒获取一次主线程堆栈，保存最近 20 个主线程堆栈。这个会增加 3% 的 CPU 占用，内存占用可以忽略不计。</p>
+
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b5a97bcaefb64ec6b8627b6237cff9cc~tplv-k3u1fbpfcp-watermark.image" alt="image.png" /></p>
+
+<p>当主线程检测到卡顿时，通过对保存到循坏队列中的堆栈进行回溯，获取最近最耗时堆栈。</p>
+
+<p>如下图，检测到卡顿时，内存的循环队列中记录了最近的20个主线程堆栈，需要从中找出最近最耗时的堆栈。卡顿监控用如下特征找出最近最耗时堆栈：</p>
+
+<ul>
+  <li>以栈顶函数为特征，认为栈顶函数相同的即整个堆栈是相同的；</li>
+  <li>取堆栈的间隔是相同的，堆栈的重复次数近似作为堆栈的调用耗时，重复越多，耗时越多；</li>
+  <li>重复次数相同的堆栈可能很有多个，取最近的一个最耗时堆栈。</li>
+</ul>
+
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7062802f46c649ab853938f2372c8d40~tplv-k3u1fbpfcp-watermark.image" alt="image.png" /></p>
+
+  </div>
+
+  
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+
+	    var disqus_shortname = 'Jack';
+
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+</article>
+
+<div class="pagination">
+  
+    <span class="prev" >
+      <a href="http://localhost:4000/Jenkins%E6%80%BB%E7%BB%93%E7%AC%94%E8%AE%B0/">
+        ← 上一篇
+      </a>
+    </span>
+  
+  
+</div>
+    </div>
+
+    
+
+  </body>
+
+  <div class="wrapper-footer-mobile">
+    <footer class="footer">
+      <!-- Refer to https://codepen.io/ruandre/pen/howFi -->
+<ul class="svg-icon">
+
+  
+  <li><a href="https://www.weibo.com/huyong668" class="icon-1 weibo" title="Weibo"><svg viewBox="0 0 512 512"><path d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"></svg></a></li>
+  
+  
+  
+
+  
+
+  
+  <li><a href="mailto:huyong229@163.com" class="icon-8 email" title="Email"><svg viewBox="0 0 512 512"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></svg><!--[if lt IE 9]><em>Email</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+  <li><a href="https://github.com/AndreHu88" class="icon-13 github" title="GitHub"><svg viewBox="0 0 512 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg><!--[if lt IE 9]><em>GitHub</em><![endif]--></a></li>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</ul>
+
+
+
+<p>Copyright(c) 2017 愿你出走半生，归来仍是少年</p>
+
+    </footer>
+
+
+</html>

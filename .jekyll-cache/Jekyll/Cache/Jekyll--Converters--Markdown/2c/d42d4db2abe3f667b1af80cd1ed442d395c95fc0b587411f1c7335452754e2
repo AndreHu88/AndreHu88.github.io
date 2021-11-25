@@ -1,0 +1,229 @@
+I",<h2 id="app-的-cpu-占用率"><strong>APP 的 CPU 占用率</strong></h2>
+
+<p><strong>如何获取CPU的占用率:</strong>   应用作为进程运行时，包含了多个不同的线程，如果我们能获取应用的所有线程占用 CPU 的情况，也就能知道应用的 CPU 占用率</p>
+
+<blockquote>
+  <p>iOS 是基于 Apple Darwin 内核，由 kernel、XNU 和 Runtime 组成，而 XNU 是 Darwin 的内核，它是“X is not UNIX”的缩写，是一个混合内核，由 Mach 微内核和 BSD 组成。Mach 内核是轻量级的平台，只能完成操作系统最基本的职责，比如：进程和线程、虚拟内存管理、任务调度、进程通信和消息传递机制。其他的工作，例如文件操作和设备访问，都由 BSD 层实现</p>
+</blockquote>
+
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/593144fc59034493b88f869a6fc9293e~tplv-k3u1fbpfcp-watermark.image" alt="image.png" /></p>
+
+<p>与 Mac OS X 类似，iOS 的线程技术也是基于 Mach 线程技术实现的，在 Mach 层中 thread_basic_info 结构体提供了线程的基本信息</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct thread_basic_info {
+        time_value_t    user_time;      /* user run time */
+        time_value_t    system_time;    /* system run time */
+        integer_t       cpu_usage;      /* scaled cpu usage percentage */
+        policy_t        policy;         /* scheduling policy in effect */
+        integer_t       run_state;      /* run state (see below) */
+        integer_t       flags;          /* various flags (see below) */
+        integer_t       suspend_count;  /* suspend count for thread */
+        integer_t       sleep_time;     /* number of seconds that thread
+                                           has been sleeping */
+};
+</code></pre></div></div>
+
+<p>Mach task 可以看作一个机器无关的 thread 执行环境的抽象 一个 task 包含它的线程列表。内核提供了 <code class="language-plaintext highlighter-rouge">task_threads</code> API 调用获取指定 task 的线程列表，然后可以通过 <code class="language-plaintext highlighter-rouge">thread_info</code> API 调用来查询指定线程的信息，<code class="language-plaintext highlighter-rouge">thread_info</code> API 在 <code class="language-plaintext highlighter-rouge">thread_act.h</code> 中定义</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kern_return_t task_threads (
+    task_t target_task,
+    thread_act_array_t *act_list,
+    mach_msg_type_number_t *act_listCnt
+);
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">task_threads</code> 将 <code class="language-plaintext highlighter-rouge">target_task</code> 任务中的所有线程保存在 <code class="language-plaintext highlighter-rouge">act_list</code> 数组中，数组中包含 <code class="language-plaintext highlighter-rouge">act_listCnt</code> 个条目。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kern_return_t thread_info
+(
+	thread_act_t target_act,
+	thread_flavor_t flavor,
+	thread_info_t thread_info_out,
+	mach_msg_type_number_t *thread_info_outCnt
+);
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">thread_info</code> 查询 <code class="language-plaintext highlighter-rouge">flavor</code> 指定的 <code class="language-plaintext highlighter-rouge">thread</code> 信息，将信息返回到长度为 <code class="language-plaintext highlighter-rouge">thread_info_outCnt</code> 字节的 <code class="language-plaintext highlighter-rouge">thread_info_out</code> 缓存区中</p>
+
+<p><strong>获取当前应用的 CPU 占用率的实现如下：</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#import &lt;mach/mach.h&gt;
+#import &lt;assert.h&gt;
+
++ (CGFloat)appCpuUsage {
+
+    task_info_data_t tinfo;
+    mach_msg_type_number_t task_info_count = TASK_INFO_MAX;
+    /// THREAD_BASIC_INFO ，使用这个类型会返回线程的基本信息，定义在 thread_basic_info_t 结构体，包含了用户和系统的运行时间，运行状态和调度优先级
+    kern_return_t kr = task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)tinfo, &amp;task_info_count);
+    if (kr != KERN_SUCCESS) {
+        return -1;
+    }
+    
+    thread_array_t         thread_list;
+    mach_msg_type_number_t thread_count;
+    
+    thread_info_data_t     thinfo;
+    mach_msg_type_number_t thread_info_count;
+    
+    thread_basic_info_t basic_info_th;
+    
+     // mach_task_self()，表示获取当前的 Mach task
+    kr = task_threads(mach_task_self(), &amp;thread_list, &amp;thread_count);
+    if (kr != KERN_SUCCESS) {
+        return -1;
+    }
+    
+    long total_time     = 0;
+    long total_userTime = 0;
+    CGFloat total_cpu   = 0;
+    int j;
+    
+    // for each thread
+    for (j = 0; j &lt; (int)thread_count; j++) {
+        thread_info_count = THREAD_INFO_MAX;
+        kr = thread_info(thread_list[j], THREAD_BASIC_INFO,
+                         (thread_info_t)thinfo, &amp;thread_info_count);
+        if (kr != KERN_SUCCESS) {
+            return -1;
+        }
+        
+        basic_info_th = (thread_basic_info_t)thinfo;
+        
+        if (!(basic_info_th-&gt;flags &amp; TH_FLAGS_IDLE)) {
+            total_time     = total_time + basic_info_th-&gt;user_time.seconds + basic_info_th-&gt;system_time.seconds;
+            total_userTime = total_userTime + basic_info_th-&gt;user_time.microseconds + basic_info_th-&gt;system_time.microseconds;
+            total_cpu      = total_cpu + basic_info_th-&gt;cpu_usage / (float)TH_USAGE_SCALE * kMaxPercent;
+        }
+    }
+    
+    /// 防止出现内存泄漏必须调用它
+    kr = vm_deallocate(mach_task_self(), (vm_offset_t)thread_list, thread_count * sizeof(thread_t));
+    assert(kr == KERN_SUCCESS);
+    
+    return total_cpu;
+}
+</code></pre></div></div>
+
+<h3 id="cpu-核数">CPU 核数</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+ (NSUInteger)cpuNumber {
+    return [NSProcessInfo processInfo].activeProcessorCount;
+}
+</code></pre></div></div>
+
+<h3 id="cpu-频率">CPU 频率</h3>
+<blockquote>
+  <p>CPU 频率，就是 CPU 的时钟频率， 是 CPU 运算时的工作的频率（1秒内发生的同步脉冲数）的简称。单位是 Hz，它决定移动设备的运行速度。
+在 iOS 中与 CPU 频率相关的性能指标有三个：CPU 频率，CPU 最大频率 和 CPU 最小频率。</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+ (NSUInteger)getSysInfo:(uint)typeSpecifier {
+    size_t size = sizeof(int);
+    int results;
+    int mib[2] = {CTL_HW, typeSpecifier};
+    sysctl(mib, 2, &amp;results, &amp;size, NULL, 0);
+    return (NSUInteger)results;
+}
+
++ (NSUInteger)getCpuFrequency {
+    return [self getSysInfo:HW_CPU_FREQ];
+}
+</code></pre></div></div>
+
+<h2 id="ramrandom-access-memory">RAM(Random Access Memory)</h2>
+<blockquote>
+  <p>物理内存（RAM）与 CPU 一样都是系统中最稀少的资源，也是最有可能产生竞争的资源，应用内存与性能直接相关 - 通常是以牺牲别的应用为代价。 不像 PC 端，iOS 没有交换空间作为备选资源，这就使得内存资源尤为重要。事实上，在 iOS 中就有 Jetsam 机制负责处理系统低 RAM 事件，Jetsam 是一种类似 Linux 的 Out-Of-Memory(Killer) 的机制。</p>
+</blockquote>
+
+<h3 id="app使用的内存">App使用的内存</h3>
+<p><code class="language-plaintext highlighter-rouge">mach_task_basic_info</code> 结构体存储了 Mach task 的内存使用信息，其中 <code class="language-plaintext highlighter-rouge">resident_size</code> 就是应用使用的物理内存大小，<code class="language-plaintext highlighter-rouge">virtual_size</code> 是虚拟内存大小。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#define MACH_TASK_BASIC_INFO     20         /* always 64-bit basic info */
+struct mach_task_basic_info {
+        mach_vm_size_t  virtual_size;       /* virtual memory size (bytes) */
+        mach_vm_size_t  resident_size;      /* resident memory size (bytes) */
+        mach_vm_size_t  resident_size_max;  /* maximum resident memory size (bytes) */
+        time_value_t    user_time;          /* total user run time for
+                                               terminated threads */
+        time_value_t    system_time;        /* total system run time for
+                                               terminated threads */
+        policy_t        policy;             /* default policy for new threads */
+        integer_t       suspend_count;      /* suspend count for task */
+};
+
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">task_info</code> API 根据指定的 <code class="language-plaintext highlighter-rouge">flavor</code> 类型返回 <code class="language-plaintext highlighter-rouge">target_task</code> 的信息。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kern_return_t task_info
+(
+	task_name_t target_task,
+	task_flavor_t flavor,
+	task_info_t task_info_out,
+	mach_msg_type_number_t *task_info_outCnt
+);
+</code></pre></div></div>
+
+<p><strong>获取APP内存使用量</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+ 获取APP内存使用量
+ 
+ @return byte
+ */
++ (unsigned long long)getAppRAMUsage {
+    
+    struct mach_task_basic_info info;
+    mach_msg_type_number_t count = MACH_TASK_BASIC_INFO_COUNT;
+    
+    kern_return_t kr = task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&amp;info, &amp;count);
+    if (kr != KERN_SUCCESS) {
+        return 0;
+    }
+    return info.resident_size;
+}
+</code></pre></div></div>
+
+<p><strong>获取系统内存总量</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+ 获取系统内存总量
+ 
+ @return byte
+ */
++ (unsigned long long)getSystemRAMTotal {
+    return [NSProcessInfo processInfo].physicalMemory;
+}
+</code></pre></div></div>
+
+<p><strong>获取当前设备的内存使用情况</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+ (CGFloat)getUsedMemory {
+    
+    size_t length = 0;
+    int mib[6] = {0};
+    
+    int pagesize = 0;
+    mib[0] = CTL_HW;
+    mib[1] = HW_PAGESIZE;
+    length = sizeof(pagesize);
+    if (sysctl(mib, 2, &amp;pagesize, &amp;length, NULL, 0) &lt; 0) {
+        return 0;
+    }
+    
+    mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
+    
+    vm_statistics_data_t vmstat;
+    
+    if (host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&amp;vmstat, &amp;count) != KERN_SUCCESS) {
+        return 0;
+    }
+    
+    int wireMem = vmstat.wire_count * pagesize;
+    int activeMem = vmstat.active_count * pagesize;
+    return wireMem + activeMem;
+}
+</code></pre></div></div>
+
+:ET

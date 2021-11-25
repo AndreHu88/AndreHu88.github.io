@@ -1,4 +1,648 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-25T18:12:46+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">风车大战骑士</title><subtitle>生活不止眼前的苟且，还有诗和远方</subtitle><entry><title type="html">IM消息总结总结</title><link href="http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="IM消息总结总结" /><published>2020-10-20T00:00:00+08:00</published><updated>2020-10-20T00:00:00+08:00</updated><id>http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93/">&lt;h3 id=&quot;离线消息&quot;&gt;离线消息&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-11-25T18:05:00+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">风车大战骑士</title><subtitle>生活不止眼前的苟且，还有诗和远方</subtitle><entry><title type="html">APP卡顿总结</title><link href="http://localhost:4000/App%E5%8D%A1%E9%A1%BF%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="APP卡顿总结" /><published>2021-05-02T00:00:00+08:00</published><updated>2021-05-02T00:00:00+08:00</updated><id>http://localhost:4000/App%E5%8D%A1%E9%A1%BF%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/App%E5%8D%A1%E9%A1%BF%E6%80%BB%E7%BB%93/">&lt;h3 id=&quot;什么是卡顿&quot;&gt;什么是卡顿&lt;/h3&gt;
+&lt;p&gt;卡顿就是在应用使用过程中出现界面不响应或者界面渲染粘滞的情况。而应用界面的渲染以及事件响应是在主线程完成的，出现卡顿的原因可以归结为主线程阻塞。&lt;/p&gt;
+
+&lt;p&gt;在开发过程中，遇到的造成主线程阻塞的原因可能是：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;主线程在进行大量I/O操作：为了方便代码编写，直接在主线程去写入大量数据；&lt;/li&gt;
+  &lt;li&gt;主线程在进行大量计算：代码编写不合理，主线程进行复杂计算；&lt;/li&gt;
+  &lt;li&gt;大量UI绘制：界面过于复杂，UI绘制需要大量时间；&lt;/li&gt;
+  &lt;li&gt;主线程在等锁：主线程需要获得锁A，但是当前某个子线程持有这个锁A，导致主线程不得不等待子线程完成任务。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;如何解决卡顿&quot;&gt;如何解决卡顿&lt;/h3&gt;
+&lt;p&gt;捕获得到卡顿当时应用的主线程堆栈，有了堆栈，就可以知道主线程在什么函数哪一行代码卡住了，是在等什么锁，还是在进行I/O操作，或者是进行复杂计算。有了堆栈，就可以对问题进行针对性解决&lt;/p&gt;
+
+&lt;h3 id=&quot;原理分析&quot;&gt;原理分析&lt;/h3&gt;
+&lt;p&gt;主线程有一个 Runloop。Runloop 是一个 Event Loop 模型，让线程可以处于接收消息、处理事件、进入等待而不马上退出。在进入事件的前后，Runloop 会向注册的 Observer 通知相应的事件&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/aa08c9eaeb63430680df2dfb6df0785c~tplv-k3u1fbpfcp-watermark.image&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;在 Runloop 的起始最开始和结束最末尾位置添加 Observer，从而获得主线程的开始和结束状态。卡顿监控起一个子线程定时检查主线程的状态，当主线程的状态运行超过一定阈值则认为主线程卡顿，从而标记为一个卡顿。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a069194b10fa4d19901b506110517ed0~tplv-k3u1fbpfcp-watermark.image&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;主程序 Runloop 超时的阈值是 2 秒，子线程的检查周期是 1 秒。每隔 1 秒，子线程检查主线程的运行状态；如果检查到主线程 Runloop 运行超过 2 秒则认为是卡顿，并获得当前的线程快照。&lt;/p&gt;
+
+&lt;p&gt;CPU 过高也可能导致应用出现卡顿，所以在子线程检查主线程状态的同时，如果检测到 CPU 占用过高，会捕获当前的线程快照保存到文件中。微信App认为，单核 CPU 的占用超过了 80%，此时的 CPU 占用就过高了&lt;/p&gt;
+
+&lt;h3 id=&quot;监控app卡顿的三种方式&quot;&gt;监控APP卡顿的三种方式&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;FPS&lt;/li&gt;
+  &lt;li&gt;Runloop&lt;/li&gt;
+  &lt;li&gt;子线程ping主线程&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;fps检测app卡顿&quot;&gt;FPS检测APP卡顿&lt;/h3&gt;
+&lt;p&gt;通常情况下，屏幕会保持60hz/s的刷新速度，每次刷新时会发出一个屏幕刷新信号，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CADisplayLink&lt;/code&gt;允许我们注册一个与刷新信号同步的回调处理。可以通过屏幕刷新机制来展示fps值：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/50db4f8cf6474910832bfd7fb14a3606~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;显示器中是固定的频率，比如iOS中是每秒60帧（60FPS），即每帧16.7ms。从上图中可以看出，每两个VSync信号之间有时间间隔（16.7ms），在这个时间内，CPU主线程计算布局，解码图片，创建视图，绘制文本，计算完成后将内容交给GPU，GPU变换，合成，渲染，放入帧缓冲区。假如16.7ms内，CPU和GPU没有来得及生产出一帧缓冲，那么这一帧会被丢弃，显示器就会保持不变，继续显示上一帧内容，这就将导致导致画面卡顿。所以无论CPU, GPU，哪个消耗时间过长，都会导致在16.7ms内无法生成一帧缓存&lt;/p&gt;
+
+&lt;p&gt;主线程为了达到接近60fps的绘制效率，不能在UI线程有单个超过（1/60s≈16ms）的计算任务，否则就会卡顿&lt;/p&gt;
+
+&lt;p&gt;我们可以用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CADisplayLink&lt;/code&gt;来检测FPS，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CADisplayLink&lt;/code&gt;则是使用帧率来作为时间间隔的单位&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)setupDisplayLink {
+
+   //创建CADisplayLink，并添加到当前run loop的NSRunLoopCommonModes
+   _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(linkTicks:)];
+   [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+}
+
+- (void)linkTicks:(CADisplayLink *)link {
+
+   //执行次数
+   _scheduleTimes ++;
+
+   //当前时间戳
+   if(_timestamp == 0){
+       _timestamp = link.timestamp;
+   }
+   
+   CFTimeInterval timePassed = link.timestamp - _timestamp;
+
+   if(timePassed &amp;gt;= 1.f)
+       //fps
+       CGFloat fps = _scheduleTimes/timePassed; 
+       printf(&quot;fps:%.1f, timePassed:%f\n&quot;, fps, timePassed);
+
+       //reset
+       _timestamp = link.timestamp;
+       _scheduleTimes = 0;
+   }
+} 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;我们也可以通过Xcode中的Instruments中的Core Animation来监测FPS&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;在上述FPS指示器中，如果将CADisplayLink放置于子线程的Runloop中，将会发生什么？&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;答案是无论主线程有多么繁忙，GPU占用有多么高，FPS始终是60，原因是基于CADisplayLink的FPS指示器只能检测到当前RunLoop的FPS&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;runloop如何检测卡顿&quot;&gt;Runloop如何检测卡顿&lt;/h3&gt;
+
+&lt;p&gt;由于runloop会调起同步屏幕刷新的callback，如果loop的间隔大于16.67ms，fps自然达不到60hz。而在一个loop当中存在多个阶段，可以监控每一个阶段停留了多长时间&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)startRunloopMonitorFreeze {
+    
+    CFRunLoopObserverRef observer = CFRunLoopObserverCreateWithHandler(CFAllocatorGetDefault(), kCFRunLoopAllActivities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+       
+        
+       ///如果CFAbsoluteTimeGetCurrent() - 上一次的时间差 比阈值大，说明卡顿了，APP处于闲置状态常驻beforeWaiting状态，判断不准确
+        
+        
+    });
+    
+    CFRunLoopAddObserver(CFRunLoopGetMain(), observer, kCFRunLoopCommonModes);
+    
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;这种检测方式当APP处于闲置状态Runloop常驻beforeWaiting状态，判断不准确&lt;/p&gt;
+
+&lt;h3 id=&quot;子线程检测主线程&quot;&gt;子线程检测主线程&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;退火算法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;为了降低检测带来的性能损耗，我们为检测线程增加了退火算法：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;每次子线程检查到主线程卡顿，会先获得主线程的堆栈并保存到内存中（不会直接去获得线程快照保存到文件中）；&lt;/li&gt;
+  &lt;li&gt;将获得的主线程堆栈与上次卡顿获得的主线程堆栈进行比对：
+    &lt;ul&gt;
+      &lt;li&gt;如果堆栈不同，则获得当前的线程快照并写入文件中；&lt;/li&gt;
+      &lt;li&gt;如果相同则会跳过，并按照斐波那契数列将检查时间递增直到没有遇到卡顿或者主线程卡顿堆栈不一样。
+这样，可以避免同一个卡顿写入多个文件的情况；避免检测线程遇到主线程卡死的情况下，不断写线程快照文件。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何提前耗时堆栈&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;子线程检测到主线程 Runloop 时，会获得当前的线程快照当做卡顿文件。但是这个当前的主线程堆栈不一定是最耗时的堆栈，不一定是导致主线程超时的主要原因。&lt;/p&gt;
+
+&lt;p&gt;比如主线程分别先后执行&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;funcA()  funcB() funcC() funcD()&lt;/code&gt; 这几个方法, 子线程在检测到超出阈值时获得的线程快照，主线程的当前任务是 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;funcD()&lt;/code&gt;但其实&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;funcB()&lt;/code&gt;才是耗时操作，导致主线程超时的主要原因。 卡顿监控通过主线程耗时堆栈提取来解决这个问题&lt;/p&gt;
+
+&lt;p&gt;卡顿监控定时获取主线程堆栈，并将堆栈保存到内存的一个循环队列中。如下图，每间隔时间 t 获得一个堆栈，然后将堆栈保存到一个最大个数为 3 的循环队列中。有一个游标不断的指向最近的堆栈。&lt;/p&gt;
+
+&lt;p&gt;微信的策略是每隔 50 毫秒获取一次主线程堆栈，保存最近 20 个主线程堆栈。这个会增加 3% 的 CPU 占用，内存占用可以忽略不计。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b5a97bcaefb64ec6b8627b6237cff9cc~tplv-k3u1fbpfcp-watermark.image&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;当主线程检测到卡顿时，通过对保存到循坏队列中的堆栈进行回溯，获取最近最耗时堆栈。&lt;/p&gt;
+
+&lt;p&gt;如下图，检测到卡顿时，内存的循环队列中记录了最近的20个主线程堆栈，需要从中找出最近最耗时的堆栈。卡顿监控用如下特征找出最近最耗时堆栈：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;以栈顶函数为特征，认为栈顶函数相同的即整个堆栈是相同的；&lt;/li&gt;
+  &lt;li&gt;取堆栈的间隔是相同的，堆栈的重复次数近似作为堆栈的调用耗时，重复越多，耗时越多；&lt;/li&gt;
+  &lt;li&gt;重复次数相同的堆栈可能很有多个，取最近的一个最耗时堆栈。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7062802f46c649ab853938f2372c8d40~tplv-k3u1fbpfcp-watermark.image&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">什么是卡顿 卡顿就是在应用使用过程中出现界面不响应或者界面渲染粘滞的情况。而应用界面的渲染以及事件响应是在主线程完成的，出现卡顿的原因可以归结为主线程阻塞。 在开发过程中，遇到的造成主线程阻塞的原因可能是： 主线程在进行大量I/O操作：为了方便代码编写，直接在主线程去写入大量数据； 主线程在进行大量计算：代码编写不合理，主线程进行复杂计算； 大量UI绘制：界面过于复杂，UI绘制需要大量时间； 主线程在等锁：主线程需要获得锁A，但是当前某个子线程持有这个锁A，导致主线程不得不等待子线程完成任务。 如何解决卡顿 捕获得到卡顿当时应用的主线程堆栈，有了堆栈，就可以知道主线程在什么函数哪一行代码卡住了，是在等什么锁，还是在进行I/O操作，或者是进行复杂计算。有了堆栈，就可以对问题进行针对性解决 原理分析 主线程有一个 Runloop。Runloop 是一个 Event Loop 模型，让线程可以处于接收消息、处理事件、进入等待而不马上退出。在进入事件的前后，Runloop 会向注册的 Observer 通知相应的事件 在 Runloop 的起始最开始和结束最末尾位置添加 Observer，从而获得主线程的开始和结束状态。卡顿监控起一个子线程定时检查主线程的状态，当主线程的状态运行超过一定阈值则认为主线程卡顿，从而标记为一个卡顿。 主程序 Runloop 超时的阈值是 2 秒，子线程的检查周期是 1 秒。每隔 1 秒，子线程检查主线程的运行状态；如果检查到主线程 Runloop 运行超过 2 秒则认为是卡顿，并获得当前的线程快照。 CPU 过高也可能导致应用出现卡顿，所以在子线程检查主线程状态的同时，如果检测到 CPU 占用过高，会捕获当前的线程快照保存到文件中。微信App认为，单核 CPU 的占用超过了 80%，此时的 CPU 占用就过高了 监控APP卡顿的三种方式 FPS Runloop 子线程ping主线程 FPS检测APP卡顿 通常情况下，屏幕会保持60hz/s的刷新速度，每次刷新时会发出一个屏幕刷新信号，CADisplayLink允许我们注册一个与刷新信号同步的回调处理。可以通过屏幕刷新机制来展示fps值： 显示器中是固定的频率，比如iOS中是每秒60帧（60FPS），即每帧16.7ms。从上图中可以看出，每两个VSync信号之间有时间间隔（16.7ms），在这个时间内，CPU主线程计算布局，解码图片，创建视图，绘制文本，计算完成后将内容交给GPU，GPU变换，合成，渲染，放入帧缓冲区。假如16.7ms内，CPU和GPU没有来得及生产出一帧缓冲，那么这一帧会被丢弃，显示器就会保持不变，继续显示上一帧内容，这就将导致导致画面卡顿。所以无论CPU, GPU，哪个消耗时间过长，都会导致在16.7ms内无法生成一帧缓存 主线程为了达到接近60fps的绘制效率，不能在UI线程有单个超过（1/60s≈16ms）的计算任务，否则就会卡顿 我们可以用CADisplayLink来检测FPS，CADisplayLink则是使用帧率来作为时间间隔的单位 - (void)setupDisplayLink { //创建CADisplayLink，并添加到当前run loop的NSRunLoopCommonModes _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(linkTicks:)]; [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes]; } - (void)linkTicks:(CADisplayLink *)link { //执行次数 _scheduleTimes ++; //当前时间戳 if(_timestamp == 0){ _timestamp = link.timestamp; } CFTimeInterval timePassed = link.timestamp - _timestamp; if(timePassed &amp;gt;= 1.f) //fps CGFloat fps = _scheduleTimes/timePassed; printf(&quot;fps:%.1f, timePassed:%f\n&quot;, fps, timePassed); //reset _timestamp = link.timestamp; _scheduleTimes = 0; } } 我们也可以通过Xcode中的Instruments中的Core Animation来监测FPS 在上述FPS指示器中，如果将CADisplayLink放置于子线程的Runloop中，将会发生什么？ 答案是无论主线程有多么繁忙，GPU占用有多么高，FPS始终是60，原因是基于CADisplayLink的FPS指示器只能检测到当前RunLoop的FPS Runloop如何检测卡顿 由于runloop会调起同步屏幕刷新的callback，如果loop的间隔大于16.67ms，fps自然达不到60hz。而在一个loop当中存在多个阶段，可以监控每一个阶段停留了多长时间 - (void)startRunloopMonitorFreeze { CFRunLoopObserverRef observer = CFRunLoopObserverCreateWithHandler(CFAllocatorGetDefault(), kCFRunLoopAllActivities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) { ///如果CFAbsoluteTimeGetCurrent() - 上一次的时间差 比阈值大，说明卡顿了，APP处于闲置状态常驻beforeWaiting状态，判断不准确 }); CFRunLoopAddObserver(CFRunLoopGetMain(), observer, kCFRunLoopCommonModes); } 这种检测方式当APP处于闲置状态Runloop常驻beforeWaiting状态，判断不准确 子线程检测主线程 退火算法 为了降低检测带来的性能损耗，我们为检测线程增加了退火算法： 每次子线程检查到主线程卡顿，会先获得主线程的堆栈并保存到内存中（不会直接去获得线程快照保存到文件中）； 将获得的主线程堆栈与上次卡顿获得的主线程堆栈进行比对： 如果堆栈不同，则获得当前的线程快照并写入文件中； 如果相同则会跳过，并按照斐波那契数列将检查时间递增直到没有遇到卡顿或者主线程卡顿堆栈不一样。 这样，可以避免同一个卡顿写入多个文件的情况；避免检测线程遇到主线程卡死的情况下，不断写线程快照文件。 如何提前耗时堆栈 子线程检测到主线程 Runloop 时，会获得当前的线程快照当做卡顿文件。但是这个当前的主线程堆栈不一定是最耗时的堆栈，不一定是导致主线程超时的主要原因。 比如主线程分别先后执行funcA() funcB() funcC() funcD() 这几个方法, 子线程在检测到超出阈值时获得的线程快照，主线程的当前任务是 funcD()但其实funcB()才是耗时操作，导致主线程超时的主要原因。 卡顿监控通过主线程耗时堆栈提取来解决这个问题 卡顿监控定时获取主线程堆栈，并将堆栈保存到内存的一个循环队列中。如下图，每间隔时间 t 获得一个堆栈，然后将堆栈保存到一个最大个数为 3 的循环队列中。有一个游标不断的指向最近的堆栈。 微信的策略是每隔 50 毫秒获取一次主线程堆栈，保存最近 20 个主线程堆栈。这个会增加 3% 的 CPU 占用，内存占用可以忽略不计。 当主线程检测到卡顿时，通过对保存到循坏队列中的堆栈进行回溯，获取最近最耗时堆栈。 如下图，检测到卡顿时，内存的循环队列中记录了最近的20个主线程堆栈，需要从中找出最近最耗时的堆栈。卡顿监控用如下特征找出最近最耗时堆栈： 以栈顶函数为特征，认为栈顶函数相同的即整个堆栈是相同的； 取堆栈的间隔是相同的，堆栈的重复次数近似作为堆栈的调用耗时，重复越多，耗时越多； 重复次数相同的堆栈可能很有多个，取最近的一个最耗时堆栈。</summary></entry><entry><title type="html">Jenkins总结笔记</title><link href="http://localhost:4000/Jenkins%E6%80%BB%E7%BB%93%E7%AC%94%E8%AE%B0/" rel="alternate" type="text/html" title="Jenkins总结笔记" /><published>2021-02-15T00:00:00+08:00</published><updated>2021-02-15T00:00:00+08:00</updated><id>http://localhost:4000/Jenkins%E6%80%BB%E7%BB%93%E7%AC%94%E8%AE%B0</id><content type="html" xml:base="http://localhost:4000/Jenkins%E6%80%BB%E7%BB%93%E7%AC%94%E8%AE%B0/">&lt;h3 id=&quot;安装jenkins&quot;&gt;安装Jenkins&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;安装包安装&lt;/li&gt;
+  &lt;li&gt;HomeBrew安装&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;安装包安装&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;由于Jenkins 依赖于Java，所以在安装Jenkins前，需要先检查是否已安装Java环境。 在终端输入命令进行检测：&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ java -version
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后前往&lt;a href=&quot;https://jenkins.io/&quot;&gt;Jenkins官网&lt;/a&gt;下载安装包安装&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;homeBrew安装&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew install jenkins
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;初始化jenkins&quot;&gt;初始化Jenkins&lt;/h3&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;在终端输入&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jenkins&lt;/code&gt;启动服务&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;在浏览器中输入&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://localhost:8080&lt;/code&gt;中进行访问
+  &lt;img src=&quot;https://user-gold-cdn.xitu.io/2020/1/19/16fbb6f6dc5c1eba?imageView2/0/w/1280/h/960/format/webp/ignore-error/1&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;依照图中描述在终端输入 cat + 密码路径，获取密码复制下一步&lt;/li&gt;
+  &lt;li&gt;等待插件安装完成。&lt;/li&gt;
+  &lt;li&gt;配置完管理员账户，就成功安装完成啦&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;安装插件&quot;&gt;安装插件&lt;/h3&gt;
+
+&lt;h3 id=&quot;新建任务&quot;&gt;新建任务&lt;/h3&gt;
+
+&lt;h3 id=&quot;打包脚本&quot;&gt;打包脚本&lt;/h3&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#!/bin/sh
+export LANG=en_US.UTF-8
+
+# 1.设置配置标识,编译环境(根据需要自行填写 release ｜ debug )
+configuration=&quot;debug&quot;
+
+# 工程名(根据项目自行填写)
+APP_NAME=&quot;项目名&quot;
+
+# TARGET名称（根据项目自行填写）
+TARGET_NAME=&quot;项目名&quot;
+
+# ipa前缀（根据项目自行填写）
+IPA_NAME=&quot;项目名&quot;
+
+# 工程根目录#工程源码目录(这里的${WORKSPACE}是jenkins的内置变量表示(jenkins job的路径):/Users/plz/.jenkins/workspace/TestDome/)
+# ${WORKSPACE}/TestDome/ 中的TestDome根据你的项目自行修改
+CODE_PATH=&quot;${WORKSPACE}/xx/${TARGET_NAME}&quot;
+echo &quot;-------------- CODE_PATH: ${CODE_PATH}&quot;
+
+# info.plist路径
+project_infoplist_path= &quot;${CODE_PATH}/${TARGET_NAME}/Info.plist&quot;
+
+# 取版本号
+bundleShortVersion= $(/usr/libexec/PlistBuddy -c &quot;print CFBundleShortVersionString&quot; &quot;${project_infoplist_path}&quot;)
+# bundleVersion= $(/usr/libexec/PlistBuddy -c &quot;print CFBundleVersion&quot; &quot;${project_infoplist_path}&quot;)
+
+echo &quot;------- info plist path : ${project_infoplist_path}&quot;
+echo &quot;------- bundleShortVersion : ${bundleShortVersion}&quot;
+# $echo &quot;------- bundleVersion : ${bundleVersion}&quot;
+
+# 日期
+DATE=$(date +%Y%m%d%H%M%S)
+# 工程文件路径
+ARCHIVE_NAME=&quot;${APP_NAME}_${DATE}.xcarchive&quot;
+# 存放ipa的文件夹名称（根据自己的喜好自行修改）
+IPANAME=&quot;${IPA_NAME}_IPA&quot;
+
+# 要上传的ipa文件路径 ${username} 需要换成自己的用户名
+ROOT_PATH=&quot;/Users/wanglei/Desktop/Jenkins&quot;
+
+ARCHIVE_PATH=&quot;${ROOT_PATH}/Archive/${ARCHIVE_NAME}&quot;
+
+IPA_PATH=&quot;${ROOT_PATH}/Export/${IPANAME}&quot;
+
+echo &quot;-------------- ARCHIVE_PATH: ${ARCHIVE_PATH}&quot;
+echo &quot;-------------- IPA_PATH: ${IPA_PATH}&quot;
+
+
+# 导包方式(这里需要根据需要手动配置:AdHoc/AppStore/Enterprise/Development)
+EXPORT_METHOD=&quot;AdHoc&quot;
+# 导包方式配置文件路径(这里需要手动创建对应的XXXExportOptionsPlist.plist文件，并将文件复制到根目录下[我这里在源项目的根目录下又新建了ExportPlist文件夹专门放ExportPlist文件])
+if test &quot;$EXPORT_METHOD&quot; = &quot;AdHoc&quot;; then
+    EXPORT_METHOD_PLIST_PATH=${CODE_PATH}/ExportOptions.plist
+elif test &quot;$EXPORT_METHOD&quot; = &quot;AppStore&quot;; then
+    EXPORT_METHOD_PLIST_PATH=${CODE_PATH}/ExportOptions/AppStoreExportOptios.plist
+elif test &quot;$EXPORT_METHOD&quot; = &quot;Enterprise&quot;; then
+    EXPORT_METHOD_PLIST_PATH=${CODE_PATH}/ExportOptions/EnterpriseExportOptions.plist
+else
+    EXPORT_METHOD_PLIST_PATH=${CODE_PATH}/ExportOptions/DevelopmentExportOptions.plist
+fi
+
+echo &quot;-------------- EXPORT_METHOD_PLIST_PATH: ${EXPORT_METHOD_PLIST_PATH}&quot;
+
+# 指ipa定输出文件夹,如果有删除后再创建，如果没有就直接创建
+if test -d ${IPA_PATH}; then
+    &quot;-------------- 删除:IPA Path : ${IPA_PATH}&quot;
+    rm -rf ${IPA_PATH}
+    mkdir ${IPA_PATH}
+    &quot;-------------- 创建:IPA Path : ${IPA_PATH}&quot;
+else
+    mkdir -pv ${IPA_PATH}
+    &quot;-------------- 创建:IPA Path : ${IPA_PATH}&quot;
+fi
+
+# 进入工程源码根目录
+cd &quot;${CODE_PATH}&quot;
+
+echo &quot;-------------- 安装Pod Code Path: ${CODE_PATH}&quot;
+# 执行pod
+pod install --verbose --no-repo-update
+
+#mkdir -p build
+
+# 清除工程
+echo &quot;-------------- Clean项目 执行Shell: xcodebuild clean -workspace ${APP_NAME}.xcworkspace -scheme ${APP_NAME} -configuration ${configuration}&quot;
+xcodebuild clean -workspace ${APP_NAME}.xcworkspace -scheme ${APP_NAME} -configuration ${configuration}
+
+# 将app打包成xcarchive格式文件
+echo &quot;-------------- archive项目 执行Shell: xcodebuild archive -workspace ${APP_NAME}.xcworkspace -scheme ${APP_NAME} -configuration ${configuration} -archivePath ${ARCHIVE_PATH}&quot;
+xcodebuild archive -workspace ${APP_NAME}.xcworkspace -scheme ${APP_NAME} -configuration ${configuration} -archivePath ${ARCHIVE_PATH}
+
+# 将xcarchive格式文件打包成ipa
+echo &quot;-------------- 导出ipa包 执行Shell: xcodebuild -exportArchive -archivePath ${ARCHIVE_PATH} -exportPath &quot;${IPA_PATH}&quot; -exportOptionsPlist ${EXPORT_METHOD_PLIST_PATH} -allowProvisioningUpdates&quot;
+xcodebuild -exportArchive -archivePath ${ARCHIVE_PATH} -exportPath &quot;${IPA_PATH}&quot; -exportOptionsPlist ${EXPORT_METHOD_PLIST_PATH} -allowProvisioningUpdates
+
+# 删除工程文件
+# echo &quot;+++++++++删除工程文件+++++++++&quot;
+# rm -rf $ARCHIVE_PATH
+
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="Linux" /><category term="iOS" /><summary type="html">安装Jenkins 安装包安装 HomeBrew安装 安装包安装 由于Jenkins 依赖于Java，所以在安装Jenkins前，需要先检查是否已安装Java环境。 在终端输入命令进行检测： $ java -version 然后前往Jenkins官网下载安装包安装 homeBrew安装 brew install jenkins 初始化Jenkins 在终端输入jenkins启动服务 在浏览器中输入http://localhost:8080中进行访问 依照图中描述在终端输入 cat + 密码路径，获取密码复制下一步 等待插件安装完成。 配置完管理员账户，就成功安装完成啦 安装插件 新建任务 打包脚本 ``` #!/bin/sh export LANG=en_US.UTF-8 1.设置配置标识,编译环境(根据需要自行填写 release ｜ debug ) configuration=”debug” 工程名(根据项目自行填写) APP_NAME=”项目名” TARGET名称（根据项目自行填写） TARGET_NAME=”项目名” ipa前缀（根据项目自行填写） IPA_NAME=”项目名” 工程根目录#工程源码目录(这里的${WORKSPACE}是jenkins的内置变量表示(jenkins job的路径):/Users/plz/.jenkins/workspace/TestDome/) ${WORKSPACE}/TestDome/ 中的TestDome根据你的项目自行修改 CODE_PATH=”${WORKSPACE}/xx/${TARGET_NAME}” echo “</summary></entry><entry><title type="html">量化金融的总结</title><link href="http://localhost:4000/%E9%87%8F%E5%8C%96%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E6%8C%87%E6%A0%87/" rel="alternate" type="text/html" title="量化金融的总结" /><published>2020-12-30T00:00:00+08:00</published><updated>2020-12-30T00:00:00+08:00</updated><id>http://localhost:4000/%E9%87%8F%E5%8C%96%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E6%8C%87%E6%A0%87</id><content type="html" xml:base="http://localhost:4000/%E9%87%8F%E5%8C%96%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E6%8C%87%E6%A0%87/">&lt;h3 id=&quot;常见的指标&quot;&gt;常见的指标&lt;/h3&gt;
+
+&lt;h4 id=&quot;ma--简单移动平均数&quot;&gt;MA  简单移动平均数&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;移动平均线 [1]  常用线有5天、10天、30天、60天、120天和240天的指标。其中，5天和10天的短期移动平均线，是短线操作的参照指标，称做日均线指标；30天和60天的是中期均线指标，称做季均线指标；120天、240天的是长期均线指标，称做年均线指标&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;移动平均数分为MA（简单移动平均数）&lt;/li&gt;
+  &lt;li&gt;EMA（指数移动平均数）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;其计算公式如下：［C为收盘价，N为周期数］：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MA（N）=（C1+C2+……CN）/N
+MA（7）=（C1+C2+……CN）/7
+MA（30）=（C1+C2+……CN）/30
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;EMA（N）= 2 /（N + 1）*（C - 昨日EMA）+ 昨日EMA&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/// 12日EMA的算式:
+EMA（12）= 昨日EMA（12 * 11 / 13 + C * 2 / 13 ＝ (C － 昨日的EMA) × 0.1538 ＋ 昨日的EMA；   
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;即为MACD指标中的快线 - 快速平滑移动平均线；&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/// 26日EMA的算式为
+EMA（26）= 昨日EMA（26）* 25 /27 + C * 2 / 27；
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;关键的一点是：新股上市首日，其DIFF, DEA以及MACD都为0，因为当日不存在前一日，无法做迭代。而计算新股上市第二日的EMA时，前一日的EMA需要用收盘价（而非0）来计算。另外，需要注意，计算过程小数点后四舍五入保留4位小数，最后显示的时候四舍五入保留3位小数。&lt;/p&gt;
+
+&lt;p&gt;具体计算公式及例子如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;EMA（12）= 前一日EMA（12）× 11 / 13 ＋ 今日收盘价 × 2 / 13
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;EMA（26）= 前一日EMA（26）× 25 / 27 ＋ 今日收盘价 × 2 / 27
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;DIFF = 今日EMA（12）- 今日EMA（26）
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;DEA（MACD）= 前一日DEA × 8 / 10 ＋ 今日DIF × 2 / 10
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;BAR = 2 × (DIFF－DEA)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;示例：&lt;/p&gt;
+
+&lt;p&gt;20091218日：
+新股上市，DIFF = 0, DEA = 0, MACD = 0，收盘价55.01&lt;/p&gt;
+
+&lt;p&gt;20091219日：
+收盘价53.7&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;EMA（12）=55.01 + (53.7 - 55.01) × 2 / 13 = 54.8085
+
+EMA（26 = 55.01 + (53.7 - 55.01) × 2 / 27 = 54.913
+
+DIFF = EMA（12）- EMA（26）= 54.8085 - 54.913 = -0.1045 （-0.104？）
+
+DEA = 0 + (-0.1045) X 2 / 10 = -0.0209
+
+BAR = 2 * ((-0.1045) -(-0.0209)) = -0.1672
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;boll&quot;&gt;BOLL&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;定义：布林线指标，即BOLL指标，其英文全称是“Bollinger Bands”.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;描述：其利用统计原理，求出股价的标准差及其信赖区间，从而确定股价的波动范围及未来走势，利用波带显示股价的安全高低价位，因而也被称为布林带。其上下限范围不固定，随股价的滚动而变化。布林指标和麦克指标MIKE一样同属路径指标，股价波动在上限和下限的区间之内，这条带状区的宽窄，随着股价波动幅度的大小而变化，股价涨跌幅度加大时，带状区变宽，涨跌幅度狭小盘整时，带状区则变窄。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;公式：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;中轨线 = N日的移动平均线&lt;/li&gt;
+  &lt;li&gt;上轨线 = 中轨线 + 两倍的标准差&lt;/li&gt;
+  &lt;li&gt;下轨线 = 中轨线 － 两倍的标准差&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;计算过程：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;计算MA：&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MA = N日内的收盘价之和 ÷ N&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;计算标准差MD&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MD = 平方根（N-1）日的（C－MA）的两次方之和除以N&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;计算MB、UP、DN线&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/// K为参数，可根据股票的特性来做相应的调整，一般默认为2，N一般选择20天
+
+MB =（N－1）日的MA
+
+UP = MB + k × MD
+
+DN = MB－k × MD
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;应用：布林口由缩口变张口，那么可以往着张口的趋势布局。趋势分两种，一种是下跌，一种是上涨。当K线站上中轨，并且伴随着成交量放量增长，则出现买点。&lt;/p&gt;</content><author><name></name></author><category term="金融" /><summary type="html">常见的指标 MA 简单移动平均数 移动平均线 [1] 常用线有5天、10天、30天、60天、120天和240天的指标。其中，5天和10天的短期移动平均线，是短线操作的参照指标，称做日均线指标；30天和60天的是中期均线指标，称做季均线指标；120天、240天的是长期均线指标，称做年均线指标 移动平均数分为MA（简单移动平均数） EMA（指数移动平均数） 其计算公式如下：［C为收盘价，N为周期数］： MA（N）=（C1+C2+……CN）/N MA（7）=（C1+C2+……CN）/7 MA（30）=（C1+C2+……CN）/30 EMA（N）= 2 /（N + 1）*（C - 昨日EMA）+ 昨日EMA /// 12日EMA的算式: EMA（12）= 昨日EMA（12 * 11 / 13 + C * 2 / 13 ＝ (C － 昨日的EMA) × 0.1538 ＋ 昨日的EMA； 即为MACD指标中的快线 - 快速平滑移动平均线； /// 26日EMA的算式为 EMA（26）= 昨日EMA（26）* 25 /27 + C * 2 / 27； 关键的一点是：新股上市首日，其DIFF, DEA以及MACD都为0，因为当日不存在前一日，无法做迭代。而计算新股上市第二日的EMA时，前一日的EMA需要用收盘价（而非0）来计算。另外，需要注意，计算过程小数点后四舍五入保留4位小数，最后显示的时候四舍五入保留3位小数。 具体计算公式及例子如下： EMA（12）= 前一日EMA（12）× 11 / 13 ＋ 今日收盘价 × 2 / 13 EMA（26）= 前一日EMA（26）× 25 / 27 ＋ 今日收盘价 × 2 / 27 DIFF = 今日EMA（12）- 今日EMA（26） DEA（MACD）= 前一日DEA × 8 / 10 ＋ 今日DIF × 2 / 10 BAR = 2 × (DIFF－DEA) 示例： 20091218日： 新股上市，DIFF = 0, DEA = 0, MACD = 0，收盘价55.01 20091219日： 收盘价53.7 EMA（12）=55.01 + (53.7 - 55.01) × 2 / 13 = 54.8085 EMA（26 = 55.01 + (53.7 - 55.01) × 2 / 27 = 54.913 DIFF = EMA（12）- EMA（26）= 54.8085 - 54.913 = -0.1045 （-0.104？） DEA = 0 + (-0.1045) X 2 / 10 = -0.0209 BAR = 2 * ((-0.1045) -(-0.0209)) = -0.1672 BOLL 定义：布林线指标，即BOLL指标，其英文全称是“Bollinger Bands”. 描述：其利用统计原理，求出股价的标准差及其信赖区间，从而确定股价的波动范围及未来走势，利用波带显示股价的安全高低价位，因而也被称为布林带。其上下限范围不固定，随股价的滚动而变化。布林指标和麦克指标MIKE一样同属路径指标，股价波动在上限和下限的区间之内，这条带状区的宽窄，随着股价波动幅度的大小而变化，股价涨跌幅度加大时，带状区变宽，涨跌幅度狭小盘整时，带状区则变窄。 公式： 中轨线 = N日的移动平均线 上轨线 = 中轨线 + 两倍的标准差 下轨线 = 中轨线 － 两倍的标准差 计算过程： 计算MA： MA = N日内的收盘价之和 ÷ N 计算标准差MD MD = 平方根（N-1）日的（C－MA）的两次方之和除以N 计算MB、UP、DN线 /// K为参数，可根据股票的特性来做相应的调整，一般默认为2，N一般选择20天 MB =（N－1）日的MA UP = MB + k × MD DN = MB－k × MD 应用：布林口由缩口变张口，那么可以往着张口的趋势布局。趋势分两种，一种是下跌，一种是上涨。当K线站上中轨，并且伴随着成交量放量增长，则出现买点。</summary></entry><entry><title type="html">CPU内存总结</title><link href="http://localhost:4000/CPU%E5%86%85%E5%AD%98%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="CPU内存总结" /><published>2020-11-09T00:00:00+08:00</published><updated>2020-11-09T00:00:00+08:00</updated><id>http://localhost:4000/CPU%E5%86%85%E5%AD%98%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/CPU%E5%86%85%E5%AD%98%E6%80%BB%E7%BB%93/">&lt;h2 id=&quot;app-的-cpu-占用率&quot;&gt;&lt;strong&gt;APP 的 CPU 占用率&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;如何获取CPU的占用率:&lt;/strong&gt;   应用作为进程运行时，包含了多个不同的线程，如果我们能获取应用的所有线程占用 CPU 的情况，也就能知道应用的 CPU 占用率&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;iOS 是基于 Apple Darwin 内核，由 kernel、XNU 和 Runtime 组成，而 XNU 是 Darwin 的内核，它是“X is not UNIX”的缩写，是一个混合内核，由 Mach 微内核和 BSD 组成。Mach 内核是轻量级的平台，只能完成操作系统最基本的职责，比如：进程和线程、虚拟内存管理、任务调度、进程通信和消息传递机制。其他的工作，例如文件操作和设备访问，都由 BSD 层实现&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/593144fc59034493b88f869a6fc9293e~tplv-k3u1fbpfcp-watermark.image&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;与 Mac OS X 类似，iOS 的线程技术也是基于 Mach 线程技术实现的，在 Mach 层中 thread_basic_info 结构体提供了线程的基本信息&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;struct thread_basic_info {
+        time_value_t    user_time;      /* user run time */
+        time_value_t    system_time;    /* system run time */
+        integer_t       cpu_usage;      /* scaled cpu usage percentage */
+        policy_t        policy;         /* scheduling policy in effect */
+        integer_t       run_state;      /* run state (see below) */
+        integer_t       flags;          /* various flags (see below) */
+        integer_t       suspend_count;  /* suspend count for thread */
+        integer_t       sleep_time;     /* number of seconds that thread
+                                           has been sleeping */
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Mach task 可以看作一个机器无关的 thread 执行环境的抽象 一个 task 包含它的线程列表。内核提供了 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;task_threads&lt;/code&gt; API 调用获取指定 task 的线程列表，然后可以通过 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;thread_info&lt;/code&gt; API 调用来查询指定线程的信息，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;thread_info&lt;/code&gt; API 在 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;thread_act.h&lt;/code&gt; 中定义&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;kern_return_t task_threads (
+    task_t target_task,
+    thread_act_array_t *act_list,
+    mach_msg_type_number_t *act_listCnt
+);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;task_threads&lt;/code&gt; 将 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;target_task&lt;/code&gt; 任务中的所有线程保存在 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;act_list&lt;/code&gt; 数组中，数组中包含 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;act_listCnt&lt;/code&gt; 个条目。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;kern_return_t thread_info
+(
+	thread_act_t target_act,
+	thread_flavor_t flavor,
+	thread_info_t thread_info_out,
+	mach_msg_type_number_t *thread_info_outCnt
+);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;thread_info&lt;/code&gt; 查询 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;flavor&lt;/code&gt; 指定的 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;thread&lt;/code&gt; 信息，将信息返回到长度为 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;thread_info_outCnt&lt;/code&gt; 字节的 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;thread_info_out&lt;/code&gt; 缓存区中&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;获取当前应用的 CPU 占用率的实现如下：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#import &amp;lt;mach/mach.h&amp;gt;
+#import &amp;lt;assert.h&amp;gt;
+
++ (CGFloat)appCpuUsage {
+
+    task_info_data_t tinfo;
+    mach_msg_type_number_t task_info_count = TASK_INFO_MAX;
+    /// THREAD_BASIC_INFO ，使用这个类型会返回线程的基本信息，定义在 thread_basic_info_t 结构体，包含了用户和系统的运行时间，运行状态和调度优先级
+    kern_return_t kr = task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)tinfo, &amp;amp;task_info_count);
+    if (kr != KERN_SUCCESS) {
+        return -1;
+    }
+    
+    thread_array_t         thread_list;
+    mach_msg_type_number_t thread_count;
+    
+    thread_info_data_t     thinfo;
+    mach_msg_type_number_t thread_info_count;
+    
+    thread_basic_info_t basic_info_th;
+    
+     // mach_task_self()，表示获取当前的 Mach task
+    kr = task_threads(mach_task_self(), &amp;amp;thread_list, &amp;amp;thread_count);
+    if (kr != KERN_SUCCESS) {
+        return -1;
+    }
+    
+    long total_time     = 0;
+    long total_userTime = 0;
+    CGFloat total_cpu   = 0;
+    int j;
+    
+    // for each thread
+    for (j = 0; j &amp;lt; (int)thread_count; j++) {
+        thread_info_count = THREAD_INFO_MAX;
+        kr = thread_info(thread_list[j], THREAD_BASIC_INFO,
+                         (thread_info_t)thinfo, &amp;amp;thread_info_count);
+        if (kr != KERN_SUCCESS) {
+            return -1;
+        }
+        
+        basic_info_th = (thread_basic_info_t)thinfo;
+        
+        if (!(basic_info_th-&amp;gt;flags &amp;amp; TH_FLAGS_IDLE)) {
+            total_time     = total_time + basic_info_th-&amp;gt;user_time.seconds + basic_info_th-&amp;gt;system_time.seconds;
+            total_userTime = total_userTime + basic_info_th-&amp;gt;user_time.microseconds + basic_info_th-&amp;gt;system_time.microseconds;
+            total_cpu      = total_cpu + basic_info_th-&amp;gt;cpu_usage / (float)TH_USAGE_SCALE * kMaxPercent;
+        }
+    }
+    
+    /// 防止出现内存泄漏必须调用它
+    kr = vm_deallocate(mach_task_self(), (vm_offset_t)thread_list, thread_count * sizeof(thread_t));
+    assert(kr == KERN_SUCCESS);
+    
+    return total_cpu;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;cpu-核数&quot;&gt;CPU 核数&lt;/h3&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+ (NSUInteger)cpuNumber {
+    return [NSProcessInfo processInfo].activeProcessorCount;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;cpu-频率&quot;&gt;CPU 频率&lt;/h3&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;CPU 频率，就是 CPU 的时钟频率， 是 CPU 运算时的工作的频率（1秒内发生的同步脉冲数）的简称。单位是 Hz，它决定移动设备的运行速度。
+在 iOS 中与 CPU 频率相关的性能指标有三个：CPU 频率，CPU 最大频率 和 CPU 最小频率。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+ (NSUInteger)getSysInfo:(uint)typeSpecifier {
+    size_t size = sizeof(int);
+    int results;
+    int mib[2] = {CTL_HW, typeSpecifier};
+    sysctl(mib, 2, &amp;amp;results, &amp;amp;size, NULL, 0);
+    return (NSUInteger)results;
+}
+
++ (NSUInteger)getCpuFrequency {
+    return [self getSysInfo:HW_CPU_FREQ];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;ramrandom-access-memory&quot;&gt;RAM(Random Access Memory)&lt;/h2&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;物理内存（RAM）与 CPU 一样都是系统中最稀少的资源，也是最有可能产生竞争的资源，应用内存与性能直接相关 - 通常是以牺牲别的应用为代价。 不像 PC 端，iOS 没有交换空间作为备选资源，这就使得内存资源尤为重要。事实上，在 iOS 中就有 Jetsam 机制负责处理系统低 RAM 事件，Jetsam 是一种类似 Linux 的 Out-Of-Memory(Killer) 的机制。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;app使用的内存&quot;&gt;App使用的内存&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mach_task_basic_info&lt;/code&gt; 结构体存储了 Mach task 的内存使用信息，其中 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;resident_size&lt;/code&gt; 就是应用使用的物理内存大小，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;virtual_size&lt;/code&gt; 是虚拟内存大小。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#define MACH_TASK_BASIC_INFO     20         /* always 64-bit basic info */
+struct mach_task_basic_info {
+        mach_vm_size_t  virtual_size;       /* virtual memory size (bytes) */
+        mach_vm_size_t  resident_size;      /* resident memory size (bytes) */
+        mach_vm_size_t  resident_size_max;  /* maximum resident memory size (bytes) */
+        time_value_t    user_time;          /* total user run time for
+                                               terminated threads */
+        time_value_t    system_time;        /* total system run time for
+                                               terminated threads */
+        policy_t        policy;             /* default policy for new threads */
+        integer_t       suspend_count;      /* suspend count for task */
+};
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;task_info&lt;/code&gt; API 根据指定的 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;flavor&lt;/code&gt; 类型返回 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;target_task&lt;/code&gt; 的信息。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;kern_return_t task_info
+(
+	task_name_t target_task,
+	task_flavor_t flavor,
+	task_info_t task_info_out,
+	mach_msg_type_number_t *task_info_outCnt
+);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;获取APP内存使用量&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ 获取APP内存使用量
+ 
+ @return byte
+ */
++ (unsigned long long)getAppRAMUsage {
+    
+    struct mach_task_basic_info info;
+    mach_msg_type_number_t count = MACH_TASK_BASIC_INFO_COUNT;
+    
+    kern_return_t kr = task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&amp;amp;info, &amp;amp;count);
+    if (kr != KERN_SUCCESS) {
+        return 0;
+    }
+    return info.resident_size;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;获取系统内存总量&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ 获取系统内存总量
+ 
+ @return byte
+ */
++ (unsigned long long)getSystemRAMTotal {
+    return [NSProcessInfo processInfo].physicalMemory;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;获取当前设备的内存使用情况&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+ (CGFloat)getUsedMemory {
+    
+    size_t length = 0;
+    int mib[6] = {0};
+    
+    int pagesize = 0;
+    mib[0] = CTL_HW;
+    mib[1] = HW_PAGESIZE;
+    length = sizeof(pagesize);
+    if (sysctl(mib, 2, &amp;amp;pagesize, &amp;amp;length, NULL, 0) &amp;lt; 0) {
+        return 0;
+    }
+    
+    mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
+    
+    vm_statistics_data_t vmstat;
+    
+    if (host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&amp;amp;vmstat, &amp;amp;count) != KERN_SUCCESS) {
+        return 0;
+    }
+    
+    int wireMem = vmstat.wire_count * pagesize;
+    int activeMem = vmstat.active_count * pagesize;
+    return wireMem + activeMem;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">APP 的 CPU 占用率 如何获取CPU的占用率: 应用作为进程运行时，包含了多个不同的线程，如果我们能获取应用的所有线程占用 CPU 的情况，也就能知道应用的 CPU 占用率 iOS 是基于 Apple Darwin 内核，由 kernel、XNU 和 Runtime 组成，而 XNU 是 Darwin 的内核，它是“X is not UNIX”的缩写，是一个混合内核，由 Mach 微内核和 BSD 组成。Mach 内核是轻量级的平台，只能完成操作系统最基本的职责，比如：进程和线程、虚拟内存管理、任务调度、进程通信和消息传递机制。其他的工作，例如文件操作和设备访问，都由 BSD 层实现 与 Mac OS X 类似，iOS 的线程技术也是基于 Mach 线程技术实现的，在 Mach 层中 thread_basic_info 结构体提供了线程的基本信息 struct thread_basic_info { time_value_t user_time; /* user run time */ time_value_t system_time; /* system run time */ integer_t cpu_usage; /* scaled cpu usage percentage */ policy_t policy; /* scheduling policy in effect */ integer_t run_state; /* run state (see below) */ integer_t flags; /* various flags (see below) */ integer_t suspend_count; /* suspend count for thread */ integer_t sleep_time; /* number of seconds that thread has been sleeping */ }; Mach task 可以看作一个机器无关的 thread 执行环境的抽象 一个 task 包含它的线程列表。内核提供了 task_threads API 调用获取指定 task 的线程列表，然后可以通过 thread_info API 调用来查询指定线程的信息，thread_info API 在 thread_act.h 中定义 kern_return_t task_threads ( task_t target_task, thread_act_array_t *act_list, mach_msg_type_number_t *act_listCnt ); task_threads 将 target_task 任务中的所有线程保存在 act_list 数组中，数组中包含 act_listCnt 个条目。 kern_return_t thread_info ( thread_act_t target_act, thread_flavor_t flavor, thread_info_t thread_info_out, mach_msg_type_number_t *thread_info_outCnt ); thread_info 查询 flavor 指定的 thread 信息，将信息返回到长度为 thread_info_outCnt 字节的 thread_info_out 缓存区中 获取当前应用的 CPU 占用率的实现如下： #import &amp;lt;mach/mach.h&amp;gt; #import &amp;lt;assert.h&amp;gt; + (CGFloat)appCpuUsage { task_info_data_t tinfo; mach_msg_type_number_t task_info_count = TASK_INFO_MAX; /// THREAD_BASIC_INFO ，使用这个类型会返回线程的基本信息，定义在 thread_basic_info_t 结构体，包含了用户和系统的运行时间，运行状态和调度优先级 kern_return_t kr = task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)tinfo, &amp;amp;task_info_count); if (kr != KERN_SUCCESS) { return -1; } thread_array_t thread_list; mach_msg_type_number_t thread_count; thread_info_data_t thinfo; mach_msg_type_number_t thread_info_count; thread_basic_info_t basic_info_th; // mach_task_self()，表示获取当前的 Mach task kr = task_threads(mach_task_self(), &amp;amp;thread_list, &amp;amp;thread_count); if (kr != KERN_SUCCESS) { return -1; } long total_time = 0; long total_userTime = 0; CGFloat total_cpu = 0; int j; // for each thread for (j = 0; j &amp;lt; (int)thread_count; j++) { thread_info_count = THREAD_INFO_MAX; kr = thread_info(thread_list[j], THREAD_BASIC_INFO, (thread_info_t)thinfo, &amp;amp;thread_info_count); if (kr != KERN_SUCCESS) { return -1; } basic_info_th = (thread_basic_info_t)thinfo; if (!(basic_info_th-&amp;gt;flags &amp;amp; TH_FLAGS_IDLE)) { total_time = total_time + basic_info_th-&amp;gt;user_time.seconds + basic_info_th-&amp;gt;system_time.seconds; total_userTime = total_userTime + basic_info_th-&amp;gt;user_time.microseconds + basic_info_th-&amp;gt;system_time.microseconds; total_cpu = total_cpu + basic_info_th-&amp;gt;cpu_usage / (float)TH_USAGE_SCALE * kMaxPercent; } } /// 防止出现内存泄漏必须调用它 kr = vm_deallocate(mach_task_self(), (vm_offset_t)thread_list, thread_count * sizeof(thread_t)); assert(kr == KERN_SUCCESS); return total_cpu; } CPU 核数 + (NSUInteger)cpuNumber { return [NSProcessInfo processInfo].activeProcessorCount; } CPU 频率 CPU 频率，就是 CPU 的时钟频率， 是 CPU 运算时的工作的频率（1秒内发生的同步脉冲数）的简称。单位是 Hz，它决定移动设备的运行速度。 在 iOS 中与 CPU 频率相关的性能指标有三个：CPU 频率，CPU 最大频率 和 CPU 最小频率。 + (NSUInteger)getSysInfo:(uint)typeSpecifier { size_t size = sizeof(int); int results; int mib[2] = {CTL_HW, typeSpecifier}; sysctl(mib, 2, &amp;amp;results, &amp;amp;size, NULL, 0); return (NSUInteger)results; } + (NSUInteger)getCpuFrequency { return [self getSysInfo:HW_CPU_FREQ]; } RAM(Random Access Memory) 物理内存（RAM）与 CPU 一样都是系统中最稀少的资源，也是最有可能产生竞争的资源，应用内存与性能直接相关 - 通常是以牺牲别的应用为代价。 不像 PC 端，iOS 没有交换空间作为备选资源，这就使得内存资源尤为重要。事实上，在 iOS 中就有 Jetsam 机制负责处理系统低 RAM 事件，Jetsam 是一种类似 Linux 的 Out-Of-Memory(Killer) 的机制。 App使用的内存 mach_task_basic_info 结构体存储了 Mach task 的内存使用信息，其中 resident_size 就是应用使用的物理内存大小，virtual_size 是虚拟内存大小。 #define MACH_TASK_BASIC_INFO 20 /* always 64-bit basic info */ struct mach_task_basic_info { mach_vm_size_t virtual_size; /* virtual memory size (bytes) */ mach_vm_size_t resident_size; /* resident memory size (bytes) */ mach_vm_size_t resident_size_max; /* maximum resident memory size (bytes) */ time_value_t user_time; /* total user run time for terminated threads */ time_value_t system_time; /* total system run time for terminated threads */ policy_t policy; /* default policy for new threads */ integer_t suspend_count; /* suspend count for task */ }; task_info API 根据指定的 flavor 类型返回 target_task 的信息。 kern_return_t task_info ( task_name_t target_task, task_flavor_t flavor, task_info_t task_info_out, mach_msg_type_number_t *task_info_outCnt ); 获取APP内存使用量 /** 获取APP内存使用量 @return byte */ + (unsigned long long)getAppRAMUsage { struct mach_task_basic_info info; mach_msg_type_number_t count = MACH_TASK_BASIC_INFO_COUNT; kern_return_t kr = task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&amp;amp;info, &amp;amp;count); if (kr != KERN_SUCCESS) { return 0; } return info.resident_size; } 获取系统内存总量 /** 获取系统内存总量 @return byte */ + (unsigned long long)getSystemRAMTotal { return [NSProcessInfo processInfo].physicalMemory; } 获取当前设备的内存使用情况 + (CGFloat)getUsedMemory { size_t length = 0; int mib[6] = {0}; int pagesize = 0; mib[0] = CTL_HW; mib[1] = HW_PAGESIZE; length = sizeof(pagesize); if (sysctl(mib, 2, &amp;amp;pagesize, &amp;amp;length, NULL, 0) &amp;lt; 0) { return 0; } mach_msg_type_number_t count = HOST_VM_INFO_COUNT; vm_statistics_data_t vmstat; if (host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&amp;amp;vmstat, &amp;amp;count) != KERN_SUCCESS) { return 0; } int wireMem = vmstat.wire_count * pagesize; int activeMem = vmstat.active_count * pagesize; return wireMem + activeMem; }</summary></entry><entry><title type="html">vim的常用总结</title><link href="http://localhost:4000/Vim%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="vim的常用总结" /><published>2020-10-24T00:00:00+08:00</published><updated>2020-10-24T00:00:00+08:00</updated><id>http://localhost:4000/Vim%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/Vim%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/">&lt;h4 id=&quot;vim的简介&quot;&gt;vim的简介&lt;/h4&gt;
+
+&lt;p&gt;vim一项很好用的工具, 所有的 Unix Like 系统都会内建 vi 编辑器&lt;/p&gt;
+
+&lt;p&gt;vi编辑器有三种模式&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;命令模式（Command mode）&lt;/li&gt;
+  &lt;li&gt;输入模式（Insert mode）&lt;/li&gt;
+  &lt;li&gt;底线命令模式（Last line mode）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;三种模式的介绍&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;命令模式( 敲击键盘动作会被Vim识别为命令，而非输入字符。比如我们此时按下i，并不会输入一个字符，i被当作了一个命令 )
+&lt;img src=&quot;https://www.runoob.com/wp-content/uploads/2015/10/vi-vim-cheat-sheet-sch.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;输入模式
+和正常的文本输入一样&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;底线命令模式
+命令模式下按下:（英文冒号）就进入了底线命令模式， q 退出程序  w 保存文件， ESC键可随时退出底线命令模式&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;详细的内容可参考菜鸟教程&quot;&gt;详细的内容可参考菜鸟教程&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.runoob.com/linux/linux-vim.htmlhttps://www.runoob.com/linux/linux-vim.html&quot;&gt;vim详细教程&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="工具" /><summary type="html">vim的简介 vim一项很好用的工具, 所有的 Unix Like 系统都会内建 vi 编辑器 vi编辑器有三种模式 命令模式（Command mode） 输入模式（Insert mode） 底线命令模式（Last line mode） 三种模式的介绍 命令模式( 敲击键盘动作会被Vim识别为命令，而非输入字符。比如我们此时按下i，并不会输入一个字符，i被当作了一个命令 ) 输入模式 和正常的文本输入一样 底线命令模式 命令模式下按下:（英文冒号）就进入了底线命令模式， q 退出程序 w 保存文件， ESC键可随时退出底线命令模式 详细的内容可参考菜鸟教程 vim详细教程</summary></entry><entry><title type="html">IM消息总结</title><link href="http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="IM消息总结" /><published>2020-10-20T00:00:00+08:00</published><updated>2020-10-20T00:00:00+08:00</updated><id>http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93/">&lt;h3 id=&quot;离线消息&quot;&gt;离线消息&lt;/h3&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1.  客户端登录时，服务端不推送全量离线消息，只推送离线消息计数器(数量)， 客户端显示在未读小红点
 2. 客户端拿到离线消息， 遍历会话列表， 依次将未读消息累加，然后通知服务端清空离线消息计数器的增量数据
 3. 客户端进入某会话时，上拉加载， 通过msgId分页查询离线消息
@@ -138,29 +782,40 @@ http分段式上传(若失败，更新聊天数据,更新数据库,刷新聊天U
 
 &lt;p&gt;原因： 客户端发送消息，该消息会默认赋值当前时间戳 ，收到安卓端或者web端发来的消息时，该时间戳是安卓和web端获取，这样就可能会出现时间戳的误差情况， 当前聊天展示顺序并没有什么问题，因为展示是收到一条展示一条。但是当退出页面重新进入时，如果拉取数据库是根据时间戳的降序拉取 ，那么就很容易出现混乱。&lt;/p&gt;
 
-&lt;p&gt;解决办法 ： 表结构设置自增ID ，消息的顺序展示以入库顺序为准 ，拉取数据库获取消息记录时，根据自增ID降序拉取 。这样就解决了乱序问题 ，至少保证了，展示的消息顺序和我聊天时的一样。尽管时间戳可能并不一样是按照严谨的降序排列的。&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">离线消息 1. 客户端登录时，服务端不推送全量离线消息，只推送离线消息计数器(数量)， 客户端显示在未读小红点 2. 客户端拿到离线消息， 遍历会话列表， 依次将未读消息累加，然后通知服务端清空离线消息计数器的增量数据 3. 客户端进入某会话时，上拉加载， 通过msgId分页查询离线消息 4. 客户端收到消息并保存在本地数据库后，向服务端发送ack, 然后服务端删除离线消息表的离线消息 客户端和服务端消息衔接问题： (客户端本地存储历史消息， 那么客户端下拉加载新消息时，怎么判断是加载本地历史消息，还是请求服务器加载离线消息) 1. 进入会话时， 根据未读消息计数器的最近的N条消息展示首页数据 2. 下载加载时，请求服务端， 服务端按时间倒序返回上一页的消息，只到离线数据库中的数据全部返回给客户端 3. 当离线消息库中没有离线消息时，返回给客户端一个标识， 客户端根据这个标识，在会话页面下一次加载时不请求服务器，直接请求本地数据库 ### 本地缓存 客户端消息DB：(简易每个登录用户创建一个DB，切换用户时切换DB即可, 搭建一个完善IM体系 ， 每个DB至少对应3张表 ) 1. 一张用户存储聊天列表信息，这里假如它叫ChatList, 用户存储每个群或者单人会话的最后一条信息 。来消息时更新该表，并更新内存数据源中列表信息。或者每次来消息时更新内存数据源中列表信息 ，退出程序或者退出聊天列表页时进行数据库更新。后者避免了频繁操作数据库，效率更高 2. 一张用户存储每个会话中的详细聊天记录 ，这里假如它叫MessageList。该表也是如此 ，要么接到消息立马更新数据库，要么先存入内存中，退出程序时进行数据库缓存 3. 一张用于存储好友或者群列表信息 ，这里假如它叫myFriends ，每次登陆或者退出，或者修改好友备注，删除好友，设置星标好友等操作都需要更新该表 沙盒缓存： 1. 当发送或者接收图片、语音、文件信息时，需要对信息内容进行沙盒缓存。 沙盒缓存的目录分层 ，个人建议是在每个用户根据自己的userID在Cache中创建文件夹，该文件夹目录下创建每个会话的文件夹。 这样做的好处在于 ， 当你需要删除聊天列表会话或者清空聊天记录 ，或者app进行内存清理时 ，便于找到该会话的所有缓存。大致的目录结构如下 ../Cache/userID(当前用户ID)/toUserID(某个群或者单聊对象)/...（图片，语音等缓存） 发送消息 1. 文本消息/表情消息 直接调用咱们封装好的ChatManager的sendMessage方法即可 ， 发送消息时 ，需要存入或者更新ChatList和MessageList两张表。若是未连接或者发送超时 ，需要重新更新数据库存储的发送成功与否状态 ，同时更新内存数据源 ，刷新该条消息展示即可。 若是表情消息 ，传输过程也是以文本的方式传输 ，比如一个大笑的表情 ，可以定义为[大笑] ，当然规则自己可以和安卓端web端协商，本地根据plist文件和表情包匹配进行图文混排展示即可 - 输入 内容 - 发送 - 消息加入聊天数据源 - 更新数据库 - 展示到聊天会话中 - 调用TCP发送到服务器（若超时，更新聊天数据源，更新数据库 ，刷新聊天UI） - 收到服务器成功回执(normalReceipt) - 修改数据源该条消息发送状态(isSend) - 更新数据库 2. 语音消息 语音需要做相应的降噪 ，压缩等操作 发送语音大约有两种方式 : 先对该条语音进行本地缓存 ， 然后全部内容均通过TCP传输并携带该条语音的相关信息，例如时长，大小等信息，具体的你得测试一条压缩后的语音体积有多大，若是过大，则需要进行分割然后以消息的方法时发送。接收语音时也进行拼接 对该条语音进行本地缓存 ， 语音内容使用http传输，传输到服务器生成相应的id ，获取该id再附带该条语音的相关信息 ，以TCP方式发送给对方，当对方收到该条消息时，先去下载该条信息，并根据该条语音的相关信息进行展示。同时发送或接收时，对chatinfo和chatlist表和内存数据源进行更新 ，超时或者失败再次更新 - 长按录制 - 压缩转格式 - 缓存到沙盒 - 更新数据库 - 展示到聊天会话中，展示转圈发送中状态 - 调用http分段式上传(若失败，刷新UI展示) - 调用TCP发送该语音消息相关信息（若超时，刷新聊天UI） - 收到服务器成功回执 - 修改数据源该条消息发送状态(isSend) - 修改数据源该条消息发送状态(isSend) - 更新数据库 - 刷新聊天会话中该条消息UI 3. 图片消息 图片应当分成两种大小 ， 一种是压缩得非常小的状态，一种是图片本身的大小状态。 聊天页面展示的 ，仅仅是小图 ，只有点击查看时才去加载大图。这样做的目的在于提高发送和接收的效率 先对该图片进行本地缓存 ， 然后全部内容均通过TCP传输 ，并携带该图片的相关信息 ，例如图片的大小 ，名字 ，宽高比等信息 。同样如果过大也需要进行分割传输。同时发送或接收时，对chatinfo和chatlist表和内存数据源进行更新 ，超时或者失败再次更新 先对该图片进行本地缓存 ， 然后通过http传输到服务器 ，成功后发送TCP消息 ，并携带相关消息 。接收方根据你该条图片信息进行UI布局。同时发送或接收时，对chatinfo和chatlist表和内存数据源进行更新 ，超时或者失败再次更新 打开相册选择图片 获取图片相关信息，大小，名称等，根据用户是否选择原图，考虑是否压缩 缓存到沙盒 更新数据库 展示到聊天会话中，根据上传显示进度 http分段式上传(若失败，更新聊天数据,更新数据库,刷新聊天UI) 调用TCP发送该图片消息相关信息（若超时，更新聊天数据源，更新数据库,刷新聊天UI） 收到服务器成功回执 修改数据源该条消息发送状态(isSend) 更新数据库 刷新聊天会话中该条消息UI 4. 视频消息 建议是走http上传比较好 ，因为内容一般偏大 。TCP部分仅需要传输该视频封面以及相关信息比如时长，下载地址等相关信息即可。接收方可以通过视频大小判断，如果是小视频可以接收到后默认自动下载，自动播放 ，大的视频则只展示封面，只有当用户手动点击时才去加载。具体的还是需要根据项目本身的设计而定 5. 撤回消息 撤回消息也是消息内容的一种类型 。 例如 A给B发送了一条消息 “你好” ，服务端会对该条消息生成一个messageID ，接收方收到该条消息的messageID和发送方的该条消息messageID一致。 如果发送端需要撤回该条消息 ，仅仅需要拿到该条消息messageID ，设置一下消息类型 ，发送给对方 当收到撤回消息的成功回执(repealReceipt)时，移除该会话的内存数据源和更新chatinfo和chatlist表 ， 并加载提示类型的cell进行展示例如“你撤回了一条消息”即可。接收方收到撤回消息时 ，同样移除内存数据源 ，并对数据库进行更新 ，再加载提示类型的cell例如“张三撤回了一条消息”即可 删除消息 消息删除大概分为删除该条消息 ，删除该会话 ，清空聊天记录几种 删除该条消息仅仅需要移除本地数据源的消息模型 ，更新chatlist和chatinfo表即可。 删除该会话需要移除chatlist和chatinfo该会话对应的列 ，并根据当前登录用户的userID和该会话的toUserID或者groupID移除沙盒中的缓存。 清空聊天记录，需要更新chatlist表最后一条消息内容 ，删除chatinfo表，并删除该会话的沙盒缓存. 注意事项 如果服务器推送消息，客户端没有消息回执可能存在丢消息 原因： 服务器对客户端的网络判断不准确。尽管客户端已经和服务端建立了心跳验证 ， 但是心跳始终是有间隔的，且TCP的连接中断也是有延迟的。例如，在此时我向服务器发送了一次心跳，然后网络失去了连接，或者网络信号不好。服务器接收到了该心跳 ，服务器认为客户端是处于连接状态的，向我推送了某个人向我发送的消息 ，然而此时我却不能收到消息，所以出现了消息丢失的情况。 解决办法 ：客户端向服务端发送消息，服务端会给客户端返回一个回执，告知该条消息已经发送成功。所以，客户端有必要在收到消息时，也向服务端发送一个回执，告知服务端成功收到了该条消息。而客户端，默认收到的所有消息都是离线的，只有收到客户端的接收消息的成功回执后，才会移除掉该离线消息缓存，否则将会把该条消息以离线消息方式同步推送。离线消息后面会做解释。此时的双向回执，可以把消息丢失概率降到非常低 ,基本上算是模拟了一个消息数据传输的三次握手。 消息乱序 原因： 客户端发送消息，该消息会默认赋值当前时间戳 ，收到安卓端或者web端发来的消息时，该时间戳是安卓和web端获取，这样就可能会出现时间戳的误差情况， 当前聊天展示顺序并没有什么问题，因为展示是收到一条展示一条。但是当退出页面重新进入时，如果拉取数据库是根据时间戳的降序拉取 ，那么就很容易出现混乱。 解决办法 ： 表结构设置自增ID ，消息的顺序展示以入库顺序为准 ，拉取数据库获取消息记录时，根据自增ID降序拉取 。这样就解决了乱序问题 ，至少保证了，展示的消息顺序和我聊天时的一样。尽管时间戳可能并不一样是按照严谨的降序排列的。</summary></entry><entry><title type="html">唐朝笔记</title><link href="http://localhost:4000/%E5%94%90%E6%9C%9D%E7%AC%94%E8%AE%B0/" rel="alternate" type="text/html" title="唐朝笔记" /><published>2020-08-20T00:00:00+08:00</published><updated>2020-08-20T00:00:00+08:00</updated><id>http://localhost:4000/%E5%94%90%E6%9C%9D%E7%AC%94%E8%AE%B0</id><content type="html" xml:base="http://localhost:4000/%E5%94%90%E6%9C%9D%E7%AC%94%E8%AE%B0/">&lt;h3 id=&quot;金融读书笔记&quot;&gt;金融读书笔记&lt;/h3&gt;
+&lt;p&gt;解决办法 ： 表结构设置自增ID ，消息的顺序展示以入库顺序为准 ，拉取数据库获取消息记录时，根据自增ID降序拉取 。这样就解决了乱序问题 ，至少保证了，展示的消息顺序和我聊天时的一样。尽管时间戳可能并不一样是按照严谨的降序排列的。&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">离线消息 1. 客户端登录时，服务端不推送全量离线消息，只推送离线消息计数器(数量)， 客户端显示在未读小红点 2. 客户端拿到离线消息， 遍历会话列表， 依次将未读消息累加，然后通知服务端清空离线消息计数器的增量数据 3. 客户端进入某会话时，上拉加载， 通过msgId分页查询离线消息 4. 客户端收到消息并保存在本地数据库后，向服务端发送ack, 然后服务端删除离线消息表的离线消息 客户端和服务端消息衔接问题： (客户端本地存储历史消息， 那么客户端下拉加载新消息时，怎么判断是加载本地历史消息，还是请求服务器加载离线消息) 1. 进入会话时， 根据未读消息计数器的最近的N条消息展示首页数据 2. 下载加载时，请求服务端， 服务端按时间倒序返回上一页的消息，只到离线数据库中的数据全部返回给客户端 3. 当离线消息库中没有离线消息时，返回给客户端一个标识， 客户端根据这个标识，在会话页面下一次加载时不请求服务器，直接请求本地数据库 ### 本地缓存 客户端消息DB：(简易每个登录用户创建一个DB，切换用户时切换DB即可, 搭建一个完善IM体系 ， 每个DB至少对应3张表 ) 1. 一张用户存储聊天列表信息，这里假如它叫ChatList, 用户存储每个群或者单人会话的最后一条信息 。来消息时更新该表，并更新内存数据源中列表信息。或者每次来消息时更新内存数据源中列表信息 ，退出程序或者退出聊天列表页时进行数据库更新。后者避免了频繁操作数据库，效率更高 2. 一张用户存储每个会话中的详细聊天记录 ，这里假如它叫MessageList。该表也是如此 ，要么接到消息立马更新数据库，要么先存入内存中，退出程序时进行数据库缓存 3. 一张用于存储好友或者群列表信息 ，这里假如它叫myFriends ，每次登陆或者退出，或者修改好友备注，删除好友，设置星标好友等操作都需要更新该表 沙盒缓存： 1. 当发送或者接收图片、语音、文件信息时，需要对信息内容进行沙盒缓存。 沙盒缓存的目录分层 ，个人建议是在每个用户根据自己的userID在Cache中创建文件夹，该文件夹目录下创建每个会话的文件夹。 这样做的好处在于 ， 当你需要删除聊天列表会话或者清空聊天记录 ，或者app进行内存清理时 ，便于找到该会话的所有缓存。大致的目录结构如下 ../Cache/userID(当前用户ID)/toUserID(某个群或者单聊对象)/...（图片，语音等缓存） 发送消息 1. 文本消息/表情消息 直接调用咱们封装好的ChatManager的sendMessage方法即可 ， 发送消息时 ，需要存入或者更新ChatList和MessageList两张表。若是未连接或者发送超时 ，需要重新更新数据库存储的发送成功与否状态 ，同时更新内存数据源 ，刷新该条消息展示即可。 若是表情消息 ，传输过程也是以文本的方式传输 ，比如一个大笑的表情 ，可以定义为[大笑] ，当然规则自己可以和安卓端web端协商，本地根据plist文件和表情包匹配进行图文混排展示即可 - 输入 内容 - 发送 - 消息加入聊天数据源 - 更新数据库 - 展示到聊天会话中 - 调用TCP发送到服务器（若超时，更新聊天数据源，更新数据库 ，刷新聊天UI） - 收到服务器成功回执(normalReceipt) - 修改数据源该条消息发送状态(isSend) - 更新数据库 2. 语音消息 语音需要做相应的降噪 ，压缩等操作 发送语音大约有两种方式 : 先对该条语音进行本地缓存 ， 然后全部内容均通过TCP传输并携带该条语音的相关信息，例如时长，大小等信息，具体的你得测试一条压缩后的语音体积有多大，若是过大，则需要进行分割然后以消息的方法时发送。接收语音时也进行拼接 对该条语音进行本地缓存 ， 语音内容使用http传输，传输到服务器生成相应的id ，获取该id再附带该条语音的相关信息 ，以TCP方式发送给对方，当对方收到该条消息时，先去下载该条信息，并根据该条语音的相关信息进行展示。同时发送或接收时，对chatinfo和chatlist表和内存数据源进行更新 ，超时或者失败再次更新 - 长按录制 - 压缩转格式 - 缓存到沙盒 - 更新数据库 - 展示到聊天会话中，展示转圈发送中状态 - 调用http分段式上传(若失败，刷新UI展示) - 调用TCP发送该语音消息相关信息（若超时，刷新聊天UI） - 收到服务器成功回执 - 修改数据源该条消息发送状态(isSend) - 修改数据源该条消息发送状态(isSend) - 更新数据库 - 刷新聊天会话中该条消息UI 3. 图片消息 图片应当分成两种大小 ， 一种是压缩得非常小的状态，一种是图片本身的大小状态。 聊天页面展示的 ，仅仅是小图 ，只有点击查看时才去加载大图。这样做的目的在于提高发送和接收的效率 先对该图片进行本地缓存 ， 然后全部内容均通过TCP传输 ，并携带该图片的相关信息 ，例如图片的大小 ，名字 ，宽高比等信息 。同样如果过大也需要进行分割传输。同时发送或接收时，对chatinfo和chatlist表和内存数据源进行更新 ，超时或者失败再次更新 先对该图片进行本地缓存 ， 然后通过http传输到服务器 ，成功后发送TCP消息 ，并携带相关消息 。接收方根据你该条图片信息进行UI布局。同时发送或接收时，对chatinfo和chatlist表和内存数据源进行更新 ，超时或者失败再次更新 打开相册选择图片 获取图片相关信息，大小，名称等，根据用户是否选择原图，考虑是否压缩 缓存到沙盒 更新数据库 展示到聊天会话中，根据上传显示进度 http分段式上传(若失败，更新聊天数据,更新数据库,刷新聊天UI) 调用TCP发送该图片消息相关信息（若超时，更新聊天数据源，更新数据库,刷新聊天UI） 收到服务器成功回执 修改数据源该条消息发送状态(isSend) 更新数据库 刷新聊天会话中该条消息UI 4. 视频消息 建议是走http上传比较好 ，因为内容一般偏大 。TCP部分仅需要传输该视频封面以及相关信息比如时长，下载地址等相关信息即可。接收方可以通过视频大小判断，如果是小视频可以接收到后默认自动下载，自动播放 ，大的视频则只展示封面，只有当用户手动点击时才去加载。具体的还是需要根据项目本身的设计而定 5. 撤回消息 撤回消息也是消息内容的一种类型 。 例如 A给B发送了一条消息 “你好” ，服务端会对该条消息生成一个messageID ，接收方收到该条消息的messageID和发送方的该条消息messageID一致。 如果发送端需要撤回该条消息 ，仅仅需要拿到该条消息messageID ，设置一下消息类型 ，发送给对方 当收到撤回消息的成功回执(repealReceipt)时，移除该会话的内存数据源和更新chatinfo和chatlist表 ， 并加载提示类型的cell进行展示例如“你撤回了一条消息”即可。接收方收到撤回消息时 ，同样移除内存数据源 ，并对数据库进行更新 ，再加载提示类型的cell例如“张三撤回了一条消息”即可 删除消息 消息删除大概分为删除该条消息 ，删除该会话 ，清空聊天记录几种 删除该条消息仅仅需要移除本地数据源的消息模型 ，更新chatlist和chatinfo表即可。 删除该会话需要移除chatlist和chatinfo该会话对应的列 ，并根据当前登录用户的userID和该会话的toUserID或者groupID移除沙盒中的缓存。 清空聊天记录，需要更新chatlist表最后一条消息内容 ，删除chatinfo表，并删除该会话的沙盒缓存. 注意事项 如果服务器推送消息，客户端没有消息回执可能存在丢消息 原因： 服务器对客户端的网络判断不准确。尽管客户端已经和服务端建立了心跳验证 ， 但是心跳始终是有间隔的，且TCP的连接中断也是有延迟的。例如，在此时我向服务器发送了一次心跳，然后网络失去了连接，或者网络信号不好。服务器接收到了该心跳 ，服务器认为客户端是处于连接状态的，向我推送了某个人向我发送的消息 ，然而此时我却不能收到消息，所以出现了消息丢失的情况。 解决办法 ：客户端向服务端发送消息，服务端会给客户端返回一个回执，告知该条消息已经发送成功。所以，客户端有必要在收到消息时，也向服务端发送一个回执，告知服务端成功收到了该条消息。而客户端，默认收到的所有消息都是离线的，只有收到客户端的接收消息的成功回执后，才会移除掉该离线消息缓存，否则将会把该条消息以离线消息方式同步推送。离线消息后面会做解释。此时的双向回执，可以把消息丢失概率降到非常低 ,基本上算是模拟了一个消息数据传输的三次握手。 消息乱序 原因： 客户端发送消息，该消息会默认赋值当前时间戳 ，收到安卓端或者web端发来的消息时，该时间戳是安卓和web端获取，这样就可能会出现时间戳的误差情况， 当前聊天展示顺序并没有什么问题，因为展示是收到一条展示一条。但是当退出页面重新进入时，如果拉取数据库是根据时间戳的降序拉取 ，那么就很容易出现混乱。 解决办法 ： 表结构设置自增ID ，消息的顺序展示以入库顺序为准 ，拉取数据库获取消息记录时，根据自增ID降序拉取 。这样就解决了乱序问题 ，至少保证了，展示的消息顺序和我聊天时的一样。尽管时间戳可能并不一样是按照严谨的降序排列的。</summary></entry><entry><title type="html">金融财报思维导图</title><link href="http://localhost:4000/%E9%87%91%E8%9E%8D%E8%B4%A2%E6%8A%A5%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/" rel="alternate" type="text/html" title="金融财报思维导图" /><published>2020-08-20T00:00:00+08:00</published><updated>2020-08-20T00:00:00+08:00</updated><id>http://localhost:4000/%E9%87%91%E8%9E%8D%E8%B4%A2%E6%8A%A5%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE</id><content type="html" xml:base="http://localhost:4000/%E9%87%91%E8%9E%8D%E8%B4%A2%E6%8A%A5%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/">&lt;h3 id=&quot;金融读书笔记&quot;&gt;金融读书笔记&lt;/h3&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-1482a160b3ccdf4c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;利润表&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;利润表总结
+&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ad3aad16222b45638fbea57d7d923bf4~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;利润表&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-56ec40508576a413.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;投资相关资产&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;速读利润表
+&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ea0c8e20fc7e4ec68e4721dde4aa48ab~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;速读利润表&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-1853f11fb16b261d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;操纵手法&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;投资相关资产
+&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/417994ec6c2c44fe8f8478b0af129bed~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;投资相关资产&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-c2b66336c3bc9002.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;操纵痕迹&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;操纵手法
+&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1ba33936f35a400bab68917917ca673d~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;操纵手法&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-03baed702f565c25.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;现金流肖像&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;财报被操纵的痕迹
+&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2dba832c3aac4079acc130d4fa33433f~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;操纵痕迹&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-620d6ca4173c4bf8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;现金流速度&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;现金流肖像
+&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5012dd36eda5485cbafd8aeb843944ab~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;现金流肖像&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-e1d18d704154ad43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;现金流量表&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;现金流速读
+&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dd26efad9e4640aa9bcfbd70b322ce29~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;现金流速读&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-997912976c02a8c0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;生产相关资产&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;现金流量表
+&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8cc9a9e4b4d94045b8f107636bf1e2c4~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;现金流量表&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-0176bcc5d061b023.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;经营相关资产&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;生产相关资产
+&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3b73c50ee7b645378edfde6510f259e6~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;生产相关资产&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-df85fc4ee247cca8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;货币资金&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;经营相关资产
+&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8a09362842c9439a9fe9c922096a6873~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;经营相关资产&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-7e0d27d8c00121ee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;速度利润表&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><category term="金融学习" /><summary type="html">金融读书笔记</summary></entry><entry><title type="html">APM总结</title><link href="http://localhost:4000/APM%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="APM总结" /><published>2020-06-20T00:00:00+08:00</published><updated>2020-06-20T00:00:00+08:00</updated><id>http://localhost:4000/APM%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/APM%E6%80%BB%E7%BB%93/">&lt;h5 id=&quot;apm监控卡顿并上报有两种方案&quot;&gt;APM监控卡顿并上报有两种方案：&lt;/h5&gt;
+&lt;p&gt;货币资金
+&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d99996532d4844eba652ca2345e7cf49~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;货币资金&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><category term="金融" /><summary type="html">金融读书笔记 利润表总结 速读利润表 投资相关资产 操纵手法 财报被操纵的痕迹 现金流肖像 现金流速读 现金流量表 生产相关资产 经营相关资产 货币资金</summary></entry><entry><title type="html">APM总结</title><link href="http://localhost:4000/APM%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="APM总结" /><published>2020-06-20T00:00:00+08:00</published><updated>2020-06-20T00:00:00+08:00</updated><id>http://localhost:4000/APM%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/APM%E6%80%BB%E7%BB%93/">&lt;h5 id=&quot;apm监控卡顿并上报有两种方案&quot;&gt;APM监控卡顿并上报有两种方案：&lt;/h5&gt;
 &lt;ol&gt;
   &lt;li&gt;监听Runloop状态回调， 子线程ping主线程
     &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    if (currentMode-&amp;gt;_observerMask &amp;amp; kCFRunLoopEntry )
@@ -261,7 +916,7 @@ if (!poll &amp;amp;&amp;amp; (rlm-&amp;gt;_observerMask &amp;amp; kCFRunLoopAfte
          // 如果一个 Timer 到时间了，触发这个Timer的回调
          else if (rlm-&amp;gt;_timerPort != MACH_PORT_NULL &amp;amp;&amp;amp; livePort == rlm-&amp;gt;_timerPort) {
              CFRUNLOOP_WAKEUP_FOR_TIMER();
-             // On Windows, we have observed an issue where the timer port is set before the time which we requested it to be set. For example, we set the fire time to be TSR 167646765860, but it is actually observed firing at TSR 167646764145, which is 1715 ticks early. The result is that, when __CFRunLoopDoTimers checks to see if any of the run loop timers should be firing, it appears to be 'too early' for the next timer, and no timers are handled.
+             // On Windows, we have observed an issue where the timer port is set before the time which we requested it to be set. For example, we set the fire time to be TSR 167646765860, but it is actually observed firing at TSR 167646764145, which is 1715 ticks early. The result is that, when __CFRunLoopDoTimers checks to see if any of the run loop timers should be firing, it appears to be &apos;too early&apos; for the next timer, and no timers are handled.
              // In this case, the timer port has been automatically reset (since it was returned from MsgWaitForMultipleObjectsEx), and if we do not re-arm it, then no timers will ever be serviced again unless something adjusts the timer list (e.g. adding or removing timers). The fix for the issue is to reset the timer here if CFRunLoopDoTimers did not handle a timer itself. 9308754
              if (!__CFRunLoopDoTimers(rl, rlm, mach_absolute_time())) {
                  // Re-arm the next timer
@@ -403,13 +1058,13 @@ if (!poll &amp;amp;&amp;amp; (rlm-&amp;gt;_observerMask &amp;amp; kCFRunLoopAfte
  内存分配:  malloc用的是 malloc_zone_malloc,  calloc用的是malloc_zone_calloc
   在处理图片缩放时，ImageIO占用内存会比直接处理图片缩放小
  */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">APM监控卡顿并上报有两种方案： 监听Runloop状态回调， 子线程ping主线程 if (currentMode-&amp;gt;_observerMask &amp;amp; kCFRunLoopEntry ) // 通知 Observers: RunLoop 即将进入 loop __CFRunLoopDoObservers(rl, currentMode, kCFRunLoopEntry); // 进入loop result = __CFRunLoopRun(rl, currentMode, seconds, returnAfterSourceHandled, previousMode); 开启do while 循环保活线程，通知Observers, Runloop触发timer回调，然后执行被加入的Block ``` if (rlm-&amp;gt;_observerMask &amp;amp; kCFRunLoopBeforeTimers) // 通知 Observers: RunLoop 即将触发 Timer 回调 __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeTimers); if (rlm-&amp;gt;_observerMask &amp;amp; kCFRunLoopBeforeSources) // 通知 Observers: RunLoop 即将触发 Source 回调 __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeSources); // 执行被加入的block __CFRunLoopDoBlocks(rl, rlm); 3. runloop触发source0的回调，如果source1是ready状态，会跳转到handle_msg去处理消息, 如果有 Source1 (基于port) 处于 ready 状态，直接处理这个 Source1 然后跳转去处理消息 if (MACH_PORT_NULL != dispatchPort &amp;amp;&amp;amp; !didDispatchPortLastTime) { #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI msg = (mach_msg_header_t *)msg_buffer; if (__CFRunLoopServiceMachPort(dispatchPort, &amp;amp;msg, sizeof(msg_buffer), &amp;amp;livePort, 0, &amp;amp;voucherState, NULL)) { goto handle_msg; } #elif DEPLOYMENT_TARGET_WINDOWS if (__CFRunLoopWaitForMultipleObjects(NULL, &amp;amp;dispatchPort, 0, 0, &amp;amp;livePort, NULL)) { goto handle_msg; } #endif } 4. 回调触发后，通知Observer进入休眠状态 Boolean poll = sourceHandledThisLoop || (0ULL == timeout_context-&amp;gt;termTSR); // 通知 Observers: RunLoop 的线程即将进入休眠(sleep) if (!poll &amp;amp;&amp;amp; (rlm-&amp;gt;_observerMask &amp;amp; kCFRunLoopBeforeWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeWaiting); __CFRunLoopSetSleeping(rl); 5. 休眠后，等待mach_port消息，以便再次唤醒 do { if (kCFUseCollectableAllocator) { // objc_clear_stack(0); // &amp;lt;rdar://problem/16393959&amp;gt; memset(msg_buffer, 0, sizeof(msg_buffer)); } msg = (mach_msg_header_t *)msg_buffer; __CFRunLoopServiceMachPort(waitSet, &amp;amp;msg, sizeof(msg_buffer), &amp;amp;livePort, poll ? 0 : TIMEOUT_INFINITY, &amp;amp;voucherState, &amp;amp;voucherCopy); if (modeQueuePort != MACH_PORT_NULL &amp;amp;&amp;amp; livePort == modeQueuePort) { // Drain the internal queue. If one of the callout blocks sets the timerFired flag, break out and service the timer. while (_dispatch_runloop_root_queue_perform_4CF(rlm-&amp;gt;_queue)); if (rlm-&amp;gt;_timerFired) { // Leave livePort as the queue port, and service timers below rlm-&amp;gt;_timerFired = false; break; } else { if (msg &amp;amp;&amp;amp; msg != (mach_msg_header_t *)msg_buffer) free(msg); } } else { // Go ahead and leave the inner loop. break; } } while (1); 6. 唤醒时通知Observer， Runloop的线程刚刚被唤醒了 // 通知 Observers: RunLoop 的线程刚刚被唤醒了 if (!poll &amp;amp;&amp;amp; (rlm-&amp;gt;_observerMask &amp;amp; kCFRunLoopAfterWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopAfterWaiting); // 处理消息 handle_msg:; __CFRunLoopSetIgnoreWakeUps(rl); ``` Runloop唤醒后，处理唤醒时收到的消息 ///如果是Timer处理回调 ///如果是dispatch，处理block ///如果是source1， 处理事件 #if USE_MK_TIMER_TOO // 如果一个 Timer 到时间了，触发这个Timer的回调 else if (rlm-&amp;gt;_timerPort != MACH_PORT_NULL &amp;amp;&amp;amp; livePort == rlm-&amp;gt;_timerPort) { CFRUNLOOP_WAKEUP_FOR_TIMER(); // On Windows, we have observed an issue where the timer port is set before the time which we requested it to be set. For example, we set the fire time to be TSR 167646765860, but it is actually observed firing at TSR 167646764145, which is 1715 ticks early. The result is that, when __CFRunLoopDoTimers checks to see if any of the run loop timers should be firing, it appears to be 'too early' for the next timer, and no timers are handled. // In this case, the timer port has been automatically reset (since it was returned from MsgWaitForMultipleObjectsEx), and if we do not re-arm it, then no timers will ever be serviced again unless something adjusts the timer list (e.g. adding or removing timers). The fix for the issue is to reset the timer here if CFRunLoopDoTimers did not handle a timer itself. 9308754 if (!__CFRunLoopDoTimers(rl, rlm, mach_absolute_time())) { // Re-arm the next timer __CFArmNextTimerInMode(rlm, rl); } } #endif // 如果有dispatch到main_queue的block，执行block else if (livePort == dispatchPort) { CFRUNLOOP_WAKEUP_FOR_DISPATCH(); __CFRunLoopModeUnlock(rlm); __CFRunLoopUnlock(rl); _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)6, NULL); #if DEPLOYMENT_TARGET_WINDOWS void *msg = 0; #endif __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__(msg); _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)0, NULL); __CFRunLoopLock(rl); __CFRunLoopModeLock(rlm); sourceHandledThisLoop = true; didDispatchPortLastTime = true; } // 如果一个 Source1 (基于port) 发出事件了，处理这个事件 else { CFRUNLOOP_WAKEUP_FOR_SOURCE(); // If we received a voucher from this mach_msg, then put a copy of the new voucher into TSD. CFMachPortBoost will look in the TSD for the voucher. By using the value in the TSD we tie the CFMachPortBoost to this received mach_msg explicitly without a chance for anything in between the two pieces of code to set the voucher again. voucher_t previousVoucher = _CFSetTSD(__CFTSDKeyMachMessageHasVoucher, (void *)voucherCopy, os_release); CFRunLoopSourceRef rls = __CFRunLoopModeFindSourceForMachPort(rl, rlm, livePort); if (rls) { #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI mach_msg_header_t *reply = NULL; sourceHandledThisLoop = __CFRunLoopDoSource1(rl, rlm, rls, msg, msg-&amp;gt;msgh_size, &amp;amp;reply) || sourceHandledThisLoop; if (NULL != reply) { (void)mach_msg(reply, MACH_SEND_MSG, reply-&amp;gt;msgh_size, 0, MACH_PORT_NULL, 0, MACH_PORT_NULL); CFAllocatorDeallocate(kCFAllocatorSystemDefault, reply); } #elif DEPLOYMENT_TARGET_WINDOWS sourceHandledThisLoop = __CFRunLoopDoSource1(rl, rlm, rls) || sourceHandledThisLoop; #endif 根据当前runloop状态判断是否需要进入下一个loop, 当被外部强制停止或者loop超时，就不继续下一个loop, 否则进入下一个loop /** if (sourceHandledThisLoop &amp;amp;&amp;amp; stopAfterHandle) { // 进入loop时参数说处理完事件就返回 retVal = kCFRunLoopRunHandledSource; } else if (timeout_context-&amp;gt;termTSR &amp;lt; mach_absolute_time()) { // 超出传入参数标记的超时时间了 retVal = kCFRunLoopRunTimedOut; } else if (__CFRunLoopIsStopped(rl)) { __CFRunLoopUnsetStopped(rl); // 被外部调用者强制停止了 retVal = kCFRunLoopRunStopped; } else if (rlm-&amp;gt;_stopped) { rlm-&amp;gt;_stopped = false; retVal = kCFRunLoopRunStopped; } else if (__CFRunLoopModeIsEmpty(rl, rlm, previousMode)) { // source/timer一个都没有 retVal = kCFRunLoopRunFinished; } */ /// Source1是runloop用来处理Mach port传来的系统的事件的， Source0是用来处理用户事件的 /// 检测runloop，一旦发现在进入睡眠前的KCFRunLoopBeforeSources到唤醒后 KCFRunLoopAfterWaiting的时间过长，说明Runloop卡顿了， 开启一个子线程，不断的去循环检测，如果在n次都超过了预定好的阈值， 认为是卡顿了， 然后进行dump当前的堆栈并上报 /** 通过 long dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout) 方法判断是否阻塞主线程，Returns zero on success, or non-zero if the timeout occurred. 返回非0则代表超时阻塞了主线程 */ //MARK: 子线程ping主线程监听的方式 ///开启一个子线程，创建一个初始值为0的信号量， 一个bool标志位，将设置为NO的标志位的任务派发到主线程中去， 子线程休眠阈值到后判断是否被主线程成功，如果没成功认为是主线程卡顿 /* while (self.isCancelled == NO) { @autoreleasepool { __block BOOL isMainThreadNoRespond = YES; dispatch_semaphore_t semaphore = dispatch_semaphore_create(0); dispatch_async(dispatch_get_main_queue(), ^{ isMainThreadNoRespond = NO; dispatch_semaphore_signal(semaphore); }); [NSThread sleepForTimeInterval:self.threshold]; if (isMainThreadNoRespond) { if (self.handlerBlock) { self.handlerBlock(); // 外部在 block 内部 dump 堆栈（下面会讲），数据上报 } } dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER); } } 启动时间监控 1 . pre-main阶段影响因素 /** 1. 动态库越多，启动越慢 2. Objc类越好, 函数越多，启动越慢 3. 可执行文件越大，启动越慢 4. Objc的load方法越多，启动越慢 */ /** struct thread_basic_info { time_value_t user_time; /* user run time（用户运行时长） */ time_value_t system_time; /* system run time（系统运行时长） */ integer_t cpu_usage; /* scaled cpu usage percentage（CPU使用率，上限1000） */ policy_t policy; /* scheduling policy in effect（有效调度策略） */ integer_t run_state; /* run state (运行状态，见下) */ integer_t flags; /* various flags (各种各样的标记) */ integer_t suspend_count; /* suspend count for thread（线程挂起次数） */ integer_t sleep_time; /* number of seconds that thread * has been sleeping（休眠时间） */ }; */ OOM 超出了内存分配 /// 收到低内存警告不一定会 Crash，因为有6秒钟的系统判断时间，6秒内内存下降了则不会 crash。发生 OOM 也不一定会收到低内存警告 /** 合理使用autoreleasepool, autoreleasepool对象是在Runloop结束时释放，在ARC下， 如果我们不断的申请内存， 我们需要手动的添加autoreleasepool， 避免短时间内内存猛涨发生OOM 内存分配: malloc用的是 malloc_zone_malloc, calloc用的是malloc_zone_calloc 在处理图片缩放时，ImageIO占用内存会比直接处理图片缩放小 */</summary></entry><entry><title type="html">IM总结</title><link href="http://localhost:4000/IM%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="IM总结" /><published>2020-05-25T00:00:00+08:00</published><updated>2020-05-25T00:00:00+08:00</updated><id>http://localhost:4000/IM%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/IM%E6%80%BB%E7%BB%93/">&lt;h5 id=&quot;socket长连接的创建与维护&quot;&gt;Socket长连接的创建与维护&lt;/h5&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">APM监控卡顿并上报有两种方案： 监听Runloop状态回调， 子线程ping主线程 if (currentMode-&amp;gt;_observerMask &amp;amp; kCFRunLoopEntry ) // 通知 Observers: RunLoop 即将进入 loop __CFRunLoopDoObservers(rl, currentMode, kCFRunLoopEntry); // 进入loop result = __CFRunLoopRun(rl, currentMode, seconds, returnAfterSourceHandled, previousMode); 开启do while 循环保活线程，通知Observers, Runloop触发timer回调，然后执行被加入的Block ``` if (rlm-&amp;gt;_observerMask &amp;amp; kCFRunLoopBeforeTimers) // 通知 Observers: RunLoop 即将触发 Timer 回调 __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeTimers); if (rlm-&amp;gt;_observerMask &amp;amp; kCFRunLoopBeforeSources) // 通知 Observers: RunLoop 即将触发 Source 回调 __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeSources); // 执行被加入的block __CFRunLoopDoBlocks(rl, rlm); 3. runloop触发source0的回调，如果source1是ready状态，会跳转到handle_msg去处理消息, 如果有 Source1 (基于port) 处于 ready 状态，直接处理这个 Source1 然后跳转去处理消息 if (MACH_PORT_NULL != dispatchPort &amp;amp;&amp;amp; !didDispatchPortLastTime) { #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI msg = (mach_msg_header_t *)msg_buffer; if (__CFRunLoopServiceMachPort(dispatchPort, &amp;amp;msg, sizeof(msg_buffer), &amp;amp;livePort, 0, &amp;amp;voucherState, NULL)) { goto handle_msg; } #elif DEPLOYMENT_TARGET_WINDOWS if (__CFRunLoopWaitForMultipleObjects(NULL, &amp;amp;dispatchPort, 0, 0, &amp;amp;livePort, NULL)) { goto handle_msg; } #endif } 4. 回调触发后，通知Observer进入休眠状态 Boolean poll = sourceHandledThisLoop || (0ULL == timeout_context-&amp;gt;termTSR); // 通知 Observers: RunLoop 的线程即将进入休眠(sleep) if (!poll &amp;amp;&amp;amp; (rlm-&amp;gt;_observerMask &amp;amp; kCFRunLoopBeforeWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopBeforeWaiting); __CFRunLoopSetSleeping(rl); 5. 休眠后，等待mach_port消息，以便再次唤醒 do { if (kCFUseCollectableAllocator) { // objc_clear_stack(0); // &amp;lt;rdar://problem/16393959&amp;gt; memset(msg_buffer, 0, sizeof(msg_buffer)); } msg = (mach_msg_header_t *)msg_buffer; __CFRunLoopServiceMachPort(waitSet, &amp;amp;msg, sizeof(msg_buffer), &amp;amp;livePort, poll ? 0 : TIMEOUT_INFINITY, &amp;amp;voucherState, &amp;amp;voucherCopy); if (modeQueuePort != MACH_PORT_NULL &amp;amp;&amp;amp; livePort == modeQueuePort) { // Drain the internal queue. If one of the callout blocks sets the timerFired flag, break out and service the timer. while (_dispatch_runloop_root_queue_perform_4CF(rlm-&amp;gt;_queue)); if (rlm-&amp;gt;_timerFired) { // Leave livePort as the queue port, and service timers below rlm-&amp;gt;_timerFired = false; break; } else { if (msg &amp;amp;&amp;amp; msg != (mach_msg_header_t *)msg_buffer) free(msg); } } else { // Go ahead and leave the inner loop. break; } } while (1); 6. 唤醒时通知Observer， Runloop的线程刚刚被唤醒了 // 通知 Observers: RunLoop 的线程刚刚被唤醒了 if (!poll &amp;amp;&amp;amp; (rlm-&amp;gt;_observerMask &amp;amp; kCFRunLoopAfterWaiting)) __CFRunLoopDoObservers(rl, rlm, kCFRunLoopAfterWaiting); // 处理消息 handle_msg:; __CFRunLoopSetIgnoreWakeUps(rl); ``` Runloop唤醒后，处理唤醒时收到的消息 ///如果是Timer处理回调 ///如果是dispatch，处理block ///如果是source1， 处理事件 #if USE_MK_TIMER_TOO // 如果一个 Timer 到时间了，触发这个Timer的回调 else if (rlm-&amp;gt;_timerPort != MACH_PORT_NULL &amp;amp;&amp;amp; livePort == rlm-&amp;gt;_timerPort) { CFRUNLOOP_WAKEUP_FOR_TIMER(); // On Windows, we have observed an issue where the timer port is set before the time which we requested it to be set. For example, we set the fire time to be TSR 167646765860, but it is actually observed firing at TSR 167646764145, which is 1715 ticks early. The result is that, when __CFRunLoopDoTimers checks to see if any of the run loop timers should be firing, it appears to be &apos;too early&apos; for the next timer, and no timers are handled. // In this case, the timer port has been automatically reset (since it was returned from MsgWaitForMultipleObjectsEx), and if we do not re-arm it, then no timers will ever be serviced again unless something adjusts the timer list (e.g. adding or removing timers). The fix for the issue is to reset the timer here if CFRunLoopDoTimers did not handle a timer itself. 9308754 if (!__CFRunLoopDoTimers(rl, rlm, mach_absolute_time())) { // Re-arm the next timer __CFArmNextTimerInMode(rlm, rl); } } #endif // 如果有dispatch到main_queue的block，执行block else if (livePort == dispatchPort) { CFRUNLOOP_WAKEUP_FOR_DISPATCH(); __CFRunLoopModeUnlock(rlm); __CFRunLoopUnlock(rl); _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)6, NULL); #if DEPLOYMENT_TARGET_WINDOWS void *msg = 0; #endif __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__(msg); _CFSetTSD(__CFTSDKeyIsInGCDMainQ, (void *)0, NULL); __CFRunLoopLock(rl); __CFRunLoopModeLock(rlm); sourceHandledThisLoop = true; didDispatchPortLastTime = true; } // 如果一个 Source1 (基于port) 发出事件了，处理这个事件 else { CFRUNLOOP_WAKEUP_FOR_SOURCE(); // If we received a voucher from this mach_msg, then put a copy of the new voucher into TSD. CFMachPortBoost will look in the TSD for the voucher. By using the value in the TSD we tie the CFMachPortBoost to this received mach_msg explicitly without a chance for anything in between the two pieces of code to set the voucher again. voucher_t previousVoucher = _CFSetTSD(__CFTSDKeyMachMessageHasVoucher, (void *)voucherCopy, os_release); CFRunLoopSourceRef rls = __CFRunLoopModeFindSourceForMachPort(rl, rlm, livePort); if (rls) { #if DEPLOYMENT_TARGET_MACOSX || DEPLOYMENT_TARGET_EMBEDDED || DEPLOYMENT_TARGET_EMBEDDED_MINI mach_msg_header_t *reply = NULL; sourceHandledThisLoop = __CFRunLoopDoSource1(rl, rlm, rls, msg, msg-&amp;gt;msgh_size, &amp;amp;reply) || sourceHandledThisLoop; if (NULL != reply) { (void)mach_msg(reply, MACH_SEND_MSG, reply-&amp;gt;msgh_size, 0, MACH_PORT_NULL, 0, MACH_PORT_NULL); CFAllocatorDeallocate(kCFAllocatorSystemDefault, reply); } #elif DEPLOYMENT_TARGET_WINDOWS sourceHandledThisLoop = __CFRunLoopDoSource1(rl, rlm, rls) || sourceHandledThisLoop; #endif 根据当前runloop状态判断是否需要进入下一个loop, 当被外部强制停止或者loop超时，就不继续下一个loop, 否则进入下一个loop /** if (sourceHandledThisLoop &amp;amp;&amp;amp; stopAfterHandle) { // 进入loop时参数说处理完事件就返回 retVal = kCFRunLoopRunHandledSource; } else if (timeout_context-&amp;gt;termTSR &amp;lt; mach_absolute_time()) { // 超出传入参数标记的超时时间了 retVal = kCFRunLoopRunTimedOut; } else if (__CFRunLoopIsStopped(rl)) { __CFRunLoopUnsetStopped(rl); // 被外部调用者强制停止了 retVal = kCFRunLoopRunStopped; } else if (rlm-&amp;gt;_stopped) { rlm-&amp;gt;_stopped = false; retVal = kCFRunLoopRunStopped; } else if (__CFRunLoopModeIsEmpty(rl, rlm, previousMode)) { // source/timer一个都没有 retVal = kCFRunLoopRunFinished; } */ /// Source1是runloop用来处理Mach port传来的系统的事件的， Source0是用来处理用户事件的 /// 检测runloop，一旦发现在进入睡眠前的KCFRunLoopBeforeSources到唤醒后 KCFRunLoopAfterWaiting的时间过长，说明Runloop卡顿了， 开启一个子线程，不断的去循环检测，如果在n次都超过了预定好的阈值， 认为是卡顿了， 然后进行dump当前的堆栈并上报 /** 通过 long dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout) 方法判断是否阻塞主线程，Returns zero on success, or non-zero if the timeout occurred. 返回非0则代表超时阻塞了主线程 */ //MARK: 子线程ping主线程监听的方式 ///开启一个子线程，创建一个初始值为0的信号量， 一个bool标志位，将设置为NO的标志位的任务派发到主线程中去， 子线程休眠阈值到后判断是否被主线程成功，如果没成功认为是主线程卡顿 /* while (self.isCancelled == NO) { @autoreleasepool { __block BOOL isMainThreadNoRespond = YES; dispatch_semaphore_t semaphore = dispatch_semaphore_create(0); dispatch_async(dispatch_get_main_queue(), ^{ isMainThreadNoRespond = NO; dispatch_semaphore_signal(semaphore); }); [NSThread sleepForTimeInterval:self.threshold]; if (isMainThreadNoRespond) { if (self.handlerBlock) { self.handlerBlock(); // 外部在 block 内部 dump 堆栈（下面会讲），数据上报 } } dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER); } } 启动时间监控 1 . pre-main阶段影响因素 /** 1. 动态库越多，启动越慢 2. Objc类越好, 函数越多，启动越慢 3. 可执行文件越大，启动越慢 4. Objc的load方法越多，启动越慢 */ /** struct thread_basic_info { time_value_t user_time; /* user run time（用户运行时长） */ time_value_t system_time; /* system run time（系统运行时长） */ integer_t cpu_usage; /* scaled cpu usage percentage（CPU使用率，上限1000） */ policy_t policy; /* scheduling policy in effect（有效调度策略） */ integer_t run_state; /* run state (运行状态，见下) */ integer_t flags; /* various flags (各种各样的标记) */ integer_t suspend_count; /* suspend count for thread（线程挂起次数） */ integer_t sleep_time; /* number of seconds that thread * has been sleeping（休眠时间） */ }; */ OOM 超出了内存分配 /// 收到低内存警告不一定会 Crash，因为有6秒钟的系统判断时间，6秒内内存下降了则不会 crash。发生 OOM 也不一定会收到低内存警告 /** 合理使用autoreleasepool, autoreleasepool对象是在Runloop结束时释放，在ARC下， 如果我们不断的申请内存， 我们需要手动的添加autoreleasepool， 避免短时间内内存猛涨发生OOM 内存分配: malloc用的是 malloc_zone_malloc, calloc用的是malloc_zone_calloc 在处理图片缩放时，ImageIO占用内存会比直接处理图片缩放小 */</summary></entry><entry><title type="html">IM总结</title><link href="http://localhost:4000/IM%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="IM总结" /><published>2020-05-25T00:00:00+08:00</published><updated>2020-05-25T00:00:00+08:00</updated><id>http://localhost:4000/IM%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/IM%E6%80%BB%E7%BB%93/">&lt;h5 id=&quot;socket长连接的创建与维护&quot;&gt;Socket长连接的创建与维护&lt;/h5&gt;
 
 &lt;ul&gt;
   &lt;li&gt;所有数据收发流程，均通过Socket长连接完成，如何维护一个稳定Socket通道，是IM系统是否稳定的重要一环&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/4499332-08346cb09a4d9c97.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3370669f336a42688dd65794565fc414~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;用连接请求接口，会开始连接的创建过程，创建成功后，会完成鉴权操作，当创建和鉴权都完成后，会开启消息收发线程，为了维持长连接，会有心跳机制，特别的，会开启一个心跳轮询线程。&lt;/p&gt;
 
@@ -587,429 +1242,4 @@ SKPaymentQueue.default().add(payment)
   &lt;li&gt;
     &lt;p&gt;在需要实现IAP的Class监听IAP的Observer， &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SKPaymentTransactionObserver&lt;/code&gt;, 这个Observer主要负责监听IAP的各种状态&lt;/p&gt;
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">记录苹果IAP内购的流程 先在Apple Developer官网，签署相关的协议， 完善相应的信息 在APP下添加内购项目， 选择内购产品的类型， 共四种类型，下面有总结 输入商品相应的信息，产品id， 建议用bundleID加商品id, 组成的字符串，保证唯一性 选择价格，上传审核图和审核信息， 保存 商品显示可用后，即可开始Coding, coding完成后提交审核方可真实使用 内购商品类型 解释 1.消耗型商品 顾名思义, 可以消耗使用的商品, 比如游戏中的金币, 钻石等, 可以用来购买应用内虚拟物品的货币。 2.非消耗型商品 无法被消耗的商品，比如一些教育型APP中的课程, 再比如一些赛车游戏中的赛道, 这类商品需要在审核添加恢复购买按钮, 用于用户购买过后再误删除或其他原因卸载APP后的恢复流程, 否则提交审核会被拒绝。 3.非续期订阅 此类商品与消耗型商品类似, 比如一个月的会员, 一个季度的会员等,与消耗型商品的差异在于, 这类商品在验证凭证时需要传递共享秘钥 4.自动续期订阅 这类商品和其他商品的流程也有些许不同, 应用比如视频APP中的连续包月会员, 此类商品到期会自动扣费, 服务器的验证逻辑也会有所不同,流程可以参考这篇文章 IAP原理解释 IAP的支付方式和微信，支付宝等的第三方支付的方式完全不同，下面分别记录下支付的区别， 微信支付宝等第三方支付主要以Server驱动相应的业务，客户端流程大概如下 (用户选择商品 -&amp;gt; 服务端生成订单 -&amp;gt; 生成第三方需要的签名等相关信息给到客户端 -&amp;gt; 客户端调起第三方应用支付 -&amp;gt; 第三方回调客户端 -&amp;gt; 客户端向Server查询最终支付结果 -&amp;gt; 支付完成) IAP的方式不同，IAP主要是以客户端驱动， Server仅仅用来校验Apple返回的支付凭证， Apple提供相应的代理方法， 告知客户端支付的进行状态， 因为客户端的情况复杂， 再加上IAP的国外服务器返回的问题，所以在IAP过程中，会出现很多奇怪的问题，下面开始逐步记录如何进行IAP IAP Coding 需要引入 import StoreKit， IAP所有的方法都在这个框架内部 根据产品的id查询IAP服务器上的相应的商品信息, 方法如下， 传入productIdentifiers let request = SKProductsRequest(productIdentifiers: productIdentifiers) request.delegate = self request.start() 实现delegate方法， SKProductsRequestDelegate, 回调如下 func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) { let products : [SKProduct] = response.products /// 可以从product中获取到如下信息 DLog(&quot;product price: \(product.price)&quot;) DLog(&quot;product description: \(product.description)&quot;) DLog(&quot;product productIdentifier: \(product.productIdentifier)&quot;) DLog(&quot;product title: \(product.localizedTitle)&quot;) DLog(&quot;applicationUsername: \(IAPOrder.applicationUsername ?? &quot;&quot;)&quot;) /// 开始支付 let payment = SKMutablePayment(product: product) /// 发起支付时候指定用户的username, 在掉单时候验证防止切换账号导致充值错误 payment.applicationUsername = IAPOrder.applicationUsername SKPaymentQueue.default().add(payment) } 我们需要实现 SKProductsRequestDelegate 在需要实现IAP的Class监听IAP的Observer， SKPaymentTransactionObserver, 这个Observer主要负责监听IAP的各种状态</summary></entry><entry><title type="html">centOS 常规操作</title><link href="http://localhost:4000/CentOs%E5%B8%B8%E8%A7%84%E6%93%8D%E4%BD%9C/" rel="alternate" type="text/html" title="centOS 常规操作" /><published>2020-04-20T00:00:00+08:00</published><updated>2020-04-20T00:00:00+08:00</updated><id>http://localhost:4000/CentOs%E5%B8%B8%E8%A7%84%E6%93%8D%E4%BD%9C</id><content type="html" xml:base="http://localhost:4000/CentOs%E5%B8%B8%E8%A7%84%E6%93%8D%E4%BD%9C/">&lt;h4 id=&quot;安装jdk&quot;&gt;安装JDK&lt;/h4&gt;
-&lt;p&gt;手动安装方式&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir /usr/java
-tar -xzvf jdk-8u45-linux-x64.tar.gz -C /usr/java/
-#切记必须修正所属⽤户及⽤户组
-chown -R root:root /usr/java/jdk1.8.0_45
-echo &quot;export JAVA_HOME=/usr/java/jdk1.8.0_45&quot; &amp;gt;&amp;gt; /etc/profile
-echo &quot;export PATH=${JAVA_HOME}/bin:${PATH}&quot; &amp;gt;&amp;gt; /etc/profile
-source /etc/profile
-which java
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;安装mysql&quot;&gt;安装MySql&lt;/h4&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;tar -zxvf mysql-5.7.11-linux-glibc2.5-x86_64.tar.gz
-mv mysql-5.7.11-linux-glibc2.5-x86_64 mysql
-mv mysql /usr/local
-chown -R root:root mysql
-# 在local目录下
-mkdir mysql/arch mysql/data mysql/tmp
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;创建用户组及用户&quot;&gt;创建用户组及用户&lt;/h4&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;groupadd -g 101 dba
-useradd -u 514 -g dba -G root -d /usr/local/mysql mysqladmin
-id mysqladmin
-# 一般不需要设置mysqladmin的密码，直接从root或者LDAP用户sudo切换
-passwd mysqladmin
-# 输入两次密码
-usermod -u 514 -g dba -G root -d /usr/local/mysql mysqladmin
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;copy-环境变量配置文件至mysqladmin用户的home目录中为了以下步骤配置个人环境变量&quot;&gt;copy 环境变量配置文件至mysqladmin用户的home目录中,为了以下步骤配置个人环境变量&lt;/h4&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cp /etc/skel/.* /usr/local/mysql
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;配置环境变量&quot;&gt;配置环境变量&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;vi mysql/.bash_profile&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# .bash_profile
-# Get the aliases and functions
-
-if [ -f ~/.bashrc ]; then
-        . ~/.bashrc
-fi
-
-# User specific environment and startup programs
-export MYSQL_BASE=/usr/local/mysql
-export PATH=${MYSQL_BASE}/bin:$PATH
-
-
-unset USERNAME
-
-#stty erase ^H
-set umask to 022
-umask 022
-PS1=`uname -n`&quot;:&quot;'$USER'&quot;:&quot;'$PWD'&quot;:&amp;gt;&quot;; export PS1
-
-## end
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h5 id=&quot;赋权限和用户组切换用户mysqladmin安装&quot;&gt;赋权限和用户组，切换用户mysqladmin，安装&lt;/h5&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chown  mysqladmin:dba /etc/my.cnf
-chmod  640 /etc/my.cnf
-chown -R mysqladmin:dba /usr/local/mysql
-chmod -R 755 /usr/local/mysql
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h5 id=&quot;配置服务及开机自启动&quot;&gt;配置服务及开机自启动&lt;/h5&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd /usr/local/mysql
-# 将服务文件拷贝到init.d下，并重命名为mysql
-cp support-files/mysql.server /etc/rc.d/init.d/mysql
-# 赋予可执行权限
-chmod +x /etc/rc.d/init.d/mysql
-# 删除服务
-chkconfig --del mysql
-# 添加服务
-chkconfig --add mysql
-chkconfig --level 345 mysql on
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h5 id=&quot;安装libaio及安装mysql的初始db&quot;&gt;安装libaio及安装mysql的初始db&lt;/h5&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum -y install libaio
-sudo su - mysqladmin
-bin/mysqld \
---defaults-file=/etc/my.cnf \
---user=mysqladmin \
---basedir=/usr/local/mysql/ \
---datadir=/usr/local/mysql/data/ \
---initialize
-#　在初始化时如果加上 –initial-insecure，则会创建空密码的 root@localhost 账号，否则会创建带密码的 root@localhost 账号，密码直接写在 log-error 日志文件中
-#  （在5.6版本中是放在 ~/.mysql_secret 文件里，更加隐蔽，不熟悉的话可能会无所适从）
-cd data
-cat hostname.err |grep password # 查看临时密码，复制保存
-cd ..
-# 启动mysql，2次回车
-/usr/local/mysql/bin/mysqld_safe --defaults-file=/etc/my.cnf &amp;amp;
-# 查看状态
-service mysql status
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h5 id=&quot;查看mysql是否成功启动&quot;&gt;查看mysql是否成功启动&lt;/h5&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;exit; # 退出
-ps -ef | grep mysql  # 查看mysql端口
-netstat -nlp | grep 12022 # 查看端口对应的服务，能看到3306端口
-su - mysqladmin
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h5 id=&quot;登录及修改用户密码-重启&quot;&gt;登录及修改用户密码, 重启&lt;/h5&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql -u root -p '*****' # *****是复制的临时密码
-alter user root@localhost identified by '123456';
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' ;
-flush privileges;
-exit;
-service mysql restart
-mysql -u root -123456
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">安装JDK 手动安装方式 mkdir /usr/java tar -xzvf jdk-8u45-linux-x64.tar.gz -C /usr/java/ #切记必须修正所属⽤户及⽤户组 chown -R root:root /usr/java/jdk1.8.0_45 echo &quot;export JAVA_HOME=/usr/java/jdk1.8.0_45&quot; &amp;gt;&amp;gt; /etc/profile echo &quot;export PATH=${JAVA_HOME}/bin:${PATH}&quot; &amp;gt;&amp;gt; /etc/profile source /etc/profile which java 安装MySql tar -zxvf mysql-5.7.11-linux-glibc2.5-x86_64.tar.gz mv mysql-5.7.11-linux-glibc2.5-x86_64 mysql mv mysql /usr/local chown -R root:root mysql # 在local目录下 mkdir mysql/arch mysql/data mysql/tmp 创建用户组及用户 groupadd -g 101 dba useradd -u 514 -g dba -G root -d /usr/local/mysql mysqladmin id mysqladmin # 一般不需要设置mysqladmin的密码，直接从root或者LDAP用户sudo切换 passwd mysqladmin # 输入两次密码 usermod -u 514 -g dba -G root -d /usr/local/mysql mysqladmin copy 环境变量配置文件至mysqladmin用户的home目录中,为了以下步骤配置个人环境变量 cp /etc/skel/.* /usr/local/mysql 配置环境变量 vi mysql/.bash_profile # .bash_profile # Get the aliases and functions if [ -f ~/.bashrc ]; then . ~/.bashrc fi # User specific environment and startup programs export MYSQL_BASE=/usr/local/mysql export PATH=${MYSQL_BASE}/bin:$PATH unset USERNAME #stty erase ^H set umask to 022 umask 022 PS1=`uname -n`&quot;:&quot;'$USER'&quot;:&quot;'$PWD'&quot;:&amp;gt;&quot;; export PS1 ## end 赋权限和用户组，切换用户mysqladmin，安装 chown mysqladmin:dba /etc/my.cnf chmod 640 /etc/my.cnf chown -R mysqladmin:dba /usr/local/mysql chmod -R 755 /usr/local/mysql 配置服务及开机自启动 cd /usr/local/mysql # 将服务文件拷贝到init.d下，并重命名为mysql cp support-files/mysql.server /etc/rc.d/init.d/mysql # 赋予可执行权限 chmod +x /etc/rc.d/init.d/mysql # 删除服务 chkconfig --del mysql # 添加服务 chkconfig --add mysql chkconfig --level 345 mysql on 安装libaio及安装mysql的初始db yum -y install libaio sudo su - mysqladmin bin/mysqld \ --defaults-file=/etc/my.cnf \ --user=mysqladmin \ --basedir=/usr/local/mysql/ \ --datadir=/usr/local/mysql/data/ \ --initialize #　在初始化时如果加上 –initial-insecure，则会创建空密码的 root@localhost 账号，否则会创建带密码的 root@localhost 账号，密码直接写在 log-error 日志文件中 # （在5.6版本中是放在 ~/.mysql_secret 文件里，更加隐蔽，不熟悉的话可能会无所适从） cd data cat hostname.err |grep password # 查看临时密码，复制保存 cd .. # 启动mysql，2次回车 /usr/local/mysql/bin/mysqld_safe --defaults-file=/etc/my.cnf &amp;amp; # 查看状态 service mysql status 查看mysql是否成功启动 exit; # 退出 ps -ef | grep mysql # 查看mysql端口 netstat -nlp | grep 12022 # 查看端口对应的服务，能看到3306端口 su - mysqladmin 登录及修改用户密码, 重启 mysql -u root -p '*****' # *****是复制的临时密码 alter user root@localhost identified by '123456'; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' ; flush privileges; exit; service mysql restart mysql -u root -123456</summary></entry><entry><title type="html">日记</title><link href="http://localhost:4000/%E6%96%B0%E5%86%A0%E6%9C%9F%E9%97%B4%E7%9A%84%E6%97%A5%E8%AE%B0/" rel="alternate" type="text/html" title="日记" /><published>2020-02-15T00:00:00+08:00</published><updated>2020-02-15T00:00:00+08:00</updated><id>http://localhost:4000/%E6%96%B0%E5%86%A0%E6%9C%9F%E9%97%B4%E7%9A%84%E6%97%A5%E8%AE%B0</id><content type="html" xml:base="http://localhost:4000/%E6%96%B0%E5%86%A0%E6%9C%9F%E9%97%B4%E7%9A%84%E6%97%A5%E8%AE%B0/">&lt;h5 id=&quot;好久没更新个人博客网站了今天来写篇日记&quot;&gt;好久没更新个人博客网站了，今天来写篇日记&lt;/h5&gt;
-
-&lt;h6 id=&quot;2020年2月15日-小雪转晴&quot;&gt;2020年2月15日 小雪转晴&lt;/h6&gt;
-
-&lt;p&gt;作为一个离重灾区武汉只有四百公里的次重灾区的同学，今天是被在家隔离的第23天，此时的我百感交集，五味杂陈，多种滋味，带着这样的一种心情，记录此篇博客(不对，是日记)&lt;/p&gt;
-
-&lt;h6 id=&quot;不平凡的2020&quot;&gt;不平凡的2020&lt;/h6&gt;
-
-&lt;p&gt;2020年注定是不平凡的一年，19年12月底开始武汉发生了新冠肺炎，大武汉，我们的省会城市，也是除了家乡和上海外最最熟悉的一座城市(比起北 广，深，虽然也去过多次)，对于武汉，并没有因为一场病毒，而对一座城市产生不好的看法(当然会对城市管理者有一定的看法)，在武汉封城的前一天经过了武汉，还和武汉的朋友见了个面&lt;/p&gt;
-
-&lt;h6 id=&quot;1月中新冠早期&quot;&gt;1月中(新冠早期)&lt;/h6&gt;
-
-&lt;p&gt;1月中旬，当时在外网看到一些新闻(要翻墙哦)，说武汉华南海鲜城出现了一种很奇怪的病毒，存在人传人，当时香港的一个医生去武汉后很害怕(毕竟香港是当年SARS的主要发生地)，那时国内的新闻报道这个的还不多。 本着历来外媒的可信度，当时还和一些朋友说了武汉肺炎这个事情有点像SARS归来(由于年龄关系，对SARS没什么影响，只能通过资料去看)，朋友说不要信。&lt;/p&gt;
-
-&lt;h6 id=&quot;继续1月中&quot;&gt;继续1月中&lt;/h6&gt;
-
-&lt;p&gt;和室友(医药行业的质量管理)闲聊，可能是行业原因(毕竟知名药企工作多年), 对其非常警惕，然后又给我科普了下当年SARS，我也就开始警惕起来&lt;/p&gt;
-
-&lt;h6 id=&quot;几天后&quot;&gt;几天后&lt;/h6&gt;
-
-&lt;p&gt;国内的媒体开始报道这个事件，也看到一些小道消息(可能是谣言，也可能是事实，无法验证)报道很严重，这时有部分人先知先觉开始关注，开始买口罩，这时听武汉的朋友说口罩已经不那么好买到了，本着安全的考虑，在上海也开始买起了口罩，并给家里人交代也要买(尽管很难说服)&lt;/p&gt;
-
-&lt;h6 id=&quot;过年前几天&quot;&gt;过年前几天&lt;/h6&gt;
-
-&lt;p&gt;从上海回老家，中途在武汉换乘，一个月前和武汉的几位朋友相约在武汉相聚，朋友们特地在武汉等我，我们特地去了人非常少的且离所谓的事发地很远的地方，大家都做了防护，中午一起吃了个饭，聊了会人生(哈哈哈，闲聊而已), 下午我们便各回各家了。 第二天一大早，得知武汉全城封锁，后来朋友们还在说幸好他们回去的早，不然回不去了，我们还在在暗自庆幸&lt;/p&gt;
-
-&lt;h6 id=&quot;武汉封城&quot;&gt;武汉封城&lt;/h6&gt;
-
-&lt;p&gt;突然得知武汉封城(尽管几天前曾听说过封城的小道消息), 这个时候大家就意识到事情已经非常严重了，能让整个城市封锁(好像翻遍历史也没几次吧)，社会开始恐慌，好像各地都在疯狂买口罩(装备已经提前备好了), 事件进一步升级&lt;/p&gt;
-
-&lt;h6 id=&quot;封城第二天除夕&quot;&gt;封城第二天(除夕)&lt;/h6&gt;
-
-&lt;p&gt;武汉周边的城市也开始封城，气氛越来越紧张，早上起来后，就给武汉的亲戚们挨个打了个电话，一是问他们在武汉的情况(并叮嘱他们)，二是过年了，向他们问个好。一圈问下来，发现都还好，这是心中的石头放下了，说明他们是安全的，心中一直期望着一切都好。 这年除夕，很安静，只有我们自己一家人过年，聊天，看春晚，打牌&lt;/p&gt;
-
-&lt;h6 id=&quot;大年初一&quot;&gt;大年初一&lt;/h6&gt;
-
-&lt;p&gt;凌晨，所在的城市发布了封城通告，也意味着全省封锁了，我们是最后一个封城的。 按照正常情况，大年初一要开始拜年了，而今年不一样，因为新冠，我们决定不出门了，开始电话和微信拜年，并和亲戚们解释，一说大家都通了，也就都不串门，开始了特别的线上的拜年方式，2020注定不一样。 有些朋友看到所在的城市封城了，也发来了慰问，我向他们道了好，也让他们安心。&lt;/p&gt;
-
-&lt;h6 id=&quot;初二到初十&quot;&gt;初二到初十&lt;/h6&gt;
-
-&lt;p&gt;每天早上醒来第一件事就是打开头条，看看新冠的新闻和数据，期待着数据出现拐点。 每天都在关注钟南山，CCTV新闻频道，新冠，已经变成了生活日常。国家也开始出台了很多政策，比如春节延期，放缓企业复工，各地都在拼尽全力抵抗新冠，我也尽了我我的绵薄之力，为大武汉捐了一点点钱&lt;/p&gt;
-
-&lt;h6 id=&quot;初十以后&quot;&gt;初十以后&lt;/h6&gt;
-
-&lt;p&gt;新闻还是很多，数据还是指数级增长，不容乐观。逐渐开始在家办公，因为这次事件，其实对全社会的损失是都是相当大的。 所以我们开始了在家远程办公，逐步开始工作，工作的事情略(不记录了)&lt;/p&gt;
-
-&lt;h6 id=&quot;至今&quot;&gt;至今&lt;/h6&gt;
-
-&lt;p&gt;每天都在期待数据的拐点，期望早日结束，早日还人们健康和自由。自觉在家隔离，为国家做贡献，为患者祈福。挺国家的话&lt;/p&gt;
-
-&lt;h6 id=&quot;总结一下吧&quot;&gt;总结一下吧&lt;/h6&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;写完之后发现其实记录的都是流水账(这可能就是日记吧，手动笑脸，哈哈)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;在这次期间，也想了很多。对人的一生可能有有了一些新的想法，也摈弃了以前的一些想法&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;好好珍惜生命，健康和安全第一，因为你不知道生命何时会结束，毕竟那么脆弱&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;好好孝顺父母，好好珍惜对待那些对你好的人，做到问心无愧，因为你不知道生命何时会结束。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;多做一些有意义的事情，放弃那些无意义的，及时行乐，也别太委屈了自己。还是那句你真的不知道生命何时会结束。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;对于一些事，一些人，问心无愧就好，有些事情你真的改变不了&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;还有就是要多存钱，肯定用得上(前提是安全第一，哈哈哈)&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h6 id=&quot;写在最后&quot;&gt;写在最后&lt;/h6&gt;
-
-&lt;p&gt;祝愿新冠早日被打败，朋友们一切安好，社会一片安详，武汉加油，中国加油&lt;/p&gt;
-
-&lt;p&gt;最后引用诗人雪莱的一句话 “冬天到了，春天还会远吗？”&lt;/p&gt;
-
-&lt;p&gt;2020年2月15日&lt;/p&gt;</content><author><name></name></author><category term="日记" /><summary type="html">好久没更新个人博客网站了，今天来写篇日记 2020年2月15日 小雪转晴 作为一个离重灾区武汉只有四百公里的次重灾区的同学，今天是被在家隔离的第23天，此时的我百感交集，五味杂陈，多种滋味，带着这样的一种心情，记录此篇博客(不对，是日记) 不平凡的2020 2020年注定是不平凡的一年，19年12月底开始武汉发生了新冠肺炎，大武汉，我们的省会城市，也是除了家乡和上海外最最熟悉的一座城市(比起北 广，深，虽然也去过多次)，对于武汉，并没有因为一场病毒，而对一座城市产生不好的看法(当然会对城市管理者有一定的看法)，在武汉封城的前一天经过了武汉，还和武汉的朋友见了个面 1月中(新冠早期) 1月中旬，当时在外网看到一些新闻(要翻墙哦)，说武汉华南海鲜城出现了一种很奇怪的病毒，存在人传人，当时香港的一个医生去武汉后很害怕(毕竟香港是当年SARS的主要发生地)，那时国内的新闻报道这个的还不多。 本着历来外媒的可信度，当时还和一些朋友说了武汉肺炎这个事情有点像SARS归来(由于年龄关系，对SARS没什么影响，只能通过资料去看)，朋友说不要信。 继续1月中 和室友(医药行业的质量管理)闲聊，可能是行业原因(毕竟知名药企工作多年), 对其非常警惕，然后又给我科普了下当年SARS，我也就开始警惕起来 几天后 国内的媒体开始报道这个事件，也看到一些小道消息(可能是谣言，也可能是事实，无法验证)报道很严重，这时有部分人先知先觉开始关注，开始买口罩，这时听武汉的朋友说口罩已经不那么好买到了，本着安全的考虑，在上海也开始买起了口罩，并给家里人交代也要买(尽管很难说服) 过年前几天 从上海回老家，中途在武汉换乘，一个月前和武汉的几位朋友相约在武汉相聚，朋友们特地在武汉等我，我们特地去了人非常少的且离所谓的事发地很远的地方，大家都做了防护，中午一起吃了个饭，聊了会人生(哈哈哈，闲聊而已), 下午我们便各回各家了。 第二天一大早，得知武汉全城封锁，后来朋友们还在说幸好他们回去的早，不然回不去了，我们还在在暗自庆幸 武汉封城 突然得知武汉封城(尽管几天前曾听说过封城的小道消息), 这个时候大家就意识到事情已经非常严重了，能让整个城市封锁(好像翻遍历史也没几次吧)，社会开始恐慌，好像各地都在疯狂买口罩(装备已经提前备好了), 事件进一步升级 封城第二天(除夕) 武汉周边的城市也开始封城，气氛越来越紧张，早上起来后，就给武汉的亲戚们挨个打了个电话，一是问他们在武汉的情况(并叮嘱他们)，二是过年了，向他们问个好。一圈问下来，发现都还好，这是心中的石头放下了，说明他们是安全的，心中一直期望着一切都好。 这年除夕，很安静，只有我们自己一家人过年，聊天，看春晚，打牌 大年初一 凌晨，所在的城市发布了封城通告，也意味着全省封锁了，我们是最后一个封城的。 按照正常情况，大年初一要开始拜年了，而今年不一样，因为新冠，我们决定不出门了，开始电话和微信拜年，并和亲戚们解释，一说大家都通了，也就都不串门，开始了特别的线上的拜年方式，2020注定不一样。 有些朋友看到所在的城市封城了，也发来了慰问，我向他们道了好，也让他们安心。 初二到初十 每天早上醒来第一件事就是打开头条，看看新冠的新闻和数据，期待着数据出现拐点。 每天都在关注钟南山，CCTV新闻频道，新冠，已经变成了生活日常。国家也开始出台了很多政策，比如春节延期，放缓企业复工，各地都在拼尽全力抵抗新冠，我也尽了我我的绵薄之力，为大武汉捐了一点点钱 初十以后 新闻还是很多，数据还是指数级增长，不容乐观。逐渐开始在家办公，因为这次事件，其实对全社会的损失是都是相当大的。 所以我们开始了在家远程办公，逐步开始工作，工作的事情略(不记录了) 至今 每天都在期待数据的拐点，期望早日结束，早日还人们健康和自由。自觉在家隔离，为国家做贡献，为患者祈福。挺国家的话 总结一下吧 写完之后发现其实记录的都是流水账(这可能就是日记吧，手动笑脸，哈哈) 在这次期间，也想了很多。对人的一生可能有有了一些新的想法，也摈弃了以前的一些想法 好好珍惜生命，健康和安全第一，因为你不知道生命何时会结束，毕竟那么脆弱 好好孝顺父母，好好珍惜对待那些对你好的人，做到问心无愧，因为你不知道生命何时会结束。 多做一些有意义的事情，放弃那些无意义的，及时行乐，也别太委屈了自己。还是那句你真的不知道生命何时会结束。 对于一些事，一些人，问心无愧就好，有些事情你真的改变不了 还有就是要多存钱，肯定用得上(前提是安全第一，哈哈哈) 写在最后 祝愿新冠早日被打败，朋友们一切安好，社会一片安详，武汉加油，中国加油 最后引用诗人雪莱的一句话 “冬天到了，春天还会远吗？” 2020年2月15日</summary></entry><entry><title type="html">iOS 启动优化总结</title><link href="http://localhost:4000/iOS%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="iOS 启动优化总结" /><published>2019-09-21T00:00:00+08:00</published><updated>2019-09-21T00:00:00+08:00</updated><id>http://localhost:4000/iOS%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/iOS%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96%E6%80%BB%E7%BB%93/">&lt;h4 id=&quot;启动过程&quot;&gt;启动过程&lt;/h4&gt;
-
-&lt;p&gt;注： 本Blog的总结来自阅读美团iOS Team的学习，部分图片来自美团 Team(侵权删)
-&lt;img src=&quot;https://p0.meituan.net/travelcube/52635c087684765c9ee5b134c50226da136906.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h5 id=&quot;加载过程--从exec到main&quot;&gt;加载过程  从Exec()到Main()&lt;/h5&gt;
-
-&lt;p&gt;真正的加载过程从exec()函数开始，exec()是一个系统调用。操作系统首先为进程分配一段内存空间，然后执行如下操作：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;把App对应的可执行文件加载到内存。&lt;/li&gt;
-  &lt;li&gt;把Dyld加载到内存。&lt;/li&gt;
-  &lt;li&gt;Dyld进行动态链接。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://p0.meituan.net/travelcube/db061a267f6dc2b14ff7f9120020a5c261253.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Dyld在各阶段处理的任务&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;加载动态库&lt;/li&gt;
-  &lt;li&gt;Rebase和Bind&lt;/li&gt;
-  &lt;li&gt;Objc setup&lt;/li&gt;
-  &lt;li&gt;Initializers&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;加载动态库&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;从Header中获取所需要加载的动态的所依赖动态库列表，递归依赖集合&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Rebase Bind&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Rebase在Image内部调整指针的指向 Bind是指向Image外部的内容，指向外部的指针被Symbol绑定，Dyld要去符号表中查找对于的实现&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Objc setup&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;注册Class 插入Category的方法列表   保证每个Selector唯一&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Initializers&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Objc的Load方法  C++的构造函数属性函数  非基本类型的C++静态全局变量的创建(通常是类或结构体)&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;最后Dyld会调用main()函数，main()函数调用UIApplication()&lt;br /&gt;
-可能影响main()函数启动过程的一些因素&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;动态库越多，加载越慢&lt;/li&gt;
-  &lt;li&gt;Objc类方法越多，加载越慢&lt;/li&gt;
-  &lt;li&gt;Objc load方法越多，加载越慢&lt;/li&gt;
-  &lt;li&gt;C++静态对象越多，加载越慢&lt;/li&gt;
-  &lt;li&gt;C的Constructor方法越多，加载越慢&lt;/li&gt;
-&lt;/ol&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">启动过程 注： 本Blog的总结来自阅读美团iOS Team的学习，部分图片来自美团 Team(侵权删) 加载过程 从Exec()到Main() 真正的加载过程从exec()函数开始，exec()是一个系统调用。操作系统首先为进程分配一段内存空间，然后执行如下操作： 把App对应的可执行文件加载到内存。 把Dyld加载到内存。 Dyld进行动态链接。 Dyld在各阶段处理的任务 加载动态库 Rebase和Bind Objc setup Initializers 加载动态库 从Header中获取所需要加载的动态的所依赖动态库列表，递归依赖集合 Rebase Bind Rebase在Image内部调整指针的指向 Bind是指向Image外部的内容，指向外部的指针被Symbol绑定，Dyld要去符号表中查找对于的实现 Objc setup 注册Class 插入Category的方法列表 保证每个Selector唯一 Initializers Objc的Load方法 C++的构造函数属性函数 非基本类型的C++静态全局变量的创建(通常是类或结构体) 最后Dyld会调用main()函数，main()函数调用UIApplication() 可能影响main()函数启动过程的一些因素 动态库越多，加载越慢 Objc类方法越多，加载越慢 Objc load方法越多，加载越慢 C++静态对象越多，加载越慢 C的Constructor方法越多，加载越慢</summary></entry><entry><title type="html">曾国藩传读书笔记</title><link href="http://localhost:4000/%E6%9B%BE%E5%9B%BD%E8%97%A9%E4%BC%A0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="alternate" type="text/html" title="曾国藩传读书笔记" /><published>2019-08-24T00:00:00+08:00</published><updated>2019-08-24T00:00:00+08:00</updated><id>http://localhost:4000/%E6%9B%BE%E5%9B%BD%E8%97%A9%E4%BC%A0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0</id><content type="html" xml:base="http://localhost:4000/%E6%9B%BE%E5%9B%BD%E8%97%A9%E4%BC%A0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">&lt;h3 id=&quot;最近在看曾国藩深有感触记录下读书笔记&quot;&gt;最近在看《曾国藩》深有感触，记录下读书笔记&lt;/h3&gt;
-
-&lt;p&gt;曾国藩， 从湖南湘乡荷叶塘的一个农家子弟完全靠自己的能力与见识拜相封侯，晚晴第一重臣。学习曾国藩的为人处世的方式将使我一生受益无穷&lt;/p&gt;
-
-&lt;h5 id=&quot;1-肯下苦工&quot;&gt;1. 肯下苦工&lt;/h5&gt;
-
-&lt;p&gt;屋内背书5遍依然不会，而梁上君子已经可以背诵,年少的曾国藩并不太出众，但愿意下苦工来学习，正是这样的好习惯使得曾国藩一生受益，影响其做人，做官，带兵&lt;/p&gt;
-
-&lt;h5 id=&quot;2曾国藩心细的表现&quot;&gt;2.曾国藩心细的表现&lt;/h5&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;曾国藩来到养性殿。养性殿是皇宫收藏前代名人字画的宫殿，皇帝接见臣下，一般不在这里。守殿的大太监名叫过业大，人称大公公。国藩与大公公打声招呼后，便端坐在养性殿候驾。一坐整整两个时辰，时至正午，尚不见召，国藩心中犯疑，请大公公打听。一会儿，大公公告诉他：皇上今天不来了，明天在养心殿召见。 曾国藩是个心细的人，他回到家里，越想此事越蹊跷。在翰林院当差七年了，受皇上召见也有好几次，从来没有遇过这样的情况，也没有听说过有这样的事。他赶紧套上马车，去见恩师穆彰阿，请教此中原委。穆彰阿也觉得奇怪，详细询问事情的前前后后，和阗玉球在手中滚过百把圈后，他明白了。穆彰阿立即叫仆人带上三百两银子去找大公公，要大公公将养性殿内的陈设，尤其是四壁悬挂的字画，一幅不漏、一字不漏地抄出。夜间，大公公送来抄单。穆彰阿要曾国藩读熟记住&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h5 id=&quot;3郭嵩焘对曾传授为人做官的方法&quot;&gt;3.郭嵩焘对曾传授为人做官的方法&lt;/h5&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;“你若像我这样，不在地方办事，又不带勇剿贼则罢，倘若指望办成大事，剿灭逆贼，你有些做法要改。” “旁观者清。我哪些地方做得不对，你就直言不讳吧！”曾国藩已感受到郭嵩焘的一片真心。 “第一，要联络好地方文武，不要总是站在与他们为敌的地位，当妥协处则妥协。常言说得好，强龙不压地头蛇。第二，越俎代庖之事不能再做，费力不讨好，反招怨敌。第三，要利用绿营的力量，不要再单枪匹马地干。若做到这三点，许多事情会办得好些。”&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h5 id=&quot;4兵败后被高人指点-从以前的柔刚-开始-柔&quot;&gt;4.兵败后被高人指点, 从以前的“柔刚“ 开始 ”柔“&lt;/h5&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;曾国藩想起在长沙与绿营的龃龉斗法，与湖南官场的凿枘不合，想起在南昌与陈启迈、恽光宸的争强斗胜，这一切都是采取儒家直接、法家强权的方式。结果呢？表面上胜利了，实则埋下了更大的隐患。又如参清德、参陈启迈，越俎代庖、包揽干预种种情事，办理之时，固然痛快干脆，却没有想到锋芒毕露、刚烈太甚，伤害了清德、陈启迈的上上下下、左左右右，无形中给自己设置了许多障碍。这些隐患与障碍，如果不是自己亲身体验过，在书斋里、在六部签押房里是无论如何也设想不到的，它们对事业的损害，大大地超过了一时的风光和快意！既然直接的、以强对强的手法有时不能行得通，而迂回的、间接的、柔弱的方式也可以达到目的、战胜强者，且不至于留下隐患，为什么不采用呢？少年时代记住的诸如“大方无隅”“大音希声”“大象无形”“大巧若拙”的话，过去一直似懂非懂，现在一下子豁然开朗了。这些年来与官场内部以及与绿营的争斗，其实都是一种有隅之方，有声之音，有形之象，似巧实拙，真正的大方、大象、大巧不是这样的，它要做到全无形迹之嫌，全无斧凿之工。 “人之生也柔弱，其死也坚强，草木之生也柔脆，其死也枯槁。”柔弱、柔弱，天下万事万物，归根结底，莫不是以至柔克至刚。能克刚之柔，难道不是更刚吗？祖父“男儿以懦弱无刚为耻”的家训，自己竟片面理解了。曾国藩想到这里，兴奋地在《道德经》扉页上写下八个字：“大柔非柔，至刚无刚。”他觉得胸中的郁结解开了许多。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h5 id=&quot;5老友胡林翼更好的体现了柔弱胜刚强&quot;&gt;5.老友胡林翼更好的体现了”柔弱胜刚强“&lt;/h5&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;第二天一早，一顶花呢大轿将六姨太抬进巡抚衙门，胡太夫人、静娟夫人设盛宴款待，陪着玩牌听曲，扯家常。六姨太自幼丧母，见胡太夫人这样喜欢她，便认胡太夫人为母。胡太夫人高高兴兴地收下这个义女，又叫她拜见了兄长胡林翼。胡太夫人送给六姨太一副金镯金耳环金戒指，算是给义女的见面礼。六姨太回府后，在枕边对着官文说起胡家母子的千好万好。并说，从今以后两家认了亲，就是一家了，就不要再为难胡林翼了。官文对这个娇媚聪敏的六姨太向来百依百顺，果然从此再不给胡林翼找岔子了。军事民事，全付与胡林翼一手办理，他只在上面画诺而已；而胡林翼也表面上对他恭敬顺从。武昌城里督抚关系之亲密，为全国之首。 先前，曾国藩听到官胡这段故事后置之一笑。他笑胡林翼太软弱了，竟然用讨好一个姨太太的手腕来换取官文的合作，岂不太失堂堂大丈夫的气节！现在，他明白了，这正是胡林翼的高明之处，也是胡林翼胜过他的地方。“柔弱胜刚强”，胡林翼早已深懂此中之味，并运用得相当熟练了。&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name></name></author><category term="读书笔记" /><summary type="html">最近在看《曾国藩》深有感触，记录下读书笔记 曾国藩， 从湖南湘乡荷叶塘的一个农家子弟完全靠自己的能力与见识拜相封侯，晚晴第一重臣。学习曾国藩的为人处世的方式将使我一生受益无穷 1. 肯下苦工 屋内背书5遍依然不会，而梁上君子已经可以背诵,年少的曾国藩并不太出众，但愿意下苦工来学习，正是这样的好习惯使得曾国藩一生受益，影响其做人，做官，带兵 2.曾国藩心细的表现 曾国藩来到养性殿。养性殿是皇宫收藏前代名人字画的宫殿，皇帝接见臣下，一般不在这里。守殿的大太监名叫过业大，人称大公公。国藩与大公公打声招呼后，便端坐在养性殿候驾。一坐整整两个时辰，时至正午，尚不见召，国藩心中犯疑，请大公公打听。一会儿，大公公告诉他：皇上今天不来了，明天在养心殿召见。 曾国藩是个心细的人，他回到家里，越想此事越蹊跷。在翰林院当差七年了，受皇上召见也有好几次，从来没有遇过这样的情况，也没有听说过有这样的事。他赶紧套上马车，去见恩师穆彰阿，请教此中原委。穆彰阿也觉得奇怪，详细询问事情的前前后后，和阗玉球在手中滚过百把圈后，他明白了。穆彰阿立即叫仆人带上三百两银子去找大公公，要大公公将养性殿内的陈设，尤其是四壁悬挂的字画，一幅不漏、一字不漏地抄出。夜间，大公公送来抄单。穆彰阿要曾国藩读熟记住 3.郭嵩焘对曾传授为人做官的方法 “你若像我这样，不在地方办事，又不带勇剿贼则罢，倘若指望办成大事，剿灭逆贼，你有些做法要改。” “旁观者清。我哪些地方做得不对，你就直言不讳吧！”曾国藩已感受到郭嵩焘的一片真心。 “第一，要联络好地方文武，不要总是站在与他们为敌的地位，当妥协处则妥协。常言说得好，强龙不压地头蛇。第二，越俎代庖之事不能再做，费力不讨好，反招怨敌。第三，要利用绿营的力量，不要再单枪匹马地干。若做到这三点，许多事情会办得好些。” 4.兵败后被高人指点, 从以前的“柔刚“ 开始 ”柔“ 曾国藩想起在长沙与绿营的龃龉斗法，与湖南官场的凿枘不合，想起在南昌与陈启迈、恽光宸的争强斗胜，这一切都是采取儒家直接、法家强权的方式。结果呢？表面上胜利了，实则埋下了更大的隐患。又如参清德、参陈启迈，越俎代庖、包揽干预种种情事，办理之时，固然痛快干脆，却没有想到锋芒毕露、刚烈太甚，伤害了清德、陈启迈的上上下下、左左右右，无形中给自己设置了许多障碍。这些隐患与障碍，如果不是自己亲身体验过，在书斋里、在六部签押房里是无论如何也设想不到的，它们对事业的损害，大大地超过了一时的风光和快意！既然直接的、以强对强的手法有时不能行得通，而迂回的、间接的、柔弱的方式也可以达到目的、战胜强者，且不至于留下隐患，为什么不采用呢？少年时代记住的诸如“大方无隅”“大音希声”“大象无形”“大巧若拙”的话，过去一直似懂非懂，现在一下子豁然开朗了。这些年来与官场内部以及与绿营的争斗，其实都是一种有隅之方，有声之音，有形之象，似巧实拙，真正的大方、大象、大巧不是这样的，它要做到全无形迹之嫌，全无斧凿之工。 “人之生也柔弱，其死也坚强，草木之生也柔脆，其死也枯槁。”柔弱、柔弱，天下万事万物，归根结底，莫不是以至柔克至刚。能克刚之柔，难道不是更刚吗？祖父“男儿以懦弱无刚为耻”的家训，自己竟片面理解了。曾国藩想到这里，兴奋地在《道德经》扉页上写下八个字：“大柔非柔，至刚无刚。”他觉得胸中的郁结解开了许多。 5.老友胡林翼更好的体现了”柔弱胜刚强“ 第二天一早，一顶花呢大轿将六姨太抬进巡抚衙门，胡太夫人、静娟夫人设盛宴款待，陪着玩牌听曲，扯家常。六姨太自幼丧母，见胡太夫人这样喜欢她，便认胡太夫人为母。胡太夫人高高兴兴地收下这个义女，又叫她拜见了兄长胡林翼。胡太夫人送给六姨太一副金镯金耳环金戒指，算是给义女的见面礼。六姨太回府后，在枕边对着官文说起胡家母子的千好万好。并说，从今以后两家认了亲，就是一家了，就不要再为难胡林翼了。官文对这个娇媚聪敏的六姨太向来百依百顺，果然从此再不给胡林翼找岔子了。军事民事，全付与胡林翼一手办理，他只在上面画诺而已；而胡林翼也表面上对他恭敬顺从。武昌城里督抚关系之亲密，为全国之首。 先前，曾国藩听到官胡这段故事后置之一笑。他笑胡林翼太软弱了，竟然用讨好一个姨太太的手腕来换取官文的合作，岂不太失堂堂大丈夫的气节！现在，他明白了，这正是胡林翼的高明之处，也是胡林翼胜过他的地方。“柔弱胜刚强”，胡林翼早已深懂此中之味，并运用得相当熟练了。</summary></entry><entry><title type="html">SpringBoot学习笔记</title><link href="http://localhost:4000/springBoot%E5%AD%A6%E4%B9%A0/" rel="alternate" type="text/html" title="SpringBoot学习笔记" /><published>2019-08-18T00:00:00+08:00</published><updated>2019-08-18T00:00:00+08:00</updated><id>http://localhost:4000/springBoot%E5%AD%A6%E4%B9%A0</id><content type="html" xml:base="http://localhost:4000/springBoot%E5%AD%A6%E4%B9%A0/">&lt;h3 id=&quot;记录学习springboot的过程&quot;&gt;记录学习SpringBoot的过程&lt;/h3&gt;
-
-&lt;p&gt;Spring Boot是一个基于Java的开源框架，用于创建微服务&lt;/p&gt;
-
-&lt;p&gt;SpringBoot的好处&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;避免在Spring中进行复杂的XML配置&lt;/li&gt;
-  &lt;li&gt;以更简单的方式开发生产就绪的Spring应用程序&lt;/li&gt;
-  &lt;li&gt;减少开发时间并独立运行应用程序&lt;/li&gt;
-  &lt;li&gt;提供一种更简单的应用程序入门方式&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&quot;正式开始springboot&quot;&gt;正式开始SpringBoot&lt;/h4&gt;
-
-&lt;h5 id=&quot;1依赖springboot&quot;&gt;1.依赖SpringBoot&lt;/h5&gt;
-
-&lt;p&gt;所有Spring Boot启动程序都遵循相同的命名模式&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spring-boot-starter-*&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Spring Boot Starter Actuator依赖关系用于监视和管理应用程序。 其代码如下所示&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
-   &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-   &amp;lt;artifactId&amp;gt;spring-boot-starter-actuator&amp;lt;/artifactId&amp;gt;
-&amp;lt;/dependency&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Spring Boot Starter Security依赖项用于Spring Security。 其代码如下所示&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
-   &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-   &amp;lt;artifactId&amp;gt;spring-boot-starter-security&amp;lt;/artifactId&amp;gt;
-&amp;lt;/dependency&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Spring Boot Starter Web依赖项用于编写Rest端点。 其代码如下所示&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
-   &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-   &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt;
-&amp;lt;/dependency&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Spring Boot Starter Thyme Leaf依赖项用于创建Web应用程序。 其代码如下所示&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
-   &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-   &amp;lt;artifactId&amp;gt;spring-boot-starter-thymeleaf&amp;lt;/artifactId&amp;gt;
-&amp;lt;/dependency&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Spring Boot Starter Test依赖项用于编写测试用例。 其代码如下所示&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
-   &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
-   &amp;lt;artifactId&amp;gt;spring-boot-starter-test&amp;lt;artifactId&amp;gt;
-&amp;lt;/dependency&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h5 id=&quot;2-代码结构&quot;&gt;2. 代码结构&lt;/h5&gt;
-
-&lt;p&gt;Java推荐的包声明命名约定是反向域名。 例如 - com.jack.projectName&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;com
-    +- jack
-        +- projectName
-            +- Application.java
-            |
-            +- Model / Bean
-            |    +- Model.java
-            +- Dao
-            |    +- Mapper.java
-            +- Controller
-            |    +- Controller.java
-            +- Service
-            |    +- Service.java
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h5 id=&quot;3-构建restful项目&quot;&gt;3. 构建Restful项目&lt;/h5&gt;
-
-&lt;p&gt;@RestController注释用于定义RESTful Web服务。它提供JSON，XML和自定义响应。其语法如下所&lt;/p&gt;
-
-&lt;p&gt;封装一个公共的返回对象，方便返回&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-public class CommonResult&amp;lt;T&amp;gt; {
-    private long code;
-    private String message;
-    private T data;
-    
-    // 对接口的返回常用的类型做封装
-    public static &amp;lt;T&amp;gt; CommonResult&amp;lt;T&amp;gt; success(T data) {
-        return new CommonResult&amp;lt;T&amp;gt;(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), data);
-    }
-
-    public static &amp;lt;T&amp;gt; CommonResult&amp;lt;T&amp;gt; success(T data, String message) {
-        return new CommonResult&amp;lt;T&amp;gt;(ResultCode.SUCCESS.getCode(), message, data);
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;SpringBoot的注解整理&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 读取环境或应用程序属性值
-@Value(&quot;${property_key_name}&quot;)
-
-// 定义RESTful Web服务。它提供JSON，XML和自定义响应
-@RestController
-
-// 注释用于定义访问REST端点的Request URI
-@RequestMapping(value = &quot;/apiName&quot;)
-
-// 注释用于定义请求正文内容类型
- public RequestResult userRegister(@RequestBody User user) {
-    return RequestResult.success(&quot;注册成功&quot;);
-    }
-    
-// 批注用于定义自定义或动态请求URI
-@PathVariable
-public ResponseEntity&amp;lt;Object&amp;gt; updateProduct(@PathVariable(&quot;id&quot;) String id) {
-
-}
-
-// 注释用于从请求URL读取请求参数
-@RequestParam
-
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;开始编写接口&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@RestController
-public class UserController {
-
-
-    @RequestMapping(value = &quot;/login&quot;, method = RequestMethod.POST)
-    @ResponseBody
-    public CommonResult login(@RequestBody UmsAdminLoginParam umsAdminLoginParam, BindingResult result) {
-        String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword());
-        if (token == null) {
-            return CommonResult.validateFailed(&quot;用户名或密码错误&quot;);
-        }
-        Map&amp;lt;String, String&amp;gt; tokenMap = new HashMap&amp;lt;&amp;gt;();
-        tokenMap.put(&quot;token&quot;, token);
-        tokenMap.put(&quot;tokenHead&quot;, tokenHead);
-        return CommonResult.success(tokenMap);
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="Java" /><summary type="html">记录学习SpringBoot的过程 Spring Boot是一个基于Java的开源框架，用于创建微服务 SpringBoot的好处 避免在Spring中进行复杂的XML配置 以更简单的方式开发生产就绪的Spring应用程序 减少开发时间并独立运行应用程序 提供一种更简单的应用程序入门方式 正式开始SpringBoot 1.依赖SpringBoot 所有Spring Boot启动程序都遵循相同的命名模式spring-boot-starter-* Spring Boot Starter Actuator依赖关系用于监视和管理应用程序。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-actuator&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Boot Starter Security依赖项用于Spring Security。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-security&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Boot Starter Web依赖项用于编写Rest端点。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Boot Starter Thyme Leaf依赖项用于创建Web应用程序。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-thymeleaf&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Boot Starter Test依赖项用于编写测试用例。 其代码如下所示 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-test&amp;lt;artifactId&amp;gt; &amp;lt;/dependency&amp;gt; 2. 代码结构 Java推荐的包声明命名约定是反向域名。 例如 - com.jack.projectName com +- jack +- projectName +- Application.java | +- Model / Bean | +- Model.java +- Dao | +- Mapper.java +- Controller | +- Controller.java +- Service | +- Service.java 3. 构建Restful项目 @RestController注释用于定义RESTful Web服务。它提供JSON，XML和自定义响应。其语法如下所 封装一个公共的返回对象，方便返回 public class CommonResult&amp;lt;T&amp;gt; { private long code; private String message; private T data; // 对接口的返回常用的类型做封装 public static &amp;lt;T&amp;gt; CommonResult&amp;lt;T&amp;gt; success(T data) { return new CommonResult&amp;lt;T&amp;gt;(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), data); } public static &amp;lt;T&amp;gt; CommonResult&amp;lt;T&amp;gt; success(T data, String message) { return new CommonResult&amp;lt;T&amp;gt;(ResultCode.SUCCESS.getCode(), message, data); } } SpringBoot的注解整理 // 读取环境或应用程序属性值 @Value(&quot;${property_key_name}&quot;) // 定义RESTful Web服务。它提供JSON，XML和自定义响应 @RestController // 注释用于定义访问REST端点的Request URI @RequestMapping(value = &quot;/apiName&quot;) // 注释用于定义请求正文内容类型 public RequestResult userRegister(@RequestBody User user) { return RequestResult.success(&quot;注册成功&quot;); } // 批注用于定义自定义或动态请求URI @PathVariable public ResponseEntity&amp;lt;Object&amp;gt; updateProduct(@PathVariable(&quot;id&quot;) String id) { } // 注释用于从请求URL读取请求参数 @RequestParam 开始编写接口 @RestController public class UserController { @RequestMapping(value = &quot;/login&quot;, method = RequestMethod.POST) @ResponseBody public CommonResult login(@RequestBody UmsAdminLoginParam umsAdminLoginParam, BindingResult result) { String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword()); if (token == null) { return CommonResult.validateFailed(&quot;用户名或密码错误&quot;); } Map&amp;lt;String, String&amp;gt; tokenMap = new HashMap&amp;lt;&amp;gt;(); tokenMap.put(&quot;token&quot;, token); tokenMap.put(&quot;tokenHead&quot;, tokenHead); return CommonResult.success(tokenMap); } }</summary></entry></feed>
+&lt;/ul&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">记录苹果IAP内购的流程 先在Apple Developer官网，签署相关的协议， 完善相应的信息 在APP下添加内购项目， 选择内购产品的类型， 共四种类型，下面有总结 输入商品相应的信息，产品id， 建议用bundleID加商品id, 组成的字符串，保证唯一性 选择价格，上传审核图和审核信息， 保存 商品显示可用后，即可开始Coding, coding完成后提交审核方可真实使用 内购商品类型 解释 1.消耗型商品 顾名思义, 可以消耗使用的商品, 比如游戏中的金币, 钻石等, 可以用来购买应用内虚拟物品的货币。 2.非消耗型商品 无法被消耗的商品，比如一些教育型APP中的课程, 再比如一些赛车游戏中的赛道, 这类商品需要在审核添加恢复购买按钮, 用于用户购买过后再误删除或其他原因卸载APP后的恢复流程, 否则提交审核会被拒绝。 3.非续期订阅 此类商品与消耗型商品类似, 比如一个月的会员, 一个季度的会员等,与消耗型商品的差异在于, 这类商品在验证凭证时需要传递共享秘钥 4.自动续期订阅 这类商品和其他商品的流程也有些许不同, 应用比如视频APP中的连续包月会员, 此类商品到期会自动扣费, 服务器的验证逻辑也会有所不同,流程可以参考这篇文章 IAP原理解释 IAP的支付方式和微信，支付宝等的第三方支付的方式完全不同，下面分别记录下支付的区别， 微信支付宝等第三方支付主要以Server驱动相应的业务，客户端流程大概如下 (用户选择商品 -&amp;gt; 服务端生成订单 -&amp;gt; 生成第三方需要的签名等相关信息给到客户端 -&amp;gt; 客户端调起第三方应用支付 -&amp;gt; 第三方回调客户端 -&amp;gt; 客户端向Server查询最终支付结果 -&amp;gt; 支付完成) IAP的方式不同，IAP主要是以客户端驱动， Server仅仅用来校验Apple返回的支付凭证， Apple提供相应的代理方法， 告知客户端支付的进行状态， 因为客户端的情况复杂， 再加上IAP的国外服务器返回的问题，所以在IAP过程中，会出现很多奇怪的问题，下面开始逐步记录如何进行IAP IAP Coding 需要引入 import StoreKit， IAP所有的方法都在这个框架内部 根据产品的id查询IAP服务器上的相应的商品信息, 方法如下， 传入productIdentifiers let request = SKProductsRequest(productIdentifiers: productIdentifiers) request.delegate = self request.start() 实现delegate方法， SKProductsRequestDelegate, 回调如下 func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) { let products : [SKProduct] = response.products /// 可以从product中获取到如下信息 DLog(&quot;product price: \(product.price)&quot;) DLog(&quot;product description: \(product.description)&quot;) DLog(&quot;product productIdentifier: \(product.productIdentifier)&quot;) DLog(&quot;product title: \(product.localizedTitle)&quot;) DLog(&quot;applicationUsername: \(IAPOrder.applicationUsername ?? &quot;&quot;)&quot;) /// 开始支付 let payment = SKMutablePayment(product: product) /// 发起支付时候指定用户的username, 在掉单时候验证防止切换账号导致充值错误 payment.applicationUsername = IAPOrder.applicationUsername SKPaymentQueue.default().add(payment) } 我们需要实现 SKProductsRequestDelegate 在需要实现IAP的Class监听IAP的Observer， SKPaymentTransactionObserver, 这个Observer主要负责监听IAP的各种状态</summary></entry></feed>

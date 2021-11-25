@@ -1,0 +1,143 @@
+I"�<h3 id="安装jenkins">安装Jenkins</h3>
+<ul>
+  <li>安装包安装</li>
+  <li>HomeBrew安装</li>
+</ul>
+
+<p><strong>安装包安装</strong></p>
+
+<blockquote>
+  <p>由于Jenkins 依赖于Java，所以在安装Jenkins前，需要先检查是否已安装Java环境。 在终端输入命令进行检测：</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ java -version
+</code></pre></div></div>
+
+<p>然后前往<a href="https://jenkins.io/">Jenkins官网</a>下载安装包安装</p>
+
+<p><strong>homeBrew安装</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install jenkins
+</code></pre></div></div>
+
+<h3 id="初始化jenkins">初始化Jenkins</h3>
+<ol>
+  <li>
+    <p>在终端输入<code class="language-plaintext highlighter-rouge">jenkins</code>启动服务</p>
+  </li>
+  <li>在浏览器中输入<code class="language-plaintext highlighter-rouge">http://localhost:8080</code>中进行访问
+  <img src="https://user-gold-cdn.xitu.io/2020/1/19/16fbb6f6dc5c1eba?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="" /></li>
+  <li>依照图中描述在终端输入 cat + 密码路径，获取密码复制下一步</li>
+  <li>等待插件安装完成。</li>
+  <li>配置完管理员账户，就成功安装完成啦</li>
+</ol>
+
+<h3 id="安装插件">安装插件</h3>
+
+<h3 id="新建任务">新建任务</h3>
+
+<h3 id="打包脚本">打包脚本</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#!/bin/sh
+export LANG=en_US.UTF-8
+
+# 1.设置配置标识,编译环境(根据需要自行填写 release ｜ debug )
+configuration="debug"
+
+# 工程名(根据项目自行填写)
+APP_NAME="项目名"
+
+# TARGET名称（根据项目自行填写）
+TARGET_NAME="项目名"
+
+# ipa前缀（根据项目自行填写）
+IPA_NAME="项目名"
+
+# 工程根目录#工程源码目录(这里的${WORKSPACE}是jenkins的内置变量表示(jenkins job的路径):/Users/plz/.jenkins/workspace/TestDome/)
+# ${WORKSPACE}/TestDome/ 中的TestDome根据你的项目自行修改
+CODE_PATH="${WORKSPACE}/xx/${TARGET_NAME}"
+echo "-------------- CODE_PATH: ${CODE_PATH}"
+
+# info.plist路径
+project_infoplist_path= "${CODE_PATH}/${TARGET_NAME}/Info.plist"
+
+# 取版本号
+bundleShortVersion= $(/usr/libexec/PlistBuddy -c "print CFBundleShortVersionString" "${project_infoplist_path}")
+# bundleVersion= $(/usr/libexec/PlistBuddy -c "print CFBundleVersion" "${project_infoplist_path}")
+
+echo "------- info plist path : ${project_infoplist_path}"
+echo "------- bundleShortVersion : ${bundleShortVersion}"
+# $echo "------- bundleVersion : ${bundleVersion}"
+
+# 日期
+DATE=$(date +%Y%m%d%H%M%S)
+# 工程文件路径
+ARCHIVE_NAME="${APP_NAME}_${DATE}.xcarchive"
+# 存放ipa的文件夹名称（根据自己的喜好自行修改）
+IPANAME="${IPA_NAME}_IPA"
+
+# 要上传的ipa文件路径 ${username} 需要换成自己的用户名
+ROOT_PATH="/Users/wanglei/Desktop/Jenkins"
+
+ARCHIVE_PATH="${ROOT_PATH}/Archive/${ARCHIVE_NAME}"
+
+IPA_PATH="${ROOT_PATH}/Export/${IPANAME}"
+
+echo "-------------- ARCHIVE_PATH: ${ARCHIVE_PATH}"
+echo "-------------- IPA_PATH: ${IPA_PATH}"
+
+
+# 导包方式(这里需要根据需要手动配置:AdHoc/AppStore/Enterprise/Development)
+EXPORT_METHOD="AdHoc"
+# 导包方式配置文件路径(这里需要手动创建对应的XXXExportOptionsPlist.plist文件，并将文件复制到根目录下[我这里在源项目的根目录下又新建了ExportPlist文件夹专门放ExportPlist文件])
+if test "$EXPORT_METHOD" = "AdHoc"; then
+    EXPORT_METHOD_PLIST_PATH=${CODE_PATH}/ExportOptions.plist
+elif test "$EXPORT_METHOD" = "AppStore"; then
+    EXPORT_METHOD_PLIST_PATH=${CODE_PATH}/ExportOptions/AppStoreExportOptios.plist
+elif test "$EXPORT_METHOD" = "Enterprise"; then
+    EXPORT_METHOD_PLIST_PATH=${CODE_PATH}/ExportOptions/EnterpriseExportOptions.plist
+else
+    EXPORT_METHOD_PLIST_PATH=${CODE_PATH}/ExportOptions/DevelopmentExportOptions.plist
+fi
+
+echo "-------------- EXPORT_METHOD_PLIST_PATH: ${EXPORT_METHOD_PLIST_PATH}"
+
+# 指ipa定输出文件夹,如果有删除后再创建，如果没有就直接创建
+if test -d ${IPA_PATH}; then
+    "-------------- 删除:IPA Path : ${IPA_PATH}"
+    rm -rf ${IPA_PATH}
+    mkdir ${IPA_PATH}
+    "-------------- 创建:IPA Path : ${IPA_PATH}"
+else
+    mkdir -pv ${IPA_PATH}
+    "-------------- 创建:IPA Path : ${IPA_PATH}"
+fi
+
+# 进入工程源码根目录
+cd "${CODE_PATH}"
+
+echo "-------------- 安装Pod Code Path: ${CODE_PATH}"
+# 执行pod
+pod install --verbose --no-repo-update
+
+#mkdir -p build
+
+# 清除工程
+echo "-------------- Clean项目 执行Shell: xcodebuild clean -workspace ${APP_NAME}.xcworkspace -scheme ${APP_NAME} -configuration ${configuration}"
+xcodebuild clean -workspace ${APP_NAME}.xcworkspace -scheme ${APP_NAME} -configuration ${configuration}
+
+# 将app打包成xcarchive格式文件
+echo "-------------- archive项目 执行Shell: xcodebuild archive -workspace ${APP_NAME}.xcworkspace -scheme ${APP_NAME} -configuration ${configuration} -archivePath ${ARCHIVE_PATH}"
+xcodebuild archive -workspace ${APP_NAME}.xcworkspace -scheme ${APP_NAME} -configuration ${configuration} -archivePath ${ARCHIVE_PATH}
+
+# 将xcarchive格式文件打包成ipa
+echo "-------------- 导出ipa包 执行Shell: xcodebuild -exportArchive -archivePath ${ARCHIVE_PATH} -exportPath "${IPA_PATH}" -exportOptionsPlist ${EXPORT_METHOD_PLIST_PATH} -allowProvisioningUpdates"
+xcodebuild -exportArchive -archivePath ${ARCHIVE_PATH} -exportPath "${IPA_PATH}" -exportOptionsPlist ${EXPORT_METHOD_PLIST_PATH} -allowProvisioningUpdates
+
+# 删除工程文件
+# echo "+++++++++删除工程文件+++++++++"
+# rm -rf $ARCHIVE_PATH
+
+
+</code></pre></div></div>
+:ET

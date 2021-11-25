@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>唐朝笔记 – 风车大战骑士 – 生活不止眼前的苟且，还有诗和远方</title>
+  <title>Jenkins总结笔记 – 风车大战骑士 – 生活不止眼前的苟且，还有诗和远方</title>
 
       <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
@@ -12,62 +12,134 @@
     <meta name="description" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
 
     
-    <meta name="description" content="金融读书笔记
+    <meta name="description" content="安装Jenkins
+
+  安装包安装
+  HomeBrew安装
 
 
+安装包安装
 
 
+  由于Jenkins 依赖于Java，所以在安装Jenkins前，需要先检查是否已安装Java环境。 在终端输入命令进行检测：
 
 
+$ java -version
 
 
+然后前往Jenkins官网下载安装包安装
+
+homeBrew安装
+
+brew install jenkins
 
 
+初始化Jenkins
+
+  
+    在终端输入jenkins启动服务
+  
+  在浏览器中输入http://localhost:8080中进行访问
+  
+  依照图中描述在终端输入 cat + 密码路径，获取密码复制下一步
+  等待插件安装完成。
+  配置完管理员账户，就成功安装完成啦
 
 
+安装插件
 
+新建任务
 
+打包脚本
 
+```
+#!/bin/sh
+export LANG=en_US.UTF-8
 
+1.设置配置标识,编译环境(根据需要自行填写 release ｜ debug )
+configuration=”debug”
 
+工程名(根据项目自行填写)
+APP_NAME=”项目名”
 
+TARGET名称（根据项目自行填写）
+TARGET_NAME=”项目名”
 
+ipa前缀（根据项目自行填写）
+IPA_NAME=”项目名”
 
-
-
-
+工程根目录#工程源码目录(这里的${WORKSPACE}是jenkins的内置变量表示(jenkins job的路径):/Users/plz/.jenkins/workspace/TestDome/)
+${WORKSPACE}/TestDome/ 中的TestDome根据你的项目自行修改
+CODE_PATH=”${WORKSPACE}/xx/${TARGET_NAME}”
+echo “
 " />
-    <meta property="og:description" content="金融读书笔记
+    <meta property="og:description" content="安装Jenkins
+
+  安装包安装
+  HomeBrew安装
 
 
+安装包安装
 
 
+  由于Jenkins 依赖于Java，所以在安装Jenkins前，需要先检查是否已安装Java环境。 在终端输入命令进行检测：
 
 
+$ java -version
 
 
+然后前往Jenkins官网下载安装包安装
+
+homeBrew安装
+
+brew install jenkins
 
 
+初始化Jenkins
+
+  
+    在终端输入jenkins启动服务
+  
+  在浏览器中输入http://localhost:8080中进行访问
+  
+  依照图中描述在终端输入 cat + 密码路径，获取密码复制下一步
+  等待插件安装完成。
+  配置完管理员账户，就成功安装完成啦
 
 
+安装插件
 
+新建任务
 
+打包脚本
 
+```
+#!/bin/sh
+export LANG=en_US.UTF-8
 
+1.设置配置标识,编译环境(根据需要自行填写 release ｜ debug )
+configuration=”debug”
 
+工程名(根据项目自行填写)
+APP_NAME=”项目名”
 
+TARGET名称（根据项目自行填写）
+TARGET_NAME=”项目名”
 
+ipa前缀（根据项目自行填写）
+IPA_NAME=”项目名”
 
-
-
-
+工程根目录#工程源码目录(这里的${WORKSPACE}是jenkins的内置变量表示(jenkins job的路径):/Users/plz/.jenkins/workspace/TestDome/)
+${WORKSPACE}/TestDome/ 中的TestDome根据你的项目自行修改
+CODE_PATH=”${WORKSPACE}/xx/${TARGET_NAME}”
+echo “
 " />
     
     <meta name="author" content="风车大战骑士" />
 
     
-    <meta property="og:title" content="唐朝笔记" />
-    <meta property="twitter:title" content="唐朝笔记" />
+    <meta property="og:title" content="Jenkins总结笔记" />
+    <meta property="twitter:title" content="Jenkins总结笔记" />
 
 
 
@@ -94,7 +166,7 @@
 
   <link rel="stylesheet" type="text/css" href="/style.css" />
   <link rel="alternate" type="application/rss+xml" title="风车大战骑士 - 生活不止眼前的苟且，还有诗和远方" href="/feed.xml" />
-  <link rel="shortcut icon" href="https://github.com/AndreHu88/AndreHu88.github.io/blob/master/images/logo.png?raw=true">
+  <link rel="shortcut icon" href="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/95b0e643fb5f4f349831b1a96fb9c06c~tplv-k3u1fbpfcp-zoom-1.image">
   <script src="https://kit.fontawesome.com/56f7faf3f4.js"></script>
 
 
@@ -106,7 +178,7 @@
   <header class="sidebar clearfix">
     <div class="site-info">
       
-        <a href="/" class="site-avatar"><img src="https://github.com/AndreHu88/AndreHu88.github.io/blob/master/images/logo.png?raw=true" /></a>
+        <a href="/" class="site-avatar"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/95b0e643fb5f4f349831b1a96fb9c06c~tplv-k3u1fbpfcp-zoom-1.image" /></a>
        
       <h1 class="site-name"><a href="/">风车大战骑士</a></h1>
       <p class="site-description">生活不止眼前的苟且，还有诗和远方</p>
@@ -130,6 +202,10 @@
       
       
       <a href="/about">关于</a>
+      
+      
+      
+      <a href="https://www.sohod.cn/book/">书籍</a>
       
       
     </nav>
@@ -180,7 +256,7 @@
 
 
 
-<p>Copyright(c) 2019 愿你出走半生，归来仍是少年</p>
+<p>Copyright(c) 2017 愿你出走半生，归来仍是少年</p>
 
     </footer>
   </div>
@@ -207,18 +283,24 @@
 
     <div id="main" role="main" class="wrapper-content">
       <article class="posts">
-  <h1>唐朝笔记</h1>
+  <h1>Jenkins总结笔记</h1>
 
   <div clsss="meta">
     <span class="date">
-      2020-08-20
+      2021-02-15
     </span>
 
     <ul class="tag">
       
       <li>
-        <a href="http://localhost:4000/tags#金融学习">
-          金融学习
+        <a href="http://localhost:4000/tags#Linux">
+          Linux
+        </a>
+      </li>
+      
+      <li>
+        <a href="http://localhost:4000/tags#iOS">
+          iOS
         </a>
       </li>
       
@@ -226,30 +308,148 @@
   </div>
 
   <div class="entry">
-    <h3 id="金融读书笔记">金融读书笔记</h3>
+    <h3 id="安装jenkins">安装Jenkins</h3>
+<ul>
+  <li>安装包安装</li>
+  <li>HomeBrew安装</li>
+</ul>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/4499332-1482a160b3ccdf4c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="利润表" /></p>
+<p><strong>安装包安装</strong></p>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/4499332-56ec40508576a413.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="投资相关资产" /></p>
+<blockquote>
+  <p>由于Jenkins 依赖于Java，所以在安装Jenkins前，需要先检查是否已安装Java环境。 在终端输入命令进行检测：</p>
+</blockquote>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/4499332-1853f11fb16b261d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="操纵手法" /></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ java -version
+</code></pre></div></div>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/4499332-c2b66336c3bc9002.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="操纵痕迹" /></p>
+<p>然后前往<a href="https://jenkins.io/">Jenkins官网</a>下载安装包安装</p>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/4499332-03baed702f565c25.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="现金流肖像" /></p>
+<p><strong>homeBrew安装</strong></p>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/4499332-620d6ca4173c4bf8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="现金流速度" /></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install jenkins
+</code></pre></div></div>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/4499332-e1d18d704154ad43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="现金流量表" /></p>
+<h3 id="初始化jenkins">初始化Jenkins</h3>
+<ol>
+  <li>
+    <p>在终端输入<code class="language-plaintext highlighter-rouge">jenkins</code>启动服务</p>
+  </li>
+  <li>在浏览器中输入<code class="language-plaintext highlighter-rouge">http://localhost:8080</code>中进行访问
+  <img src="https://user-gold-cdn.xitu.io/2020/1/19/16fbb6f6dc5c1eba?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="" /></li>
+  <li>依照图中描述在终端输入 cat + 密码路径，获取密码复制下一步</li>
+  <li>等待插件安装完成。</li>
+  <li>配置完管理员账户，就成功安装完成啦</li>
+</ol>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/4499332-997912976c02a8c0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="生产相关资产" /></p>
+<h3 id="安装插件">安装插件</h3>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/4499332-0176bcc5d061b023.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="经营相关资产" /></p>
+<h3 id="新建任务">新建任务</h3>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/4499332-df85fc4ee247cca8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="货币资金" /></p>
+<h3 id="打包脚本">打包脚本</h3>
 
-<p><img src="https://upload-images.jianshu.io/upload_images/4499332-7e0d27d8c00121ee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="速度利润表" /></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#!/bin/sh
+export LANG=en_US.UTF-8
 
+# 1.设置配置标识,编译环境(根据需要自行填写 release ｜ debug )
+configuration="debug"
+
+# 工程名(根据项目自行填写)
+APP_NAME="项目名"
+
+# TARGET名称（根据项目自行填写）
+TARGET_NAME="项目名"
+
+# ipa前缀（根据项目自行填写）
+IPA_NAME="项目名"
+
+# 工程根目录#工程源码目录(这里的${WORKSPACE}是jenkins的内置变量表示(jenkins job的路径):/Users/plz/.jenkins/workspace/TestDome/)
+# ${WORKSPACE}/TestDome/ 中的TestDome根据你的项目自行修改
+CODE_PATH="${WORKSPACE}/xx/${TARGET_NAME}"
+echo "-------------- CODE_PATH: ${CODE_PATH}"
+
+# info.plist路径
+project_infoplist_path= "${CODE_PATH}/${TARGET_NAME}/Info.plist"
+
+# 取版本号
+bundleShortVersion= $(/usr/libexec/PlistBuddy -c "print CFBundleShortVersionString" "${project_infoplist_path}")
+# bundleVersion= $(/usr/libexec/PlistBuddy -c "print CFBundleVersion" "${project_infoplist_path}")
+
+echo "------- info plist path : ${project_infoplist_path}"
+echo "------- bundleShortVersion : ${bundleShortVersion}"
+# $echo "------- bundleVersion : ${bundleVersion}"
+
+# 日期
+DATE=$(date +%Y%m%d%H%M%S)
+# 工程文件路径
+ARCHIVE_NAME="${APP_NAME}_${DATE}.xcarchive"
+# 存放ipa的文件夹名称（根据自己的喜好自行修改）
+IPANAME="${IPA_NAME}_IPA"
+
+# 要上传的ipa文件路径 ${username} 需要换成自己的用户名
+ROOT_PATH="/Users/wanglei/Desktop/Jenkins"
+
+ARCHIVE_PATH="${ROOT_PATH}/Archive/${ARCHIVE_NAME}"
+
+IPA_PATH="${ROOT_PATH}/Export/${IPANAME}"
+
+echo "-------------- ARCHIVE_PATH: ${ARCHIVE_PATH}"
+echo "-------------- IPA_PATH: ${IPA_PATH}"
+
+
+# 导包方式(这里需要根据需要手动配置:AdHoc/AppStore/Enterprise/Development)
+EXPORT_METHOD="AdHoc"
+# 导包方式配置文件路径(这里需要手动创建对应的XXXExportOptionsPlist.plist文件，并将文件复制到根目录下[我这里在源项目的根目录下又新建了ExportPlist文件夹专门放ExportPlist文件])
+if test "$EXPORT_METHOD" = "AdHoc"; then
+    EXPORT_METHOD_PLIST_PATH=${CODE_PATH}/ExportOptions.plist
+elif test "$EXPORT_METHOD" = "AppStore"; then
+    EXPORT_METHOD_PLIST_PATH=${CODE_PATH}/ExportOptions/AppStoreExportOptios.plist
+elif test "$EXPORT_METHOD" = "Enterprise"; then
+    EXPORT_METHOD_PLIST_PATH=${CODE_PATH}/ExportOptions/EnterpriseExportOptions.plist
+else
+    EXPORT_METHOD_PLIST_PATH=${CODE_PATH}/ExportOptions/DevelopmentExportOptions.plist
+fi
+
+echo "-------------- EXPORT_METHOD_PLIST_PATH: ${EXPORT_METHOD_PLIST_PATH}"
+
+# 指ipa定输出文件夹,如果有删除后再创建，如果没有就直接创建
+if test -d ${IPA_PATH}; then
+    "-------------- 删除:IPA Path : ${IPA_PATH}"
+    rm -rf ${IPA_PATH}
+    mkdir ${IPA_PATH}
+    "-------------- 创建:IPA Path : ${IPA_PATH}"
+else
+    mkdir -pv ${IPA_PATH}
+    "-------------- 创建:IPA Path : ${IPA_PATH}"
+fi
+
+# 进入工程源码根目录
+cd "${CODE_PATH}"
+
+echo "-------------- 安装Pod Code Path: ${CODE_PATH}"
+# 执行pod
+pod install --verbose --no-repo-update
+
+#mkdir -p build
+
+# 清除工程
+echo "-------------- Clean项目 执行Shell: xcodebuild clean -workspace ${APP_NAME}.xcworkspace -scheme ${APP_NAME} -configuration ${configuration}"
+xcodebuild clean -workspace ${APP_NAME}.xcworkspace -scheme ${APP_NAME} -configuration ${configuration}
+
+# 将app打包成xcarchive格式文件
+echo "-------------- archive项目 执行Shell: xcodebuild archive -workspace ${APP_NAME}.xcworkspace -scheme ${APP_NAME} -configuration ${configuration} -archivePath ${ARCHIVE_PATH}"
+xcodebuild archive -workspace ${APP_NAME}.xcworkspace -scheme ${APP_NAME} -configuration ${configuration} -archivePath ${ARCHIVE_PATH}
+
+# 将xcarchive格式文件打包成ipa
+echo "-------------- 导出ipa包 执行Shell: xcodebuild -exportArchive -archivePath ${ARCHIVE_PATH} -exportPath "${IPA_PATH}" -exportOptionsPlist ${EXPORT_METHOD_PLIST_PATH} -allowProvisioningUpdates"
+xcodebuild -exportArchive -archivePath ${ARCHIVE_PATH} -exportPath "${IPA_PATH}" -exportOptionsPlist ${EXPORT_METHOD_PLIST_PATH} -allowProvisioningUpdates
+
+# 删除工程文件
+# echo "+++++++++删除工程文件+++++++++"
+# rm -rf $ARCHIVE_PATH
+
+
+</code></pre></div></div>
 
   </div>
 
@@ -275,14 +475,14 @@
 <div class="pagination">
   
     <span class="prev" >
-      <a href="http://localhost:4000/APM%E6%80%BB%E7%BB%93/">
+      <a href="http://localhost:4000/%E9%87%8F%E5%8C%96%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E6%8C%87%E6%A0%87/">
         ← 上一篇
       </a>
     </span>
   
   
     <span class="next" >
-      <a href="http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93/">
+      <a href="http://localhost:4000/App%E5%8D%A1%E9%A1%BF%E6%80%BB%E7%BB%93/">
         下一篇 →
       </a>
     </span>
@@ -339,7 +539,7 @@
 
 
 
-<p>Copyright(c) 2019 愿你出走半生，归来仍是少年</p>
+<p>Copyright(c) 2017 愿你出走半生，归来仍是少年</p>
 
     </footer>
 

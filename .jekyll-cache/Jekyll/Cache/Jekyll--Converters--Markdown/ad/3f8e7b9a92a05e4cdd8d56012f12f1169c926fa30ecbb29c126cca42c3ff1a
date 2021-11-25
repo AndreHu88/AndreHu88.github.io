@@ -1,0 +1,62 @@
+I"C
+<h3 id="安装jenkins">安装Jenkins</h3>
+<ul>
+  <li>安装包安装</li>
+  <li>HomeBrew安装</li>
+</ul>
+
+<p><strong>安装包安装</strong></p>
+
+<blockquote>
+  <p>由于Jenkins 依赖于Java，所以在安装Jenkins前，需要先检查是否已安装Java环境。 在终端输入命令进行检测：</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ java -version
+</code></pre></div></div>
+
+<p>然后前往<a href="https://jenkins.io/">Jenkins官网</a>下载安装包安装</p>
+
+<p><strong>homeBrew安装</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install jenkins
+</code></pre></div></div>
+
+<h3 id="初始化jenkins">初始化Jenkins</h3>
+<ol>
+  <li>
+    <p>在终端输入<code class="language-plaintext highlighter-rouge">jenkins</code>启动服务</p>
+  </li>
+  <li>在浏览器中输入<code class="language-plaintext highlighter-rouge">http://localhost:8080</code>中进行访问
+  <img src="https://user-gold-cdn.xitu.io/2020/1/19/16fbb6f6dc5c1eba?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="" /></li>
+  <li>依照图中描述在终端输入 cat + 密码路径，获取密码复制下一步</li>
+  <li>等待插件安装完成。</li>
+  <li>配置完管理员账户，就成功安装完成啦</li>
+</ol>
+
+<h3 id="安装插件">安装插件</h3>
+
+<h3 id="新建任务">新建任务</h3>
+
+<h3 id="打包脚本">打包脚本</h3>
+
+<p>```
+#!/bin/sh
+export LANG=en_US.UTF-8</p>
+
+<h1 id="1设置配置标识编译环境根据需要自行填写-release--debug-">1.设置配置标识,编译环境(根据需要自行填写 release ｜ debug )</h1>
+<p>configuration=”debug”</p>
+
+<h1 id="工程名根据项目自行填写">工程名(根据项目自行填写)</h1>
+<p>APP_NAME=”项目名”</p>
+
+<h1 id="target名称根据项目自行填写">TARGET名称（根据项目自行填写）</h1>
+<p>TARGET_NAME=”项目名”</p>
+
+<h1 id="ipa前缀根据项目自行填写">ipa前缀（根据项目自行填写）</h1>
+<p>IPA_NAME=”项目名”</p>
+
+<h1 id="工程根目录工程源码目录这里的workspace是jenkins的内置变量表示jenkins-job的路径usersplzjenkinsworkspacetestdome">工程根目录#工程源码目录(这里的${WORKSPACE}是jenkins的内置变量表示(jenkins job的路径):/Users/plz/.jenkins/workspace/TestDome/)</h1>
+<h1 id="workspacetestdome-中的testdome根据你的项目自行修改">${WORKSPACE}/TestDome/ 中的TestDome根据你的项目自行修改</h1>
+<p>CODE_PATH=”${WORKSPACE}/xx/${TARGET_NAME}”
+echo “</p>
+:ET

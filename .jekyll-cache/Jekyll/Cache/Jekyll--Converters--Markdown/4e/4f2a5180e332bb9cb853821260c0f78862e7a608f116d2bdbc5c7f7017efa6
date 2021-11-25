@@ -1,0 +1,31 @@
+I"\<h4 id="vim的简介">vim的简介</h4>
+
+<p>vim一项很好用的工具, 所有的 Unix Like 系统都会内建 vi 编辑器</p>
+
+<p>vi编辑器有三种模式</p>
+<ol>
+  <li>命令模式（Command mode）</li>
+  <li>输入模式（Insert mode）</li>
+  <li>底线命令模式（Last line mode）</li>
+</ol>
+
+<p>三种模式的介绍</p>
+<ul>
+  <li>
+    <p>命令模式( 敲击键盘动作会被Vim识别为命令，而非输入字符。比如我们此时按下i，并不会输入一个字符，i被当作了一个命令 )
+<img src="https://www.runoob.com/wp-content/uploads/2015/10/vi-vim-cheat-sheet-sch.gif" alt="" /></p>
+  </li>
+  <li>
+    <p>输入模式
+和正常的文本输入一样</p>
+  </li>
+  <li>
+    <p>底线命令模式
+命令模式下按下:（英文冒号）就进入了底线命令模式， q 退出程序  w 保存文件， ESC键可随时退出底线命令模式</p>
+  </li>
+</ul>
+
+<h3 id="详细的内容可参考菜鸟教程">详细的内容可参考菜鸟教程</h3>
+<p><a href="https://www.runoob.com/linux/linux-vim.htmlhttps://www.runoob.com/linux/linux-vim.html">vim详细教程</a></p>
+
+:ET
