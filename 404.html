@@ -187,9 +187,7 @@
             }, 1000);
 				}
         else{
-          document.referrer === '' ?
-          window.location.href = 'https://www.sohod.cn/book' :
-          window.history.go(-1);
+          window.history.length > 1 ? window.history.go(-1) : window.location.href = 'https://www.sohod.cn/book';
         }
 			}
 		});
