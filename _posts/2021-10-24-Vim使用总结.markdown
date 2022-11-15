@@ -2,7 +2,7 @@
 
 layout:         post
 title:          vim的常用总结
-date:           2020-10-24
+date:           2021-10-24
 tags:           [工具]
 categories:
 comments: true
