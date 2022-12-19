@@ -1,4 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-11-30T09:27:15+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">风车大战骑士</title><subtitle>生活不止眼前的苟且，还有诗和远方</subtitle><entry><title type="html">APP卡顿总结</title><link href="http://localhost:4000/App%E5%8D%A1%E9%A1%BF%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="APP卡顿总结" /><published>2021-05-02T00:00:00+08:00</published><updated>2021-05-02T00:00:00+08:00</updated><id>http://localhost:4000/App%E5%8D%A1%E9%A1%BF%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/App%E5%8D%A1%E9%A1%BF%E6%80%BB%E7%BB%93/">&lt;h3 id=&quot;什么是卡顿&quot;&gt;什么是卡顿&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-11-16T15:06:24+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">风车大战骑士</title><subtitle>生活不止眼前的苟且，还有诗和远方</subtitle><entry><title type="html">vim的常用总结</title><link href="http://localhost:4000/Vim%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="vim的常用总结" /><published>2021-10-24T00:00:00+08:00</published><updated>2021-10-24T00:00:00+08:00</updated><id>http://localhost:4000/Vim%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/Vim%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/">&lt;h4 id=&quot;vim的简介&quot;&gt;vim的简介&lt;/h4&gt;
+
+&lt;p&gt;vim一项很好用的工具, 所有的 Unix Like 系统都会内建 vi 编辑器&lt;/p&gt;
+
+&lt;p&gt;vi编辑器有三种模式&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;命令模式（Command mode）&lt;/li&gt;
+  &lt;li&gt;输入模式（Insert mode）&lt;/li&gt;
+  &lt;li&gt;底线命令模式（Last line mode）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;三种模式的介绍&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;命令模式( 敲击键盘动作会被Vim识别为命令，而非输入字符。比如我们此时按下i，并不会输入一个字符，i被当作了一个命令 )
+&lt;img src=&quot;https://www.runoob.com/wp-content/uploads/2015/10/vi-vim-cheat-sheet-sch.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;输入模式
+和正常的文本输入一样&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;底线命令模式
+命令模式下按下:（英文冒号）就进入了底线命令模式， q 退出程序  w 保存文件， ESC键可随时退出底线命令模式&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;详细的内容可参考菜鸟教程&quot;&gt;详细的内容可参考菜鸟教程&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.runoob.com/linux/linux-vim.htmlhttps://www.runoob.com/linux/linux-vim.html&quot;&gt;vim详细教程&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="工具" /><summary type="html">vim的简介 vim一项很好用的工具, 所有的 Unix Like 系统都会内建 vi 编辑器 vi编辑器有三种模式 命令模式（Command mode） 输入模式（Insert mode） 底线命令模式（Last line mode） 三种模式的介绍 命令模式( 敲击键盘动作会被Vim识别为命令，而非输入字符。比如我们此时按下i，并不会输入一个字符，i被当作了一个命令 ) 输入模式 和正常的文本输入一样 底线命令模式 命令模式下按下:（英文冒号）就进入了底线命令模式， q 退出程序 w 保存文件， ESC键可随时退出底线命令模式 详细的内容可参考菜鸟教程 vim详细教程</summary></entry><entry><title type="html">APP卡顿总结</title><link href="http://localhost:4000/App%E5%8D%A1%E9%A1%BF%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="APP卡顿总结" /><published>2021-05-02T00:00:00+08:00</published><updated>2021-05-02T00:00:00+08:00</updated><id>http://localhost:4000/App%E5%8D%A1%E9%A1%BF%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/App%E5%8D%A1%E9%A1%BF%E6%80%BB%E7%BB%93/">&lt;h3 id=&quot;什么是卡顿&quot;&gt;什么是卡顿&lt;/h3&gt;
 &lt;p&gt;卡顿就是在应用使用过程中出现界面不响应或者界面渲染粘滞的情况。而应用界面的渲染以及事件响应是在主线程完成的，出现卡顿的原因可以归结为主线程阻塞。&lt;/p&gt;
 
 &lt;p&gt;在开发过程中，遇到的造成主线程阻塞的原因可能是：&lt;/p&gt;
@@ -614,35 +642,7 @@ struct mach_task_basic_info {
     int activeMem = vmstat.active_count * pagesize;
     return wireMem + activeMem;
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">APP 的 CPU 占用率 如何获取CPU的占用率: 应用作为进程运行时，包含了多个不同的线程，如果我们能获取应用的所有线程占用 CPU 的情况，也就能知道应用的 CPU 占用率 iOS 是基于 Apple Darwin 内核，由 kernel、XNU 和 Runtime 组成，而 XNU 是 Darwin 的内核，它是“X is not UNIX”的缩写，是一个混合内核，由 Mach 微内核和 BSD 组成。Mach 内核是轻量级的平台，只能完成操作系统最基本的职责，比如：进程和线程、虚拟内存管理、任务调度、进程通信和消息传递机制。其他的工作，例如文件操作和设备访问，都由 BSD 层实现 与 Mac OS X 类似，iOS 的线程技术也是基于 Mach 线程技术实现的，在 Mach 层中 thread_basic_info 结构体提供了线程的基本信息 struct thread_basic_info { time_value_t user_time; /* user run time */ time_value_t system_time; /* system run time */ integer_t cpu_usage; /* scaled cpu usage percentage */ policy_t policy; /* scheduling policy in effect */ integer_t run_state; /* run state (see below) */ integer_t flags; /* various flags (see below) */ integer_t suspend_count; /* suspend count for thread */ integer_t sleep_time; /* number of seconds that thread has been sleeping */ }; Mach task 可以看作一个机器无关的 thread 执行环境的抽象 一个 task 包含它的线程列表。内核提供了 task_threads API 调用获取指定 task 的线程列表，然后可以通过 thread_info API 调用来查询指定线程的信息，thread_info API 在 thread_act.h 中定义 kern_return_t task_threads ( task_t target_task, thread_act_array_t *act_list, mach_msg_type_number_t *act_listCnt ); task_threads 将 target_task 任务中的所有线程保存在 act_list 数组中，数组中包含 act_listCnt 个条目。 kern_return_t thread_info ( thread_act_t target_act, thread_flavor_t flavor, thread_info_t thread_info_out, mach_msg_type_number_t *thread_info_outCnt ); thread_info 查询 flavor 指定的 thread 信息，将信息返回到长度为 thread_info_outCnt 字节的 thread_info_out 缓存区中 获取当前应用的 CPU 占用率的实现如下： #import &amp;lt;mach/mach.h&amp;gt; #import &amp;lt;assert.h&amp;gt; + (CGFloat)appCpuUsage { task_info_data_t tinfo; mach_msg_type_number_t task_info_count = TASK_INFO_MAX; /// THREAD_BASIC_INFO ，使用这个类型会返回线程的基本信息，定义在 thread_basic_info_t 结构体，包含了用户和系统的运行时间，运行状态和调度优先级 kern_return_t kr = task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)tinfo, &amp;amp;task_info_count); if (kr != KERN_SUCCESS) { return -1; } thread_array_t thread_list; mach_msg_type_number_t thread_count; thread_info_data_t thinfo; mach_msg_type_number_t thread_info_count; thread_basic_info_t basic_info_th; // mach_task_self()，表示获取当前的 Mach task kr = task_threads(mach_task_self(), &amp;amp;thread_list, &amp;amp;thread_count); if (kr != KERN_SUCCESS) { return -1; } long total_time = 0; long total_userTime = 0; CGFloat total_cpu = 0; int j; // for each thread for (j = 0; j &amp;lt; (int)thread_count; j++) { thread_info_count = THREAD_INFO_MAX; kr = thread_info(thread_list[j], THREAD_BASIC_INFO, (thread_info_t)thinfo, &amp;amp;thread_info_count); if (kr != KERN_SUCCESS) { return -1; } basic_info_th = (thread_basic_info_t)thinfo; if (!(basic_info_th-&amp;gt;flags &amp;amp; TH_FLAGS_IDLE)) { total_time = total_time + basic_info_th-&amp;gt;user_time.seconds + basic_info_th-&amp;gt;system_time.seconds; total_userTime = total_userTime + basic_info_th-&amp;gt;user_time.microseconds + basic_info_th-&amp;gt;system_time.microseconds; total_cpu = total_cpu + basic_info_th-&amp;gt;cpu_usage / (float)TH_USAGE_SCALE * kMaxPercent; } } /// 防止出现内存泄漏必须调用它 kr = vm_deallocate(mach_task_self(), (vm_offset_t)thread_list, thread_count * sizeof(thread_t)); assert(kr == KERN_SUCCESS); return total_cpu; } CPU 核数 + (NSUInteger)cpuNumber { return [NSProcessInfo processInfo].activeProcessorCount; } CPU 频率 CPU 频率，就是 CPU 的时钟频率， 是 CPU 运算时的工作的频率（1秒内发生的同步脉冲数）的简称。单位是 Hz，它决定移动设备的运行速度。 在 iOS 中与 CPU 频率相关的性能指标有三个：CPU 频率，CPU 最大频率 和 CPU 最小频率。 + (NSUInteger)getSysInfo:(uint)typeSpecifier { size_t size = sizeof(int); int results; int mib[2] = {CTL_HW, typeSpecifier}; sysctl(mib, 2, &amp;amp;results, &amp;amp;size, NULL, 0); return (NSUInteger)results; } + (NSUInteger)getCpuFrequency { return [self getSysInfo:HW_CPU_FREQ]; } RAM(Random Access Memory) 物理内存（RAM）与 CPU 一样都是系统中最稀少的资源，也是最有可能产生竞争的资源，应用内存与性能直接相关 - 通常是以牺牲别的应用为代价。 不像 PC 端，iOS 没有交换空间作为备选资源，这就使得内存资源尤为重要。事实上，在 iOS 中就有 Jetsam 机制负责处理系统低 RAM 事件，Jetsam 是一种类似 Linux 的 Out-Of-Memory(Killer) 的机制。 App使用的内存 mach_task_basic_info 结构体存储了 Mach task 的内存使用信息，其中 resident_size 就是应用使用的物理内存大小，virtual_size 是虚拟内存大小。 #define MACH_TASK_BASIC_INFO 20 /* always 64-bit basic info */ struct mach_task_basic_info { mach_vm_size_t virtual_size; /* virtual memory size (bytes) */ mach_vm_size_t resident_size; /* resident memory size (bytes) */ mach_vm_size_t resident_size_max; /* maximum resident memory size (bytes) */ time_value_t user_time; /* total user run time for terminated threads */ time_value_t system_time; /* total system run time for terminated threads */ policy_t policy; /* default policy for new threads */ integer_t suspend_count; /* suspend count for task */ }; task_info API 根据指定的 flavor 类型返回 target_task 的信息。 kern_return_t task_info ( task_name_t target_task, task_flavor_t flavor, task_info_t task_info_out, mach_msg_type_number_t *task_info_outCnt ); 获取APP内存使用量 /** 获取APP内存使用量 @return byte */ + (unsigned long long)getAppRAMUsage { struct mach_task_basic_info info; mach_msg_type_number_t count = MACH_TASK_BASIC_INFO_COUNT; kern_return_t kr = task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&amp;amp;info, &amp;amp;count); if (kr != KERN_SUCCESS) { return 0; } return info.resident_size; } 获取系统内存总量 /** 获取系统内存总量 @return byte */ + (unsigned long long)getSystemRAMTotal { return [NSProcessInfo processInfo].physicalMemory; } 获取当前设备的内存使用情况 + (CGFloat)getUsedMemory { size_t length = 0; int mib[6] = {0}; int pagesize = 0; mib[0] = CTL_HW; mib[1] = HW_PAGESIZE; length = sizeof(pagesize); if (sysctl(mib, 2, &amp;amp;pagesize, &amp;amp;length, NULL, 0) &amp;lt; 0) { return 0; } mach_msg_type_number_t count = HOST_VM_INFO_COUNT; vm_statistics_data_t vmstat; if (host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&amp;amp;vmstat, &amp;amp;count) != KERN_SUCCESS) { return 0; } int wireMem = vmstat.wire_count * pagesize; int activeMem = vmstat.active_count * pagesize; return wireMem + activeMem; }</summary></entry><entry><title type="html">vim的常用总结</title><link href="http://localhost:4000/Vim%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="vim的常用总结" /><published>2020-10-24T00:00:00+08:00</published><updated>2020-10-24T00:00:00+08:00</updated><id>http://localhost:4000/Vim%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/Vim%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/">&lt;h4 id=&quot;vim的简介&quot;&gt;vim的简介&lt;/h4&gt;
-
-&lt;p&gt;vim一项很好用的工具, 所有的 Unix Like 系统都会内建 vi 编辑器&lt;/p&gt;
-
-&lt;p&gt;vi编辑器有三种模式&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;命令模式（Command mode）&lt;/li&gt;
-  &lt;li&gt;输入模式（Insert mode）&lt;/li&gt;
-  &lt;li&gt;底线命令模式（Last line mode）&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;三种模式的介绍&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;命令模式( 敲击键盘动作会被Vim识别为命令，而非输入字符。比如我们此时按下i，并不会输入一个字符，i被当作了一个命令 )
-&lt;img src=&quot;https://www.runoob.com/wp-content/uploads/2015/10/vi-vim-cheat-sheet-sch.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;输入模式
-和正常的文本输入一样&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;底线命令模式
-命令模式下按下:（英文冒号）就进入了底线命令模式， q 退出程序  w 保存文件， ESC键可随时退出底线命令模式&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;详细的内容可参考菜鸟教程&quot;&gt;详细的内容可参考菜鸟教程&lt;/h3&gt;
-&lt;p&gt;&lt;a href=&quot;https://www.runoob.com/linux/linux-vim.htmlhttps://www.runoob.com/linux/linux-vim.html&quot;&gt;vim详细教程&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="工具" /><summary type="html">vim的简介 vim一项很好用的工具, 所有的 Unix Like 系统都会内建 vi 编辑器 vi编辑器有三种模式 命令模式（Command mode） 输入模式（Insert mode） 底线命令模式（Last line mode） 三种模式的介绍 命令模式( 敲击键盘动作会被Vim识别为命令，而非输入字符。比如我们此时按下i，并不会输入一个字符，i被当作了一个命令 ) 输入模式 和正常的文本输入一样 底线命令模式 命令模式下按下:（英文冒号）就进入了底线命令模式， q 退出程序 w 保存文件， ESC键可随时退出底线命令模式 详细的内容可参考菜鸟教程 vim详细教程</summary></entry><entry><title type="html">IM消息总结</title><link href="http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="IM消息总结" /><published>2020-10-20T00:00:00+08:00</published><updated>2020-10-20T00:00:00+08:00</updated><id>http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93/">&lt;h3 id=&quot;离线消息&quot;&gt;离线消息&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">APP 的 CPU 占用率 如何获取CPU的占用率: 应用作为进程运行时，包含了多个不同的线程，如果我们能获取应用的所有线程占用 CPU 的情况，也就能知道应用的 CPU 占用率 iOS 是基于 Apple Darwin 内核，由 kernel、XNU 和 Runtime 组成，而 XNU 是 Darwin 的内核，它是“X is not UNIX”的缩写，是一个混合内核，由 Mach 微内核和 BSD 组成。Mach 内核是轻量级的平台，只能完成操作系统最基本的职责，比如：进程和线程、虚拟内存管理、任务调度、进程通信和消息传递机制。其他的工作，例如文件操作和设备访问，都由 BSD 层实现 与 Mac OS X 类似，iOS 的线程技术也是基于 Mach 线程技术实现的，在 Mach 层中 thread_basic_info 结构体提供了线程的基本信息 struct thread_basic_info { time_value_t user_time; /* user run time */ time_value_t system_time; /* system run time */ integer_t cpu_usage; /* scaled cpu usage percentage */ policy_t policy; /* scheduling policy in effect */ integer_t run_state; /* run state (see below) */ integer_t flags; /* various flags (see below) */ integer_t suspend_count; /* suspend count for thread */ integer_t sleep_time; /* number of seconds that thread has been sleeping */ }; Mach task 可以看作一个机器无关的 thread 执行环境的抽象 一个 task 包含它的线程列表。内核提供了 task_threads API 调用获取指定 task 的线程列表，然后可以通过 thread_info API 调用来查询指定线程的信息，thread_info API 在 thread_act.h 中定义 kern_return_t task_threads ( task_t target_task, thread_act_array_t *act_list, mach_msg_type_number_t *act_listCnt ); task_threads 将 target_task 任务中的所有线程保存在 act_list 数组中，数组中包含 act_listCnt 个条目。 kern_return_t thread_info ( thread_act_t target_act, thread_flavor_t flavor, thread_info_t thread_info_out, mach_msg_type_number_t *thread_info_outCnt ); thread_info 查询 flavor 指定的 thread 信息，将信息返回到长度为 thread_info_outCnt 字节的 thread_info_out 缓存区中 获取当前应用的 CPU 占用率的实现如下： #import &amp;lt;mach/mach.h&amp;gt; #import &amp;lt;assert.h&amp;gt; + (CGFloat)appCpuUsage { task_info_data_t tinfo; mach_msg_type_number_t task_info_count = TASK_INFO_MAX; /// THREAD_BASIC_INFO ，使用这个类型会返回线程的基本信息，定义在 thread_basic_info_t 结构体，包含了用户和系统的运行时间，运行状态和调度优先级 kern_return_t kr = task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)tinfo, &amp;amp;task_info_count); if (kr != KERN_SUCCESS) { return -1; } thread_array_t thread_list; mach_msg_type_number_t thread_count; thread_info_data_t thinfo; mach_msg_type_number_t thread_info_count; thread_basic_info_t basic_info_th; // mach_task_self()，表示获取当前的 Mach task kr = task_threads(mach_task_self(), &amp;amp;thread_list, &amp;amp;thread_count); if (kr != KERN_SUCCESS) { return -1; } long total_time = 0; long total_userTime = 0; CGFloat total_cpu = 0; int j; // for each thread for (j = 0; j &amp;lt; (int)thread_count; j++) { thread_info_count = THREAD_INFO_MAX; kr = thread_info(thread_list[j], THREAD_BASIC_INFO, (thread_info_t)thinfo, &amp;amp;thread_info_count); if (kr != KERN_SUCCESS) { return -1; } basic_info_th = (thread_basic_info_t)thinfo; if (!(basic_info_th-&amp;gt;flags &amp;amp; TH_FLAGS_IDLE)) { total_time = total_time + basic_info_th-&amp;gt;user_time.seconds + basic_info_th-&amp;gt;system_time.seconds; total_userTime = total_userTime + basic_info_th-&amp;gt;user_time.microseconds + basic_info_th-&amp;gt;system_time.microseconds; total_cpu = total_cpu + basic_info_th-&amp;gt;cpu_usage / (float)TH_USAGE_SCALE * kMaxPercent; } } /// 防止出现内存泄漏必须调用它 kr = vm_deallocate(mach_task_self(), (vm_offset_t)thread_list, thread_count * sizeof(thread_t)); assert(kr == KERN_SUCCESS); return total_cpu; } CPU 核数 + (NSUInteger)cpuNumber { return [NSProcessInfo processInfo].activeProcessorCount; } CPU 频率 CPU 频率，就是 CPU 的时钟频率， 是 CPU 运算时的工作的频率（1秒内发生的同步脉冲数）的简称。单位是 Hz，它决定移动设备的运行速度。 在 iOS 中与 CPU 频率相关的性能指标有三个：CPU 频率，CPU 最大频率 和 CPU 最小频率。 + (NSUInteger)getSysInfo:(uint)typeSpecifier { size_t size = sizeof(int); int results; int mib[2] = {CTL_HW, typeSpecifier}; sysctl(mib, 2, &amp;amp;results, &amp;amp;size, NULL, 0); return (NSUInteger)results; } + (NSUInteger)getCpuFrequency { return [self getSysInfo:HW_CPU_FREQ]; } RAM(Random Access Memory) 物理内存（RAM）与 CPU 一样都是系统中最稀少的资源，也是最有可能产生竞争的资源，应用内存与性能直接相关 - 通常是以牺牲别的应用为代价。 不像 PC 端，iOS 没有交换空间作为备选资源，这就使得内存资源尤为重要。事实上，在 iOS 中就有 Jetsam 机制负责处理系统低 RAM 事件，Jetsam 是一种类似 Linux 的 Out-Of-Memory(Killer) 的机制。 App使用的内存 mach_task_basic_info 结构体存储了 Mach task 的内存使用信息，其中 resident_size 就是应用使用的物理内存大小，virtual_size 是虚拟内存大小。 #define MACH_TASK_BASIC_INFO 20 /* always 64-bit basic info */ struct mach_task_basic_info { mach_vm_size_t virtual_size; /* virtual memory size (bytes) */ mach_vm_size_t resident_size; /* resident memory size (bytes) */ mach_vm_size_t resident_size_max; /* maximum resident memory size (bytes) */ time_value_t user_time; /* total user run time for terminated threads */ time_value_t system_time; /* total system run time for terminated threads */ policy_t policy; /* default policy for new threads */ integer_t suspend_count; /* suspend count for task */ }; task_info API 根据指定的 flavor 类型返回 target_task 的信息。 kern_return_t task_info ( task_name_t target_task, task_flavor_t flavor, task_info_t task_info_out, mach_msg_type_number_t *task_info_outCnt ); 获取APP内存使用量 /** 获取APP内存使用量 @return byte */ + (unsigned long long)getAppRAMUsage { struct mach_task_basic_info info; mach_msg_type_number_t count = MACH_TASK_BASIC_INFO_COUNT; kern_return_t kr = task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&amp;amp;info, &amp;amp;count); if (kr != KERN_SUCCESS) { return 0; } return info.resident_size; } 获取系统内存总量 /** 获取系统内存总量 @return byte */ + (unsigned long long)getSystemRAMTotal { return [NSProcessInfo processInfo].physicalMemory; } 获取当前设备的内存使用情况 + (CGFloat)getUsedMemory { size_t length = 0; int mib[6] = {0}; int pagesize = 0; mib[0] = CTL_HW; mib[1] = HW_PAGESIZE; length = sizeof(pagesize); if (sysctl(mib, 2, &amp;amp;pagesize, &amp;amp;length, NULL, 0) &amp;lt; 0) { return 0; } mach_msg_type_number_t count = HOST_VM_INFO_COUNT; vm_statistics_data_t vmstat; if (host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&amp;amp;vmstat, &amp;amp;count) != KERN_SUCCESS) { return 0; } int wireMem = vmstat.wire_count * pagesize; int activeMem = vmstat.active_count * pagesize; return wireMem + activeMem; }</summary></entry><entry><title type="html">IM消息总结</title><link href="http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="IM消息总结" /><published>2020-10-20T00:00:00+08:00</published><updated>2020-10-20T00:00:00+08:00</updated><id>http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/IM%E6%B6%88%E6%81%AF%E6%80%BB%E7%BB%93/">&lt;h3 id=&quot;离线消息&quot;&gt;离线消息&lt;/h3&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1.  客户端登录时，服务端不推送全量离线消息，只推送离线消息计数器(数量)， 客户端显示在未读小红点
 2. 客户端拿到离线消息， 遍历会话列表， 依次将未读消息累加，然后通知服务端清空离线消息计数器的增量数据
 3. 客户端进入某会话时，上拉加载， 通过msgId分页查询离线消息
@@ -815,7 +815,72 @@ http分段式上传(若失败，更新聊天数据,更新数据库,刷新聊天U
 &lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8a09362842c9439a9fe9c922096a6873~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;经营相关资产&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;货币资金
-&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d99996532d4844eba652ca2345e7cf49~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;货币资金&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><category term="金融" /><summary type="html">金融读书笔记 利润表总结 速读利润表 投资相关资产 操纵手法 财报被操纵的痕迹 现金流肖像 现金流速读 现金流量表 生产相关资产 经营相关资产 货币资金</summary></entry><entry><title type="html">APM总结</title><link href="http://localhost:4000/APM%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="APM总结" /><published>2020-06-20T00:00:00+08:00</published><updated>2020-06-20T00:00:00+08:00</updated><id>http://localhost:4000/APM%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/APM%E6%80%BB%E7%BB%93/">&lt;h5 id=&quot;apm监控卡顿并上报有两种方案&quot;&gt;APM监控卡顿并上报有两种方案：&lt;/h5&gt;
+&lt;img src=&quot;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d99996532d4844eba652ca2345e7cf49~tplv-k3u1fbpfcp-zoom-1.image&quot; alt=&quot;货币资金&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><category term="金融" /><summary type="html">金融读书笔记 利润表总结 速读利润表 投资相关资产 操纵手法 财报被操纵的痕迹 现金流肖像 现金流速读 现金流量表 生产相关资产 经营相关资产 货币资金</summary></entry><entry><title type="html">APM总结</title><link href="http://localhost:4000/iOS%E7%94%BB%E4%B8%AD%E7%94%BB%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="APM总结" /><published>2020-06-20T00:00:00+08:00</published><updated>2020-06-20T00:00:00+08:00</updated><id>http://localhost:4000/iOS%E7%94%BB%E4%B8%AD%E7%94%BB%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/iOS%E7%94%BB%E4%B8%AD%E7%94%BB%E6%80%BB%E7%BB%93/">&lt;h2 id=&quot;ios画中画总结&quot;&gt;iOS画中画总结&lt;/h2&gt;
+&lt;p&gt;之前在做iOS的音视频播放的时候，iOS小窗播放音视频退到后台后启用画中画功能，遇到一些坑，记录一下，做一些总结&lt;/p&gt;
+
+&lt;p&gt;通过分析B站等一些视频播放APP发现，B站播放视频开启小窗后，播放在APP内变成小窗播放，该小窗是开发者自定义的view，退到后台后，开启了画中画(交由系统接管)，并实现无缝的进度衔接，从画中画回到APP，画中画消失，切换回自定义的播放View, 并同步回系统画中画的进度&lt;/p&gt;
+
+&lt;h3 id=&quot;启用画中画&quot;&gt;启用画中画&lt;/h3&gt;
+&lt;p&gt;在Xcode的能力中勾选开启画中画
+&lt;img src=&quot;media/16685090834891.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;实现画中画&quot;&gt;实现画中画&lt;/h3&gt;
+&lt;p&gt;iOS系统提供了&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AVPictureInPictureController&lt;/code&gt;API给开发者，可以实现画中画&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;创建画中画属性，实现&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;AVPictureInPictureControllerDelegate&amp;gt;&lt;/code&gt;代理
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@property (nonatomic, strong) AVPictureInPictureController *pipVC;
+@property (nonatomic, strong) AVPlayerLayer *playerLayer;
+@property (nonatomic, strong) AVPlayer *player;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;判断是否支持画中画功能并开启权限
+``` 
+if (!_player) {
+  self.player = [AVPlayer playerWithURL:[NSURL URLWithString: self.playerShowView.currentPlayUrl]];
+  self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
+}&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;if ([AVPictureInPictureController isPictureInPictureSupported]) {
+    @try {
+        NSError *error = nil;
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&amp;amp;error];
+        [[AVAudioSession sharedInstance] setActive:YES error:&amp;amp;error];&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    if (error) {
+        NSLog(@&quot;请求后台播放权限失败: %@&quot;,error);
+    }
+    
+} @catch (NSException *exception) {
+    NSLog(@&quot;AVAudioSession发生错误&quot;);
+}
+self.pipVC = [[AVPictureInPictureController alloc] initWithPlayerLayer:self.playerLayer];
+self.pipVC.delegate = self; } ```
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;实现画中画代理
+```
+// 关闭画中画且恢复播放界面&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;(void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController restoreUserInterfaceForPictureInPictureStopWithCompletionHandler:(void (^)(BOOL restored))completionHandler {&lt;/p&gt;
+
+    &lt;p&gt;completionHandler(true);&lt;/p&gt;
+
+    &lt;p&gt;CGFloat currentTime = self.player.currentTime.value / self.player.currentTime.timescale;
+  NSLog(@”画中画恢复了: %f”, currentTime);
+}
+```&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;画中画遇到的一些坑&quot;&gt;画中画遇到的一些坑&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;不能把&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;playerLayer&lt;/code&gt;加在window的layer上会报错，加在view的layer上不会报错&lt;/li&gt;
+  &lt;li&gt;画中画的宽度或者尺寸设置为屏幕的尺寸后，APP退到后台，会自动开启画中画&lt;/li&gt;
+  &lt;li&gt;开启画中画的时候需要判断状态，刚初始化的AVPictureInPictureController直接开启是不可用的&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">iOS画中画总结 之前在做iOS的音视频播放的时候，iOS小窗播放音视频退到后台后启用画中画功能，遇到一些坑，记录一下，做一些总结 通过分析B站等一些视频播放APP发现，B站播放视频开启小窗后，播放在APP内变成小窗播放，该小窗是开发者自定义的view，退到后台后，开启了画中画(交由系统接管)，并实现无缝的进度衔接，从画中画回到APP，画中画消失，切换回自定义的播放View, 并同步回系统画中画的进度 启用画中画 在Xcode的能力中勾选开启画中画 实现画中画 iOS系统提供了AVPictureInPictureControllerAPI给开发者，可以实现画中画 创建画中画属性，实现&amp;lt;AVPictureInPictureControllerDelegate&amp;gt;代理 @property (nonatomic, strong) AVPictureInPictureController *pipVC; @property (nonatomic, strong) AVPlayerLayer *playerLayer; @property (nonatomic, strong) AVPlayer *player; 判断是否支持画中画功能并开启权限 ``` if (!_player) { self.player = [AVPlayer playerWithURL:[NSURL URLWithString: self.playerShowView.currentPlayUrl]]; self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player]; } if ([AVPictureInPictureController isPictureInPictureSupported]) { @try { NSError *error = nil; [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&amp;amp;error]; [[AVAudioSession sharedInstance] setActive:YES error:&amp;amp;error]; if (error) { NSLog(@&quot;请求后台播放权限失败: %@&quot;,error); } } @catch (NSException *exception) { NSLog(@&quot;AVAudioSession发生错误&quot;); } self.pipVC = [[AVPictureInPictureController alloc] initWithPlayerLayer:self.playerLayer]; self.pipVC.delegate = self; } ``` 实现画中画代理 ``` // 关闭画中画且恢复播放界面 (void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController restoreUserInterfaceForPictureInPictureStopWithCompletionHandler:(void (^)(BOOL restored))completionHandler { completionHandler(true); CGFloat currentTime = self.player.currentTime.value / self.player.currentTime.timescale; NSLog(@”画中画恢复了: %f”, currentTime); } ``` 画中画遇到的一些坑 不能把playerLayer加在window的layer上会报错，加在view的layer上不会报错 画中画的宽度或者尺寸设置为屏幕的尺寸后，APP退到后台，会自动开启画中画 开启画中画的时候需要判断状态，刚初始化的AVPictureInPictureController直接开启是不可用的</summary></entry><entry><title type="html">APM总结</title><link href="http://localhost:4000/APM%E6%80%BB%E7%BB%93/" rel="alternate" type="text/html" title="APM总结" /><published>2020-06-20T00:00:00+08:00</published><updated>2020-06-20T00:00:00+08:00</updated><id>http://localhost:4000/APM%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/APM%E6%80%BB%E7%BB%93/">&lt;h5 id=&quot;apm监控卡顿并上报有两种方案&quot;&gt;APM监控卡顿并上报有两种方案：&lt;/h5&gt;
 &lt;ol&gt;
   &lt;li&gt;监听Runloop状态回调， 子线程ping主线程
     &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    if (currentMode-&amp;gt;_observerMask &amp;amp; kCFRunLoopEntry )
@@ -1150,96 +1215,4 @@ if (!poll &amp;amp;&amp;amp; (rlm-&amp;gt;_observerMask &amp;amp; kCFRunLoopAfte
 
 &lt;p&gt;二进制协议方案与文本协议方案类似，都需要考虑数据安全性的问题。二进制协议由于传输的数据包是二进制流，抓包并不能直接看到结构体，例如我们采用的jce协议，必须知道完整的数据格式才能解析出原始数据。在我们的方案中还采用了https、对协议中的内容数据PkgReqBody/PkgRspBody进行先压缩后加密等操作保证安全性&lt;/p&gt;
 
-&lt;p&gt;二进制协议方案中，采用的AES加密，与文本协议不同的是采用AES的GCM模式。AES作为一种分组对称加密算法，需要对明文进行分组，分组长度可为128或256bits，有ECB，CBC，CTR等多种模式，这里不做具体介绍。GCM模式可以提供对消息的加密和完整性校验，具体原理这里不作详细介绍，可以参考文章《&lt;a href=&quot;https://blog.csdn.net/t0mato_/article/details/53160772&quot;&gt;什么是 AES-GCM加密算法&lt;/a&gt;》。AES-GCM加密也需要密钥key、初始向量iv，并且加密之后除了得到密文，还会得到消息校验码。在数据接收方可以通过这个校验码校验密文是否有篡改。在具体实现中，为增强安全性，iv由请求序列号和key按照一定规则动态生成，并将加密得到的校验码填写在协议包头PkgReqHead/PkgRspHead中，在解密时需要作为验证条件&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">Socket长连接的创建与维护 所有数据收发流程，均通过Socket长连接完成，如何维护一个稳定Socket通道，是IM系统是否稳定的重要一环 用连接请求接口，会开始连接的创建过程，创建成功后，会完成鉴权操作，当创建和鉴权都完成后，会开启消息收发线程，为了维持长连接，会有心跳机制，特别的，会开启一个心跳轮询线程。 心跳机制，是IM系统设计中的常见概念，简单的解释就是每隔若干时间发送一个固定信息给服务端，服务端收到后及时回复一个固定信息，如果服务端若干时间内没有收到客户端心跳信息则视客户端断开，同理如果客户端若干时间没有收到服务端心跳回值则视服务端断开 当长连接创建成功后，会开启一个轮询线程，每隔一段时间发送心跳消息给服务器端，以维持长连接 重连流程 聊天会话数据加载策略 用户聊天时，需要将已经发送和接收到的聊天信息保存到本地。而不是每次都拉取历史数据。以达到节约流量和无网络状态下也查看数据的效果 IM会话首次请求数据流程 IM下拉获取历史数据流程 IM单条消息发送持久化方案 IM单条数据重发流程 消息回执 发送方增加已送到和未送达的状态，接收方收到消息后，给服务器返回已收到消息的通知，服务器再推送给发送方该状态，如果没有收到接收方回执，服务器可尝试重新推送。发送方接受到接收方的收到回执后，更新发送状态已发送，如果未收到，则显示未送达。为了防止接收方回执丢失，接收方接收消息时候，可维护本地去重队列 IM消息的逻辑流程 消息接收： 网络模块通过跟IM服务端保持的长连接接收IM消息； 消息入库： 网络模块会将IM消息存入本地数据库，即信件投入了韩梅梅家的邮箱。网络模块就是邮递员，本地数据库就是韩梅梅家的邮箱； 消息展示： 界面模块获取发送人头像，和消息内容一起显示在聊天界面上。 传输层协议 传输格式 数据协议存在文本协议和二进制协议两种类型 文本协议直观、描述性强，容易理解、便与调试，并且协议修改方便，但是数据冗余较多，安全性稍差； 二进制协议格式精简、冗余数据少，窃听成本更高，但是数据不直观、调试略微复杂，使用、升级维护都需要约定好规则。 为优化App的网络请求速度和减小数据包大小，并配合接入层后台往C++框架改造，我们App的接入层网络数据传输协议切换成了二进制协议。协议数据包的定义统一采用协议头+业务包体(协议内容)的方式，协议头中用若干比特位定义协议版本号、数据包长度等信息 请求协议的协议头中包含业务标志、协议版本号和数据包长度，服务端只处理以业务标志开头的数据包： 截取协议头后，用PkgReq结构体解析协议头中指定长度的数据包。 PkgReq包括明文的协议包头PkgReqHead和密文的二进制流。 PkgReqHead中会包括客户端生成的请求序列号，密文的加密方式、压缩方式等信息，用这些信息解开加密压缩过的PkgReqBody。 PkgReqBody包含通用请求数据ReqHead和业务请求数据ReqBody数组。 ReqHead中主要包括用户的设备信息、App版本信息、账号信息、网络环境等等基础信息，ReqBody则是具体请求命令字和业务请求结构体的封装。 若是多个命令字的合并请求则会有多个ReqBody，而ReqHead只需要有一份。 后台路由层根据ReqBody中的命令字cmdid将ReqBody中的businessReqBody字段转发到具体的后台服务进行处理。 并且ReqHead中设计了guid字段，后台会存储用户的设备信息并且给用户分配唯一的guid，客户端拿到guid之后，后续的请求就不需要上报不变的设备信息字段，只需要上传guid，后端可以根据guid按需获取用户设备信息，减小请求数据量。 响应协议与请求协议的整体结构类似，由于响应需要返回错误码或返回码给客户端，并且存在合并请求，因此设计了两层返回码。在RspHead中有整体返回码iRet，作为路由层整体的处理结果；每个RspBody中还有ret，作为该命令字对应的后台服务的返回结果。每个RspBody中的businessRspBody在iRet和ret同时有效时才能用该命令字对应的响应结构体进行解包 传输安全 二进制协议方案与文本协议方案类似，都需要考虑数据安全性的问题。二进制协议由于传输的数据包是二进制流，抓包并不能直接看到结构体，例如我们采用的jce协议，必须知道完整的数据格式才能解析出原始数据。在我们的方案中还采用了https、对协议中的内容数据PkgReqBody/PkgRspBody进行先压缩后加密等操作保证安全性 二进制协议方案中，采用的AES加密，与文本协议不同的是采用AES的GCM模式。AES作为一种分组对称加密算法，需要对明文进行分组，分组长度可为128或256bits，有ECB，CBC，CTR等多种模式，这里不做具体介绍。GCM模式可以提供对消息的加密和完整性校验，具体原理这里不作详细介绍，可以参考文章《什么是 AES-GCM加密算法》。AES-GCM加密也需要密钥key、初始向量iv，并且加密之后除了得到密文，还会得到消息校验码。在数据接收方可以通过这个校验码校验密文是否有篡改。在具体实现中，为增强安全性，iv由请求序列号和key按照一定规则动态生成，并将加密得到的校验码填写在协议包头PkgReqHead/PkgRspHead中，在解密时需要作为验证条件</summary></entry><entry><title type="html">IAP记录</title><link href="http://localhost:4000/IAP%E5%86%85%E8%B4%AD/" rel="alternate" type="text/html" title="IAP记录" /><published>2020-04-25T00:00:00+08:00</published><updated>2020-04-25T00:00:00+08:00</updated><id>http://localhost:4000/IAP%E5%86%85%E8%B4%AD</id><content type="html" xml:base="http://localhost:4000/IAP%E5%86%85%E8%B4%AD/">&lt;h5 id=&quot;记录苹果iap内购的流程&quot;&gt;记录苹果IAP内购的流程&lt;/h5&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;先在Apple Developer官网，签署相关的协议， 完善相应的信息&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;在APP下添加内购项目， 选择内购产品的类型， 共四种类型，下面有总结&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;输入商品相应的信息，产品id， 建议用bundleID加商品id, 组成的字符串，保证唯一性&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;选择价格，上传审核图和审核信息， 保存&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;商品显示可用后，即可开始Coding, coding完成后提交审核方可真实使用&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h6 id=&quot;内购商品类型-解释&quot;&gt;内购商品类型 解释&lt;/h6&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;1.消耗型商品
-顾名思义, 可以消耗使用的商品, 比如游戏中的金币, 钻石等, 可以用来购买应用内虚拟物品的货币。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;2.非消耗型商品
-无法被消耗的商品，比如一些教育型APP中的课程, 再比如一些赛车游戏中的赛道, 这类商品需要在审核添加恢复购买按钮, 用于用户购买过后再误删除或其他原因卸载APP后的恢复流程, 否则提交审核会被拒绝。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;3.非续期订阅
-此类商品与消耗型商品类似, 比如一个月的会员, 一个季度的会员等,与消耗型商品的差异在于, 这类商品在验证凭证时需要传递共享秘钥&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;4.自动续期订阅
-这类商品和其他商品的流程也有些许不同, 应用比如视频APP中的连续包月会员, 此类商品到期会自动扣费, 服务器的验证逻辑也会有所不同,流程可以参考这篇文章&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h5 id=&quot;iap原理解释&quot;&gt;IAP原理解释&lt;/h5&gt;
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;IAP的支付方式和微信，支付宝等的第三方支付的方式完全不同，下面分别记录下支付的区别，&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;微信支付宝等第三方支付主要以Server驱动相应的业务，客户端流程大概如下 (用户选择商品 -&amp;gt; 服务端生成订单 -&amp;gt; 生成第三方需要的签名等相关信息给到客户端 -&amp;gt; 客户端调起第三方应用支付 -&amp;gt; 第三方回调客户端 -&amp;gt; 客户端向Server查询最终支付结果 -&amp;gt; 支付完成)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;IAP的方式不同，IAP主要是以客户端驱动， Server仅仅用来校验Apple返回的支付凭证， Apple提供相应的代理方法， 告知客户端支付的进行状态， 因为客户端的情况复杂， 再加上IAP的国外服务器返回的问题，所以在IAP过程中，会出现很多奇怪的问题，下面开始逐步记录如何进行IAP&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h5 id=&quot;iap-coding&quot;&gt;IAP Coding&lt;/h5&gt;
-&lt;ol&gt;
-  &lt;li&gt;需要引入 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;import StoreKit&lt;/code&gt;， IAP所有的方法都在这个框架内部&lt;/li&gt;
-  &lt;li&gt;根据产品的id查询IAP服务器上的相应的商品信息, 方法如下， 传入productIdentifiers
-    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;let request = SKProductsRequest(productIdentifiers: productIdentifiers)
-     request.delegate = self
-     request.start()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;实现delegate方法，  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SKProductsRequestDelegate&lt;/code&gt;, 回调如下&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-
-   let products : [SKProduct] = response.products
-   
-   /// 可以从product中获取到如下信息
-   DLog(&quot;product price: \(product.price)&quot;)
-   DLog(&quot;product description: \(product.description)&quot;)
-   DLog(&quot;product productIdentifier: \(product.productIdentifier)&quot;)
-   DLog(&quot;product title: \(product.localizedTitle)&quot;)
-   DLog(&quot;applicationUsername: \(IAPOrder.applicationUsername ?? &quot;&quot;)&quot;)
-   
- /// 开始支付
- let payment = SKMutablePayment(product: product)
-/// 发起支付时候指定用户的username, 在掉单时候验证防止切换账号导致充值错误
-  payment.applicationUsername = IAPOrder.applicationUsername
-SKPaymentQueue.default().add(payment)
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;我们需要实现 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SKProductsRequestDelegate&lt;/code&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;在需要实现IAP的Class监听IAP的Observer， &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SKPaymentTransactionObserver&lt;/code&gt;, 这个Observer主要负责监听IAP的各种状态&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">记录苹果IAP内购的流程 先在Apple Developer官网，签署相关的协议， 完善相应的信息 在APP下添加内购项目， 选择内购产品的类型， 共四种类型，下面有总结 输入商品相应的信息，产品id， 建议用bundleID加商品id, 组成的字符串，保证唯一性 选择价格，上传审核图和审核信息， 保存 商品显示可用后，即可开始Coding, coding完成后提交审核方可真实使用 内购商品类型 解释 1.消耗型商品 顾名思义, 可以消耗使用的商品, 比如游戏中的金币, 钻石等, 可以用来购买应用内虚拟物品的货币。 2.非消耗型商品 无法被消耗的商品，比如一些教育型APP中的课程, 再比如一些赛车游戏中的赛道, 这类商品需要在审核添加恢复购买按钮, 用于用户购买过后再误删除或其他原因卸载APP后的恢复流程, 否则提交审核会被拒绝。 3.非续期订阅 此类商品与消耗型商品类似, 比如一个月的会员, 一个季度的会员等,与消耗型商品的差异在于, 这类商品在验证凭证时需要传递共享秘钥 4.自动续期订阅 这类商品和其他商品的流程也有些许不同, 应用比如视频APP中的连续包月会员, 此类商品到期会自动扣费, 服务器的验证逻辑也会有所不同,流程可以参考这篇文章 IAP原理解释 IAP的支付方式和微信，支付宝等的第三方支付的方式完全不同，下面分别记录下支付的区别， 微信支付宝等第三方支付主要以Server驱动相应的业务，客户端流程大概如下 (用户选择商品 -&amp;gt; 服务端生成订单 -&amp;gt; 生成第三方需要的签名等相关信息给到客户端 -&amp;gt; 客户端调起第三方应用支付 -&amp;gt; 第三方回调客户端 -&amp;gt; 客户端向Server查询最终支付结果 -&amp;gt; 支付完成) IAP的方式不同，IAP主要是以客户端驱动， Server仅仅用来校验Apple返回的支付凭证， Apple提供相应的代理方法， 告知客户端支付的进行状态， 因为客户端的情况复杂， 再加上IAP的国外服务器返回的问题，所以在IAP过程中，会出现很多奇怪的问题，下面开始逐步记录如何进行IAP IAP Coding 需要引入 import StoreKit， IAP所有的方法都在这个框架内部 根据产品的id查询IAP服务器上的相应的商品信息, 方法如下， 传入productIdentifiers let request = SKProductsRequest(productIdentifiers: productIdentifiers) request.delegate = self request.start() 实现delegate方法， SKProductsRequestDelegate, 回调如下 func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) { let products : [SKProduct] = response.products /// 可以从product中获取到如下信息 DLog(&quot;product price: \(product.price)&quot;) DLog(&quot;product description: \(product.description)&quot;) DLog(&quot;product productIdentifier: \(product.productIdentifier)&quot;) DLog(&quot;product title: \(product.localizedTitle)&quot;) DLog(&quot;applicationUsername: \(IAPOrder.applicationUsername ?? &quot;&quot;)&quot;) /// 开始支付 let payment = SKMutablePayment(product: product) /// 发起支付时候指定用户的username, 在掉单时候验证防止切换账号导致充值错误 payment.applicationUsername = IAPOrder.applicationUsername SKPaymentQueue.default().add(payment) } 我们需要实现 SKProductsRequestDelegate 在需要实现IAP的Class监听IAP的Observer， SKPaymentTransactionObserver, 这个Observer主要负责监听IAP的各种状态</summary></entry></feed>
+&lt;p&gt;二进制协议方案中，采用的AES加密，与文本协议不同的是采用AES的GCM模式。AES作为一种分组对称加密算法，需要对明文进行分组，分组长度可为128或256bits，有ECB，CBC，CTR等多种模式，这里不做具体介绍。GCM模式可以提供对消息的加密和完整性校验，具体原理这里不作详细介绍，可以参考文章《&lt;a href=&quot;https://blog.csdn.net/t0mato_/article/details/53160772&quot;&gt;什么是 AES-GCM加密算法&lt;/a&gt;》。AES-GCM加密也需要密钥key、初始向量iv，并且加密之后除了得到密文，还会得到消息校验码。在数据接收方可以通过这个校验码校验密文是否有篡改。在具体实现中，为增强安全性，iv由请求序列号和key按照一定规则动态生成，并将加密得到的校验码填写在协议包头PkgReqHead/PkgRspHead中，在解密时需要作为验证条件&lt;/p&gt;</content><author><name></name></author><category term="iOS" /><summary type="html">Socket长连接的创建与维护 所有数据收发流程，均通过Socket长连接完成，如何维护一个稳定Socket通道，是IM系统是否稳定的重要一环 用连接请求接口，会开始连接的创建过程，创建成功后，会完成鉴权操作，当创建和鉴权都完成后，会开启消息收发线程，为了维持长连接，会有心跳机制，特别的，会开启一个心跳轮询线程。 心跳机制，是IM系统设计中的常见概念，简单的解释就是每隔若干时间发送一个固定信息给服务端，服务端收到后及时回复一个固定信息，如果服务端若干时间内没有收到客户端心跳信息则视客户端断开，同理如果客户端若干时间没有收到服务端心跳回值则视服务端断开 当长连接创建成功后，会开启一个轮询线程，每隔一段时间发送心跳消息给服务器端，以维持长连接 重连流程 聊天会话数据加载策略 用户聊天时，需要将已经发送和接收到的聊天信息保存到本地。而不是每次都拉取历史数据。以达到节约流量和无网络状态下也查看数据的效果 IM会话首次请求数据流程 IM下拉获取历史数据流程 IM单条消息发送持久化方案 IM单条数据重发流程 消息回执 发送方增加已送到和未送达的状态，接收方收到消息后，给服务器返回已收到消息的通知，服务器再推送给发送方该状态，如果没有收到接收方回执，服务器可尝试重新推送。发送方接受到接收方的收到回执后，更新发送状态已发送，如果未收到，则显示未送达。为了防止接收方回执丢失，接收方接收消息时候，可维护本地去重队列 IM消息的逻辑流程 消息接收： 网络模块通过跟IM服务端保持的长连接接收IM消息； 消息入库： 网络模块会将IM消息存入本地数据库，即信件投入了韩梅梅家的邮箱。网络模块就是邮递员，本地数据库就是韩梅梅家的邮箱； 消息展示： 界面模块获取发送人头像，和消息内容一起显示在聊天界面上。 传输层协议 传输格式 数据协议存在文本协议和二进制协议两种类型 文本协议直观、描述性强，容易理解、便与调试，并且协议修改方便，但是数据冗余较多，安全性稍差； 二进制协议格式精简、冗余数据少，窃听成本更高，但是数据不直观、调试略微复杂，使用、升级维护都需要约定好规则。 为优化App的网络请求速度和减小数据包大小，并配合接入层后台往C++框架改造，我们App的接入层网络数据传输协议切换成了二进制协议。协议数据包的定义统一采用协议头+业务包体(协议内容)的方式，协议头中用若干比特位定义协议版本号、数据包长度等信息 请求协议的协议头中包含业务标志、协议版本号和数据包长度，服务端只处理以业务标志开头的数据包： 截取协议头后，用PkgReq结构体解析协议头中指定长度的数据包。 PkgReq包括明文的协议包头PkgReqHead和密文的二进制流。 PkgReqHead中会包括客户端生成的请求序列号，密文的加密方式、压缩方式等信息，用这些信息解开加密压缩过的PkgReqBody。 PkgReqBody包含通用请求数据ReqHead和业务请求数据ReqBody数组。 ReqHead中主要包括用户的设备信息、App版本信息、账号信息、网络环境等等基础信息，ReqBody则是具体请求命令字和业务请求结构体的封装。 若是多个命令字的合并请求则会有多个ReqBody，而ReqHead只需要有一份。 后台路由层根据ReqBody中的命令字cmdid将ReqBody中的businessReqBody字段转发到具体的后台服务进行处理。 并且ReqHead中设计了guid字段，后台会存储用户的设备信息并且给用户分配唯一的guid，客户端拿到guid之后，后续的请求就不需要上报不变的设备信息字段，只需要上传guid，后端可以根据guid按需获取用户设备信息，减小请求数据量。 响应协议与请求协议的整体结构类似，由于响应需要返回错误码或返回码给客户端，并且存在合并请求，因此设计了两层返回码。在RspHead中有整体返回码iRet，作为路由层整体的处理结果；每个RspBody中还有ret，作为该命令字对应的后台服务的返回结果。每个RspBody中的businessRspBody在iRet和ret同时有效时才能用该命令字对应的响应结构体进行解包 传输安全 二进制协议方案与文本协议方案类似，都需要考虑数据安全性的问题。二进制协议由于传输的数据包是二进制流，抓包并不能直接看到结构体，例如我们采用的jce协议，必须知道完整的数据格式才能解析出原始数据。在我们的方案中还采用了https、对协议中的内容数据PkgReqBody/PkgRspBody进行先压缩后加密等操作保证安全性 二进制协议方案中，采用的AES加密，与文本协议不同的是采用AES的GCM模式。AES作为一种分组对称加密算法，需要对明文进行分组，分组长度可为128或256bits，有ECB，CBC，CTR等多种模式，这里不做具体介绍。GCM模式可以提供对消息的加密和完整性校验，具体原理这里不作详细介绍，可以参考文章《什么是 AES-GCM加密算法》。AES-GCM加密也需要密钥key、初始向量iv，并且加密之后除了得到密文，还会得到消息校验码。在数据接收方可以通过这个校验码校验密文是否有篡改。在具体实现中，为增强安全性，iv由请求序列号和key按照一定规则动态生成，并将加密得到的校验码填写在协议包头PkgReqHead/PkgRspHead中，在解密时需要作为验证条件</summary></entry></feed>

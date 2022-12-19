@@ -1,0 +1,68 @@
+I"%<h2 id="ios画中画总结">iOS画中画总结</h2>
+<p>之前在做iOS的音视频播放的时候，iOS小窗播放音视频退到后台后启用画中画功能，遇到一些坑，记录一下，做一些总结</p>
+
+<p>通过分析B站等一些视频播放APP发现，B站播放视频开启小窗后，播放在APP内变成小窗播放，该小窗是开发者自定义的view，退到后台后，开启了画中画(交由系统接管)，并实现无缝的进度衔接，从画中画回到APP，画中画消失，切换回自定义的播放View, 并同步回系统画中画的进度</p>
+
+<h3 id="启用画中画">启用画中画</h3>
+<p>在Xcode的能力中勾选开启画中画
+<img src="media/16685090834891.jpg" alt="" /></p>
+
+<h3 id="实现画中画">实现画中画</h3>
+<p>iOS系统提供了<code class="language-plaintext highlighter-rouge">AVPictureInPictureController</code>API给开发者，可以实现画中画</p>
+
+<ul>
+  <li>创建画中画属性，实现<code class="language-plaintext highlighter-rouge">&lt;AVPictureInPictureControllerDelegate&gt;</code>代理
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@property (nonatomic, strong) AVPictureInPictureController *pipVC;
+@property (nonatomic, strong) AVPlayerLayer *playerLayer;
+@property (nonatomic, strong) AVPlayer *player;
+</code></pre></div>    </div>
+  </li>
+  <li>判断是否支持画中画功能并开启权限
+``` 
+if (!_player) {
+  self.player = [AVPlayer playerWithURL:[NSURL URLWithString: self.playerShowView.currentPlayUrl]];
+  self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
+}</li>
+</ul>
+
+<p>if ([AVPictureInPictureController isPictureInPictureSupported]) {
+    @try {
+        NSError *error = nil;
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&amp;error];
+        [[AVAudioSession sharedInstance] setActive:YES error:&amp;error];</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    if (error) {
+        NSLog(@"请求后台播放权限失败: %@",error);
+    }
+    
+} @catch (NSException *exception) {
+    NSLog(@"AVAudioSession发生错误");
+}
+self.pipVC = [[AVPictureInPictureController alloc] initWithPlayerLayer:self.playerLayer];
+self.pipVC.delegate = self; } ```
+</code></pre></div></div>
+
+<ul>
+  <li>实现画中画代理
+```
+// 关闭画中画且恢复播放界面</li>
+  <li>
+    <p>(void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController restoreUserInterfaceForPictureInPictureStopWithCompletionHandler:(void (^)(BOOL restored))completionHandler {</p>
+
+    <p>completionHandler(true);</p>
+
+    <p>CGFloat currentTime = self.player.currentTime.value / self.player.currentTime.timescale;
+  NSLog(@”画中画恢复了: %f”, currentTime);
+}
+```</p>
+  </li>
+</ul>
+
+<h3 id="画中画遇到的一些坑">画中画遇到的一些坑</h3>
+<ul>
+  <li>不能把<code class="language-plaintext highlighter-rouge">playerLayer</code>加在window的layer上会报错，加在view的layer上不会报错</li>
+  <li>画中画的宽度或者尺寸设置为屏幕的尺寸后，APP退到后台，会自动开启画中画</li>
+  <li>开启画中画的时候需要判断状态，刚初始化的AVPictureInPictureController直接开启是不可用的</li>
+</ul>
+
+:ET
