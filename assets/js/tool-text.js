@@ -65,12 +65,69 @@
     }
   }
 
+  function namingWords(value) {
+    return String(value)
+      .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+      .replace(/[_-]+/g, ' ')
+      .trim()
+      .split(/[^\p{L}\p{N}]+/u)
+      .filter(Boolean);
+  }
+
+  function convertCase(value, mode) {
+    var text = String(value);
+    if (mode === 'upper') return text.toLocaleUpperCase();
+    if (mode === 'lower') return text.toLocaleLowerCase();
+    if (mode === 'sentence') return text.toLocaleLowerCase().replace(/(^|[.!?。！？]\s*)(\p{L})/gu, function (_, prefix, letter) { return prefix + letter.toLocaleUpperCase(); });
+    if (mode === 'title') return text.toLocaleLowerCase().replace(/(^|[^\p{L}\p{N}])(\p{L})/gu, function (_, prefix, letter) { return prefix + letter.toLocaleUpperCase(); });
+    var words = namingWords(text).map(function (word) { return word.toLocaleLowerCase(); });
+    if (!words.length) return '';
+    if (mode === 'snake') return words.join('_');
+    if (mode === 'kebab') return words.join('-');
+    var joined = words.map(function (word, index) {
+      if (mode === 'camel' && index === 0) return word;
+      return word.charAt(0).toLocaleUpperCase() + word.slice(1);
+    }).join('');
+    if (mode === 'pascal' || mode === 'camel') return joined;
+    throw new Error('不支持这个转换格式。');
+  }
+
+  function cleanList(value, options) {
+    var settings = options || {};
+    var original = String(value).split(/\r\n|\r|\n/);
+    var removedEmpty = 0;
+    var removedDuplicates = 0;
+    var seen = Object.create(null);
+    var items = [];
+    original.forEach(function (line) {
+      var item = settings.trim ? line.trim() : line;
+      if (settings.removeEmpty && !item) {
+        removedEmpty += 1;
+        return;
+      }
+      var key = settings.caseSensitive ? item : item.toLocaleLowerCase();
+      if (settings.dedupe && Object.prototype.hasOwnProperty.call(seen, key)) {
+        removedDuplicates += 1;
+        return;
+      }
+      seen[key] = true;
+      items.push(item);
+    });
+    if (settings.sort === 'asc' || settings.sort === 'desc') {
+      items.sort(function (left, right) { return left.localeCompare(right, 'zh-CN', { numeric: true, sensitivity: settings.caseSensitive ? 'variant' : 'base' }); });
+      if (settings.sort === 'desc') items.reverse();
+    } else if (settings.sort === 'reverse') items.reverse();
+    return { value: items.join('\n'), originalLines: original.length, lines: items.length, removedEmpty: removedEmpty, removedDuplicates: removedDuplicates };
+  }
+
   return {
     utf8ToBase64: utf8ToBase64,
     base64ToUtf8: base64ToUtf8,
     countText: countText,
     encodeUrl: encodeUrl,
     decodeUrl: decodeUrl,
-    formatJson: formatJson
+    formatJson: formatJson,
+    convertCase: convertCase,
+    cleanList: cleanList
   };
 }));

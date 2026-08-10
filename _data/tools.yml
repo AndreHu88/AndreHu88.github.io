@@ -5,7 +5,6 @@
   icon: data_object
   summary: 支持中文的 Base64 编码、解码与快速复制。
   keywords: Base64 编码 解码 UTF-8 中文
-  featured: true
 - slug: text-stats
   title: 文本统计
   category: text
@@ -13,7 +12,6 @@
   icon: text_fields
   summary: 实时统计字符、汉字、单词、行数、字节与阅读时间。
   keywords: 字符数 字数 汉字 单词 行数 字节 阅读时间
-  featured: true
 - slug: url-codec
   title: URL 编解码
   category: text
@@ -63,7 +61,6 @@
   icon: home_work
   summary: 支持商贷、公积金、组合贷与两种还款方式对比。
   keywords: 房贷 月供 商贷 公积金 组合贷 等额本息 等额本金
-  featured: true
 - slug: compound-interest
   title: 复利计算器
   category: finance
@@ -71,7 +68,6 @@
   icon: trending_up
   summary: 计算不同复利频率下的本金、收益和最终金额。
   keywords: 复利 本金 利率 收益 终值
-  featured: true
 - slug: cagr
   title: 年化收益率
   category: finance
@@ -86,3 +82,145 @@
   icon: savings
   summary: 估算定期投入的累计本金、收益与期末资产。
   keywords: 定投 定期投资 收益 本金 期末资产
+- slug: case-converter
+  title: 大小写转换
+  category: text
+  category_name: 文本处理
+  icon: format_size
+  summary: 在常用大小写与程序命名格式之间快速转换。
+  keywords: 大写 小写 标题 camelCase PascalCase snake_case kebab-case
+- slug: list-cleaner
+  title: 列表整理
+  category: text
+  category_name: 文本处理
+  icon: playlist_remove
+  summary: 按行清理空白、去重、排序或反转列表。
+  keywords: 列表 去重 排序 空行 文本 清理
+- slug: exchange-rate
+  title: 汇率换算
+  category: finance
+  category_name: 金融计算
+  icon: currency_exchange
+  summary: 联网获取最新公开参考汇率，金额在本地完成换算。
+  keywords: 汇率 外币 人民币 美元 欧元 日元 换算
+  networked: true
+- slug: discount
+  title: 折扣计算器
+  category: finance
+  category_name: 金融计算
+  icon: sell
+  summary: 计算折后价、优惠金额与实际折扣比例。
+  keywords: 折扣 折后价 优惠券 省钱 打折
+- slug: bill-split
+  title: AA 分账
+  category: finance
+  category_name: 金融计算
+  icon: groups
+  summary: 计算多人账单、服务费、小费和分位差额。
+  keywords: AA 分账 聚餐 人均 小费 服务费
+- slug: unit-price
+  title: 商品单价比较
+  category: finance
+  category_name: 金融计算
+  icon: compare_arrows
+  summary: 统一规格单位，找出真正更划算的商品。
+  keywords: 单价 比价 克 千克 毫升 升 件
+- slug: percentage
+  title: 百分比计算器
+  category: finance
+  category_name: 金融计算
+  icon: percent
+  summary: 计算占比、涨跌幅、增减结果或反推原值。
+  keywords: 百分比 占比 涨幅 跌幅 增长 反推
+- slug: savings-goal
+  title: 存款目标计算器
+  category: finance
+  category_name: 金融计算
+  icon: account_balance
+  summary: 按目标、期限和预期收益估算每月应存金额。
+  keywords: 存款 目标 每月 储蓄 利息 规划
+- slug: unit-converter
+  title: 单位转换
+  category: life
+  category_name: 生活实用
+  icon: swap_horiz
+  summary: 转换长度、面积、质量、体积、温度、速度和容量。
+  keywords: 单位 换算 长度 面积 重量 温度 速度 数据
+- slug: age-calculator
+  title: 年龄计算器
+  category: life
+  category_name: 生活实用
+  icon: cake
+  summary: 计算周岁、精确年龄、总天数与下次生日。
+  keywords: 年龄 周岁 生日 出生日期 天数
+- slug: timezone-converter
+  title: 时区转换
+  category: life
+  category_name: 生活实用
+  icon: public
+  summary: 在 IANA 时区之间转换日期时间并识别跨日。
+  keywords: 时区 世界时间 UTC 夏令时 跨日
+- slug: fuel-cost
+  title: 油费计算器
+  category: life
+  category_name: 生活实用
+  icon: local_gas_station
+  summary: 按里程、油耗和油价估算用油量与出行成本。
+  keywords: 油费 油耗 百公里 里程 油价 自驾
+- slug: electricity-cost
+  title: 电费计算器
+  category: life
+  category_name: 生活实用
+  icon: electric_bolt
+  summary: 按功率、时长和电价估算耗电量与费用。
+  keywords: 电费 功率 千瓦时 度电 家电 用电量
+- slug: recipe-scaler
+  title: 配方比例换算
+  category: life
+  category_name: 生活实用
+  icon: restaurant
+  summary: 按新旧份数批量缩放多项食材用量。
+  keywords: 配方 食谱 份数 食材 比例 烘焙
+- slug: bmi
+  title: BMI 计算器
+  category: life
+  category_name: 生活实用
+  icon: monitor_weight
+  summary: 计算成人 BMI、分类与身高对应的参考体重范围。
+  keywords: BMI 身高 体重 成人 健康 参考范围
+- slug: workday
+  title: 工作日计算器
+  category: life
+  category_name: 生活实用
+  icon: event_available
+  summary: 统计工作日，或推算若干工作日后的日期。
+  keywords: 工作日 周末 日期 调休 假期 天数
+- slug: image-compressor
+  title: 图片压缩与缩放
+  category: life
+  category_name: 生活实用
+  icon: image
+  summary: 在本地调整图片尺寸、格式和压缩质量。
+  keywords: 图片 压缩 缩放 JPEG PNG WebP 体积
+- slug: qr-generator
+  title: 二维码生成器
+  category: fun
+  category_name: 趣味效率
+  icon: qr_code_2
+  summary: 在本地生成文本、网址或 Wi-Fi 二维码。
+  keywords: 二维码 QR 网址 文本 WiFi PNG
+  extra_script: qrcode-generator
+- slug: random-picker
+  title: 随机抽取器
+  category: fun
+  category_name: 趣味效率
+  icon: draw
+  summary: 从名单中无放回抽取结果或打乱完整顺序。
+  keywords: 随机 抽签 名单 选择 打乱 去重
+- slug: dice-roller
+  title: 骰子与随机数
+  category: fun
+  category_name: 趣味效率
+  icon: casino
+  summary: 投掷多面骰子，或生成范围内的不重复整数。
+  keywords: 骰子 随机数 抽数 多面骰 修正值

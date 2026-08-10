@@ -1,69 +1,7 @@
-{% case include.tool.slug %}
-{% when 'base64' %}
-<form class="tool-form" data-tool-form>
-  <label>待处理文本<textarea name="source" rows="11" placeholder="输入普通文本或 Base64 内容" required></textarea></label>
-  <div class="tool-actions"><button class="button button--primary" name="action" value="encode">编码</button><button class="button button--ghost" name="action" value="decode">解码</button><button class="tool-reset" type="button" data-tool-swap>交换</button><button class="tool-reset" type="reset">清空</button></div>
-</form>
-{% when 'text-stats' %}
-<form class="tool-form" data-tool-form>
-  <label>文本内容<textarea name="source" rows="14" placeholder="输入或粘贴需要统计的文本"></textarea></label>
-  <div class="tool-actions"><button class="tool-reset" type="reset">清空文本</button></div>
-</form>
-{% when 'url-codec' %}
-<form class="tool-form" data-tool-form>
-  <label>处理模式<select name="mode"><option value="component">参数组件（encodeURIComponent）</option><option value="url">完整 URL（encodeURI）</option></select></label>
-  <label>URL 或文本<textarea name="source" rows="10" placeholder="https://example.com/?q=中文" required></textarea></label>
-  <div class="tool-actions"><button class="button button--primary" name="action" value="encode">编码</button><button class="button button--ghost" name="action" value="decode">解码</button><button class="tool-reset" type="reset">清空</button></div>
-</form>
-{% when 'json-formatter' %}
-<form class="tool-form" data-tool-form>
-  <label>JSON 内容<textarea name="source" rows="13" spellcheck="false" placeholder='{"name":"Jack Hu"}' required></textarea></label>
-  <div class="tool-actions"><button class="button button--primary" name="action" value="pretty">格式化</button><button class="button button--ghost" name="action" value="compact">压缩</button><button class="tool-reset" type="reset">清空</button></div>
-</form>
-{% when 'timestamp' %}
-<form class="tool-form" data-tool-form>
-  <label>时间戳或日期时间<input name="source" type="text" placeholder="例如 1772942400 或 2026-03-08 12:00" required></label>
-  <div class="tool-actions"><button class="button button--primary" name="action" value="convert">转换</button><button class="button button--ghost" name="action" value="now" formnovalidate>使用当前时间</button><button class="tool-reset" type="reset">清空</button></div>
-</form>
-{% when 'hash' %}
-<form class="tool-form" data-tool-form>
-  <label>哈希算法<select name="algorithm"><option>SHA-256</option><option>SHA-384</option><option>SHA-512</option></select></label>
-  <label>原始文本<textarea name="source" rows="11" placeholder="输入需要生成摘要的文本" required></textarea></label>
-  <div class="tool-actions"><button class="button button--primary" name="action" value="generate">生成哈希</button><button class="tool-reset" type="reset">清空</button></div>
-  <p class="tool-hint">哈希是单向摘要，并不是加密，无法从结果还原原文。</p>
-</form>
-{% when 'color-converter' %}
-<form class="tool-form" data-tool-form>
-  <label>颜色值<input name="source" type="text" placeholder="#3366FF、rgb(51, 102, 255) 或 hsl(225, 100%, 60%)" required></label>
-  <div class="tool-actions"><button class="button button--primary" name="action" value="convert">转换颜色</button><button class="tool-reset" type="reset">清空</button></div>
-</form>
-{% when 'date-difference' %}
-<form class="tool-form" data-tool-form>
-  <div class="tool-fields tool-fields--2"><label>开始日期<input name="start" type="date" required></label><label>结束日期<input name="end" type="date" required></label></div>
-  <label class="tool-check"><input name="inclusive" type="checkbox">计算时包含结束当天</label>
-  <div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算间隔</button><button class="tool-reset" type="reset">重置</button></div>
-</form>
-{% when 'mortgage' %}
-<form class="tool-form" data-tool-form>
-  <label>贷款类型<select name="loanType" data-loan-type><option value="commercial">商业贷款</option><option value="fund">公积金贷款</option><option value="combination">组合贷款</option></select></label>
-  <fieldset><legend data-primary-loan-label>贷款信息</legend><div class="tool-fields tool-fields--3"><label>金额（万元）<input name="principalA" type="number" min="0" step="1" required></label><label>年利率（%）<input name="rateA" type="number" min="0" step="0.01" required></label><label>期限（年）<input name="yearsA" type="number" min="1" max="40" value="30" required></label></div></fieldset>
-  <fieldset data-combination-fields hidden><legend>公积金贷款</legend><div class="tool-fields tool-fields--3"><label>金额（万元）<input name="principalB" type="number" min="0" step="1"></label><label>年利率（%）<input name="rateB" type="number" min="0" step="0.01"></label><label>期限（年）<input name="yearsB" type="number" min="1" max="40" value="30"></label></div></fieldset>
-  <label>明细默认展示<select name="scheduleMethod"><option value="equal-payment">等额本息</option><option value="equal-principal">等额本金</option></select></label>
-  <div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算并比较</button><button class="tool-reset" type="reset">重置</button></div>
-</form>
-{% when 'compound-interest' %}
-<form class="tool-form" data-tool-form>
-  <div class="tool-fields tool-fields--2"><label>初始本金（元）<input name="principal" type="number" min="0" step="100" required></label><label>年利率（%）<input name="rate" type="number" step="0.01" required></label><label>投资期限（年）<input name="years" type="number" min="0.25" step="0.25" required></label><label>每年复利次数<select name="frequency"><option value="1">每年</option><option value="4">每季度</option><option value="12" selected>每月</option><option value="365">每日</option></select></label></div>
-  <div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算复利</button><button class="tool-reset" type="reset">重置</button></div>
-</form>
-{% when 'cagr' %}
-<form class="tool-form" data-tool-form>
-  <div class="tool-fields tool-fields--2"><label>起始金额（元）<input name="startValue" type="number" min="0.01" step="0.01" required></label><label>结束金额（元）<input name="endValue" type="number" min="0" step="0.01" required></label><label>开始日期<input name="startDate" type="date" required></label><label>结束日期<input name="endDate" type="date" required></label></div>
-  <div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算年化收益率</button><button class="tool-reset" type="reset">重置</button></div>
-</form>
-{% when 'recurring-investment' %}
-<form class="tool-form" data-tool-form>
-  <div class="tool-fields tool-fields--2"><label>每期投入（元）<input name="payment" type="number" min="0" step="100" required></label><label>预期年化收益（%）<input name="rate" type="number" step="0.01" required></label><label>投资期限（年）<input name="years" type="number" min="0.25" step="0.25" required></label><label>投入频率<select name="frequency"><option value="12">每月</option><option value="52">每周</option><option value="4">每季度</option><option value="1">每年</option></select></label><label>投入时点<select name="timing"><option value="ending">期末投入</option><option value="beginning">期初投入</option></select></label></div>
-  <div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算定投</button><button class="tool-reset" type="reset">重置</button></div>
-</form>
+{% case include.tool.category %}
+{% when 'text' %}{% include tool-forms/text.html tool=include.tool %}
+{% when 'developer' %}{% include tool-forms/developer.html tool=include.tool %}
+{% when 'finance' %}{% include tool-forms/finance.html tool=include.tool %}
+{% when 'life' %}{% include tool-forms/life.html tool=include.tool %}
+{% when 'fun' %}{% include tool-forms/fun.html tool=include.tool %}
 {% endcase %}
