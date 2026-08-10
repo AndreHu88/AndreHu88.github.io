@@ -3,16 +3,34 @@ layout: default
 title: 实用工具
 permalink: /tools/
 ---
-<section class="tools-hub">
-  <header class="tools-hub__hero"><span class="eyebrow">Local-first utilities</span><h1>实用工具箱</h1><p>为写作、开发与日常计算准备的小工具。打开即用，输入只在你的浏览器里处理。</p><div class="tools-hub__trust"><span class="material-symbols-rounded">shield_lock</span>本地运行 · 不上传 · 不保存</div></header>
-  {% assign categories = "text,developer,finance" | split: "," %}
-  {% for category in categories %}
-    {% assign category_tools = site.data.tools | where: "category", category %}
-    <section class="tool-category">
-      <div class="tool-category__heading"><span>{{ forloop.index | prepend: "0" }}</span><div><h2>{{ category_tools.first.category_name }}</h2><p>{% if category == 'text' %}整理文本与结构化数据{% elsif category == 'developer' %}处理开发中的常见转换{% else %}把贷款和收益算清楚{% endif %}</p></div></div>
+<section class="tools-hub" data-tools-hub>
+  <header class="tools-hub__hero">
+    <span class="eyebrow">32 local-first utilities</span>
+    <h1>实用工具箱</h1>
+    <p>从文字整理、金融测算到图片压缩和随机选择，打开即用。大多数工具完全在浏览器本地运行，汇率工具仅联网请求币种对应的最新参考汇率。</p>
+    <div class="tools-hub__trust"><span class="material-symbols-rounded">shield_lock</span>本地优先 · 不上传 · 不保存</div>
+  </header>
+
+  <section class="tools-discovery" aria-label="查找工具">
+    <label class="tools-search"><span class="material-symbols-rounded">search</span><input type="search" placeholder="搜索工具，例如：单位、汇率、图片" autocomplete="off" data-tool-search-input><kbd>32 个工具</kbd></label>
+    <div class="tools-filters" role="group" aria-label="按分类筛选">
+      <button class="is-active" type="button" data-tool-filter="all" aria-pressed="true">全部</button>
+      {% for category in site.data.tool_categories %}<button type="button" data-tool-filter="{{ category.id }}" aria-pressed="false">{{ category.name }}</button>{% endfor %}
+    </div>
+    <p class="tools-filter-status" data-tool-filter-status aria-live="polite">显示全部 32 个工具</p>
+  </section>
+
+  {% for category in site.data.tool_categories %}
+    {% assign category_tools = site.data.tools | where: "category", category.id %}
+    <section class="tool-category" data-tool-section="{{ category.id }}">
+      <div class="tool-category__heading"><span>{{ forloop.index | prepend: "0" }}</span><div><h2>{{ category.name }}</h2><p>{{ category.description }}</p></div></div>
       <div class="tool-card-grid">
-        {% for tool in category_tools %}<a class="tool-card" href="{{ site.baseurl }}/tools/{{ tool.slug }}/"><span class="tool-icon material-symbols-rounded">{{ tool.icon }}</span><div><h3>{{ tool.title }}</h3><p>{{ tool.summary }}</p></div><span class="material-symbols-rounded">arrow_forward</span></a>{% endfor %}
+        {% for tool in category_tools %}<a class="tool-card" href="{{ site.baseurl }}/tools/{{ tool.slug }}/" data-tool-card data-tool-category="{{ tool.category }}" data-tool-search="{{ tool.title }} {{ tool.summary }} {{ tool.keywords }}">
+          <span class="tool-icon material-symbols-rounded">{{ tool.icon }}</span><div><h3>{{ tool.title }}</h3><p>{{ tool.summary }}</p></div><span class="material-symbols-rounded">arrow_forward</span>
+        </a>{% endfor %}
       </div>
     </section>
   {% endfor %}
+  <div class="tools-empty" data-tools-empty hidden><span class="material-symbols-rounded">search_off</span><h2>没有找到匹配的工具</h2><p>试试更短的关键词，或者清除分类筛选。</p><button type="button" data-tools-clear>清除筛选</button></div>
 </section>
+<script src="{{ site.baseurl }}/assets/js/tools-hub.js"></script>

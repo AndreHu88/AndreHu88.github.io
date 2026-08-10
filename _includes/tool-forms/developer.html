@@ -1,0 +1,10 @@
+{% case include.tool.slug %}
+{% when 'timestamp' %}
+<form class="tool-form" data-tool-form><label>时间戳或日期时间<input name="source" type="text" placeholder="例如 1772942400 或 2026-03-08 12:00" required></label><div class="tool-actions"><button class="button button--primary" name="action" value="convert">转换</button><button class="button button--ghost" name="action" value="now" formnovalidate>使用当前时间</button><button class="tool-reset" type="reset">清空</button></div></form>
+{% when 'hash' %}
+<form class="tool-form" data-tool-form><label>哈希算法<select name="algorithm"><option>SHA-256</option><option>SHA-384</option><option>SHA-512</option></select></label><label>原始文本<textarea name="source" rows="11" placeholder="输入需要生成摘要的文本" required></textarea></label><div class="tool-actions"><button class="button button--primary" name="action" value="generate">生成哈希</button><button class="tool-reset" type="reset">清空</button></div><p class="tool-hint">哈希是单向摘要，并不是加密，无法从结果还原原文。</p></form>
+{% when 'color-converter' %}
+<form class="tool-form" data-tool-form><label>颜色值<input name="source" type="text" placeholder="#3366FF、rgb(51, 102, 255) 或 hsl(225, 100%, 60%)" required></label><div class="tool-actions"><button class="button button--primary" name="action" value="convert">转换颜色</button><button class="tool-reset" type="reset">清空</button></div></form>
+{% when 'date-difference' %}
+<form class="tool-form" data-tool-form><div class="tool-fields tool-fields--2"><label>开始日期<input name="start" type="date" required></label><label>结束日期<input name="end" type="date" required></label></div><label class="tool-check"><input name="inclusive" type="checkbox">计算时包含结束当天</label><div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算间隔</button><button class="tool-reset" type="reset">重置</button></div></form>
+{% endcase %}

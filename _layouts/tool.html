@@ -9,7 +9,11 @@ layout: default
       <span class="tool-icon material-symbols-rounded" aria-hidden="true">{{ tool.icon }}</span>
       <div><span class="eyebrow">{{ tool.category_name }}</span><h1>{{ tool.title }}</h1><p>{{ tool.summary }}</p></div>
     </div>
-    <p class="tool-privacy"><span class="material-symbols-rounded">shield_lock</span>所有输入仅在浏览器本地处理，不会上传或保存。</p>
+    {% if tool.networked %}
+      <p class="tool-privacy tool-privacy--network"><span class="material-symbols-rounded">language</span>仅向汇率服务请求币种组合，输入金额不会发送或保存。</p>
+    {% else %}
+      <p class="tool-privacy"><span class="material-symbols-rounded">shield_lock</span>所有输入仅在浏览器本地处理，不会上传或保存。</p>
+    {% endif %}
   </header>
 
   <div class="tool-workspace">
@@ -26,7 +30,9 @@ layout: default
   </div>
 
   {% if tool.category == 'finance' %}<p class="tool-disclaimer">本工具仅供测算和学习参考，不构成投资、收益承诺或贷款建议，请以实际合同与机构规则为准。</p>{% endif %}
+  {% if tool.slug == 'bmi' %}<p class="tool-disclaimer">BMI 仅供成年人日常参考，不能替代体脂、腰围评估或专业医疗判断。</p>{% endif %}
 </article>
 <script src="{{ site.baseurl }}/assets/js/tool-core.js"></script>
+{% if tool.extra_script %}<script src="{{ site.baseurl }}/assets/js/vendor/{{ tool.extra_script }}.js"></script>{% endif %}
 <script src="{{ site.baseurl }}/assets/js/tool-{{ tool.category }}.js"></script>
 <script src="{{ site.baseurl }}/assets/js/tool-app.js"></script>

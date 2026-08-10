@@ -1,0 +1,15 @@
+- id: text
+  name: 文本处理
+  description: 整理文本与结构化数据
+- id: developer
+  name: 开发辅助
+  description: 处理开发中的常见转换
+- id: finance
+  name: 金融计算
+  description: 把贷款、价格和收益算清楚
+- id: life
+  name: 生活实用
+  description: 解决日常换算与规划问题
+- id: fun
+  name: 趣味效率
+  description: 随机选择与快速生成
