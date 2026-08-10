@@ -1,3 +1,6 @@
+@use "open-color" as *;
+@use "variables" as *;
+
 pre, code {
   font-family: $code-font;
 }

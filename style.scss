@@ -1,9 +1,8 @@
 ---
 ---
 
-@import "reset";
-@import "open-color";
-@import "variables";
+@use "sass:meta";
+@use "reset";
 
 :root {
   --ink: #101b3d;
@@ -438,4 +437,4 @@ img { display: block; max-width: 100%; }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 
-@import "highlights";
+@include meta.load-css("highlights");
