@@ -2,58 +2,119 @@
 layout: default
 ---
 
-{% if site.posts.size == 0 %}
-  <h2>No post found</h2>
+{% if paginator.page == 1 %}
+<section class="hero" aria-labelledby="hero-title">
+  <img class="hero__art" src="{{ site.baseurl }}/images/design/hero-aurora.webp" alt="蓝紫色极光丝带在光影中延展">
+  <div class="hero__glow" aria-hidden="true"></div>
+  <div class="hero__content">
+    <span class="eyebrow">长期写作 · 持续思考</span>
+    <h1 id="hero-title">Jack Hu</h1>
+    <p class="hero__statement">把技术、投资、阅读与生活连接起来，<br>持续写作，让<span>知识系统化。</span></p>
+    <p class="hero__description">记录可复用的模型、经验与思考，让复杂问题变得可理解、可行动。</p>
+    <div class="hero__actions">
+      <a class="button button--primary" href="#latest">探索最新文章<span class="material-symbols-rounded">arrow_downward</span></a>
+      <a class="button button--ghost" href="https://www.sohod.cn/book/">浏览知识库<span class="material-symbols-rounded">arrow_forward</span></a>
+    </div>
+  </div>
+</section>
 {% endif %}
 
+<section class="latest-section section-shell" id="latest">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">Latest writing</span>
+      <h2>{% if paginator.page == 1 %}最新文章{% else %}更多文章{% endif %}</h2>
+    </div>
+    <a href="{{ site.baseurl }}/archive/">查看全部文章<span class="material-symbols-rounded">arrow_forward</span></a>
+  </div>
 
-<!-- <embed src="/music/bg.mp3" hidden="true" autostart="true" loop="true"> -->
+  {% if site.posts.size == 0 %}
+    <p class="empty-state">暂时还没有文章。</p>
+  {% endif %}
 
-<div class="posts">
-  {% for post in paginator.posts %}
-    <article class="post">
-      <h1>
-        <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
-      </h1>
-
-      <div clsss="meta">
-        <span class="date">
-          {{ post.date | date: "%Y-%m-%d" }}
-        </span>
-
-        <ul class="tag">
-          {% for tag in post.tags %}
-          <li>
-            <a href="{{ site.url }}{{ site.baseurl }}/tags#{{ tag }}">
-              {{ tag }}
-            </a>
-          </li>
+  <div class="article-grid">
+    {% for post in paginator.posts %}
+      <article class="article-card">
+        {% assign card_cover = post.cover %}
+        {% assign card_cover_alt = post.cover_alt | default: post.title %}
+        {% unless card_cover %}
+          {% for cover_category in site.data.post_covers.categories %}
+            {% assign cover_matches = false %}
+            {% for cover_tag in cover_category.tags %}
+              {% if post.tags contains cover_tag %}{% assign cover_matches = true %}{% break %}{% endif %}
+            {% endfor %}
+            {% if cover_matches %}
+              {% assign card_cover = cover_category.image %}
+              {% assign card_cover_alt = cover_category.alt %}
+              {% break %}
+            {% endif %}
           {% endfor %}
-        </ul>
-      </div>
+        {% endunless %}
+        {% unless card_cover %}
+          {% assign card_cover = site.data.post_covers.default.image %}
+          {% assign card_cover_alt = site.data.post_covers.default.alt %}
+        {% endunless %}
+        <a class="article-card__media-link" href="{{ site.baseurl }}{{ post.url }}"><img class="article-card__media" src="{{ site.baseurl }}{{ card_cover }}" alt="{{ card_cover_alt | escape }}" decoding="async"{% if forloop.index > 3 %} loading="lazy"{% else %} fetchpriority="high"{% endif %}></a>
+        <div class="article-card__content">
+          <div class="article-card__meta">
+            <ul class="tag-list" aria-label="文章标签">
+              {% for tag in post.tags limit: 3 %}
+                <li><a href="{{ site.baseurl }}/tags/#{{ tag }}">{{ tag }}</a></li>
+              {% endfor %}
+            </ul>
+            <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+          </div>
+          <h3><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h3>
+          <p>{{ post.excerpt | strip_html | strip_newlines | truncate: 108 }}</p>
+          <a class="article-card__read" href="{{ site.baseurl }}{{ post.url }}">阅读全文<span class="material-symbols-rounded">arrow_forward</span></a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
 
-      <div class="entry">
-        {{ post.excerpt | truncate: 200 }}
-      </div>
+  <div class="pagination">
+    {% if paginator.previous_page %}
+      <a href="{{ site.baseurl }}{{ paginator.previous_page_path }}"><span class="material-symbols-rounded">arrow_back</span>上一页</a>
+    {% endif %}
+    {% if paginator.next_page %}
+      <a href="{{ site.baseurl }}{{ paginator.next_page_path }}">下一页<span class="material-symbols-rounded">arrow_forward</span></a>
+    {% endif %}
+  </div>
+</section>
 
-      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
-    </article>
-  {% endfor %}
-</div>
+{% if paginator.page == 1 %}
+<section class="home-tools section-shell" aria-labelledby="home-tools-title">
+  <div class="section-heading">
+    <div><span class="eyebrow">Useful utilities</span><h2 id="home-tools-title">实用工具</h2></div>
+    <a href="{{ site.baseurl }}/tools/">全部 12 个工具<span class="material-symbols-rounded">arrow_forward</span></a>
+  </div>
+  <div class="home-tools__grid">
+    {% assign featured_tools = site.data.tools | where: "featured", true %}
+    {% for tool in featured_tools %}<a href="{{ site.baseurl }}/tools/{{ tool.slug }}/"><span class="tool-icon material-symbols-rounded">{{ tool.icon }}</span><div><h3>{{ tool.title }}</h3><p>{{ tool.summary }}</p></div><span class="material-symbols-rounded">arrow_forward</span></a>{% endfor %}
+  </div>
+</section>
 
-<div class="pagination">
-  {% if paginator.previous_page %}
-    <span class="prev">
-      <a href="{{ site.baseurl }}{{ paginator.previous_page_path }}" class="prev">
-        ← 上一页
-      </a>
-    </span>
-  {% endif %}
-  {% if paginator.next_page %}
-    <span class="next">
-      <a href="{{ site.baseurl}}{{ paginator.next_page_path }}" class="next">
-        下一页 →
-      </a>
-    </span>
-  {% endif %}
-</div>
+<section class="discovery-section section-shell">
+  <div class="knowledge-strip">
+    <div class="knowledge-strip__intro">
+      <span class="material-symbols-rounded">auto_stories</span>
+      <div><span class="eyebrow">Knowledge base</span><h2>知识库 · 精选</h2></div>
+    </div>
+    <a href="https://www.sohod.cn/book/">个人知识库<small>长期写作与知识体系</small><span class="material-symbols-rounded">arrow_forward</span></a>
+    <a href="https://www.sohod.cn/book/series/frontend-playbook.html">大前端专题路线图<small>性能、稳定性与工程化</small><span class="material-symbols-rounded">arrow_forward</span></a>
+    <a href="https://www.sohod.cn/book/series/macro-allocation-playbook.html">宏观配置专题路线图<small>宏观、风险与资产配置</small><span class="material-symbols-rounded">arrow_forward</span></a>
+  </div>
+
+  <div class="tag-cloud-card">
+    <div class="section-heading section-heading--compact">
+      <h2>热门标签</h2>
+      <a href="{{ site.baseurl }}/tags/">浏览全部<span class="material-symbols-rounded">arrow_forward</span></a>
+    </div>
+    <div class="tag-cloud">
+      {% for tag in site.tags limit: 12 %}
+        <a href="{{ site.baseurl }}/tags/#{{ tag[0] }}">{{ tag[0] }}<span>{{ tag[1] | size }}</span></a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}

@@ -1,5 +1,6 @@
 <head>
-  <title>{% if page.title %}{{ page.title }} – {% endif %}{{ site.name }} – {{ site.description }}</title>
+  {% assign head_tool = site.data.tools | where: "slug", page.tool | first %}
+  <title>{% if head_tool %}{{ head_tool.title }} – {% elsif page.title %}{{ page.title }} – {% endif %}{{ site.name }} – {{ site.description }}</title>
 
   {% include meta.html %}
   {% include fonts.html %}
@@ -8,10 +9,12 @@
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 
-  <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/style.css" />
+  <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/style.css?v={{ site.time | date: '%s' }}" />
   <link rel="alternate" type="application/rss+xml" title="{{ site.name }} - {{ site.description }}" href="{{ site.baseurl }}/feed.xml" />
   <link rel="shortcut icon" href="{{ site.favicon }}">
-  <script src="https://kit.fontawesome.com/56f7faf3f4.js"></script>
+  <meta name="theme-color" content="#f7f9ff">
+  <script src="https://kit.fontawesome.com/56f7faf3f4.js" crossorigin="anonymous"></script>
+  <script defer src="{{ site.baseurl }}/assets/js/site.js"></script>
 
 
   <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->

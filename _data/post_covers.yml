@@ -1,0 +1,22 @@
+categories:
+  - tags:
+      - 金融
+    image: /images/design/macro-waves.webp
+    alt: 珊瑚色与紫色交织的数据波浪
+  - tags:
+      - 读书笔记
+      - 随笔
+    image: /images/design/reading-botanical.webp
+    alt: 柔和光影中的植物枝叶
+  - tags:
+      - iOS
+      - Linux
+      - Java
+      - 数据结构
+      - 工具
+    image: /images/design/tech-geometry.webp
+    alt: 蓝色半透明几何结构
+
+default:
+  image: /images/design/featured-path.webp
+  alt: 通往远方的蓝紫色光路

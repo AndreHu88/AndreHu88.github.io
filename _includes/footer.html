@@ -1,5 +1,5 @@
-{% include svg-icons.html %}
-
-{% if site.footer-text %}
-<p>{{ site.footer-text }}</p>
-{% endif %}
+<div class="site-footer__inner">
+  <div><a class="brand brand--footer" href="{{ site.baseurl }}/">Jack Hu</a><p>{{ site.footer-text }}</p></div>
+  <nav aria-label="页脚导航"><a href="{{ site.baseurl }}/archive/">文章</a><a href="{{ site.baseurl }}/tools/">工具</a><a href="https://www.sohod.cn/book/">知识库</a><a href="{{ site.baseurl }}/about/">关于</a></nav>
+  <div class="footer-meta">{% include svg-icons.html %}<span>© 2017–{{ site.time | date: '%Y' }} Jack Hu</span></div>
+</div>

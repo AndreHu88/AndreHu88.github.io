@@ -2,11 +2,13 @@
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
-    <meta name="keywords" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
+    <meta name="keywords" content="Jack Hu, 胡勇, 技术, 投资, 阅读, 知识管理, 实用工具, huyong, sohod.cn">
 
-    <meta name="description" content="Jack Hu, 胡勇，上海 胡勇，胡 勇 ，风车大战骑士，愿你出走半生，归来认识少年,huyong,soho,sohod,sohod.cn">
-
-    {% if page.excerpt %}
+    {% assign meta_tool = site.data.tools | where: "slug", page.tool | first %}
+    {% if meta_tool %}
+    <meta name="description" content="{{ meta_tool.summary }}" />
+    <meta property="og:description" content="{{ meta_tool.summary }}" />
+    {% elsif page.excerpt %}
     <meta name="description" content="{{ page.excerpt| strip_html }}" />
     <meta property="og:description" content="{{ page.excerpt| strip_html }}" />
     {% else %}
@@ -15,7 +17,10 @@
     {% endif %}
     <meta name="author" content="{{ site.name }}" />
 
-    {% if page.title %}
+    {% if meta_tool %}
+    <meta property="og:title" content="{{ meta_tool.title }}" />
+    <meta property="twitter:title" content="{{ meta_tool.title }}" />
+    {% elsif page.title %}
     <meta property="og:title" content="{{ page.title }}" />
     <meta property="twitter:title" content="{{ page.title }}" />
 

@@ -1,0 +1,47 @@
+<header class="site-header" data-site-header>
+  {% assign active_section = '' %}
+  {% if page.url == '/' or paginator %}
+    {% assign active_section = 'latest' %}
+  {% elsif page.url contains '/archive/' %}
+    {% assign active_section = 'archive' %}
+  {% elsif page.url contains '/tags/' %}
+    {% assign active_section = 'tags' %}
+  {% elsif page.url contains '/tools/' %}
+    {% assign active_section = 'tools' %}
+  {% elsif page.url contains '/about/' %}
+    {% assign active_section = 'about' %}
+  {% endif %}
+  <div class="site-header__inner">
+    <a class="brand" href="{{ site.baseurl }}/" aria-label="返回首页">Jack Hu</a>
+
+    <nav class="desktop-nav" aria-label="主导航">
+      <a class="nav-link{% if active_section == 'latest' %} is-active{% endif %}"{% if active_section == 'latest' %} aria-current="page"{% endif %} href="{{ site.baseurl }}/#latest">最新文章</a>
+      <a class="nav-link{% if active_section == 'archive' %} is-active{% endif %}"{% if active_section == 'archive' %} aria-current="page"{% endif %} href="{{ site.baseurl }}/archive/">时间归档</a>
+      <a class="nav-link{% if active_section == 'tags' %} is-active{% endif %}"{% if active_section == 'tags' %} aria-current="page"{% endif %} href="{{ site.baseurl }}/tags/">全部标签</a>
+      <a class="nav-link{% if active_section == 'tools' %} is-active{% endif %}"{% if active_section == 'tools' %} aria-current="page"{% endif %} href="{{ site.baseurl }}/tools/">工具</a>
+      <a class="nav-link" href="{{ site.baseurl }}/book/">知识库</a>
+      <a class="nav-link{% if active_section == 'about' %} is-active{% endif %}"{% if active_section == 'about' %} aria-current="page"{% endif %} href="{{ site.baseurl }}/about/">关于</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="search-trigger js-search-open" type="button" aria-label="搜索全站内容">
+        <span class="material-symbols-rounded" aria-hidden="true">search</span>
+        <span>搜索</span>
+        <kbd>⌘ K</kbd>
+      </button>
+      <button class="mobile-menu-trigger" type="button" aria-expanded="false" aria-label="打开导航" data-mobile-menu-trigger>
+        <span class="material-symbols-rounded" aria-hidden="true">menu</span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" aria-label="移动端导航" data-mobile-menu>
+    <a{% if active_section == 'latest' %} class="is-active" aria-current="page"{% endif %} href="{{ site.baseurl }}/#latest">最新文章</a>
+    <a{% if active_section == 'archive' %} class="is-active" aria-current="page"{% endif %} href="{{ site.baseurl }}/archive/">时间归档</a>
+    <a{% if active_section == 'tags' %} class="is-active" aria-current="page"{% endif %} href="{{ site.baseurl }}/tags/">全部标签</a>
+    <a{% if active_section == 'tools' %} class="is-active" aria-current="page"{% endif %} href="{{ site.baseurl }}/tools/">工具</a>
+    <a href="{{ site.baseurl }}/book/">知识库</a>
+    <a{% if active_section == 'about' %} class="is-active" aria-current="page"{% endif %} href="{{ site.baseurl }}/about/">关于</a>
+    <button class="js-search-open" type="button"><span class="material-symbols-rounded">search</span>搜索全站</button>
+  </nav>
+</header>

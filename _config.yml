@@ -2,9 +2,9 @@
 # 这个文档包含了本博客的设定信息，你可以编辑它来个性化自己的博客，
 #
 # 井号后面的文字是说明文档，不会被程序读取。
-name: 风车大战骑士
+name: Jack Hu
 # 描述/签名
-description: 生活不止眼前的苟且，还有诗和远方
+description: 长期写作，持续思考，让知识系统化
 
 #
 # 下面的设定都是可选的
@@ -19,23 +19,20 @@ favicon: https://avatars.githubusercontent.com/u/18731383?v=4
 
 # 菜单中的按钮
 navigation:
-  - name: 首页
-    url: /
-  - name: 归档
+  - name: 文章
     url: /archive
-  - name: 标签
-    url: /tags
+  - name: 工具
+    url: /tools
+  - name: 知识库
+    url: https://www.sohod.cn/book/
   - name: 关于
     url: /about
-  - name: 书籍
-    url: https://www.sohod.cn/book/
 
 # 每页的文章数
 paginate: 20
 
 # 你的社交网络链接，它们会作为图标出现在你的网站页脚中，可选填写
 footer-links: 
-  weibo: huyong668 #请输入你的微博个性域名 https://www.weibo.com/<thispart>
   behance: # https://www.behance.net/<>
   dribbble: # https://dribbble.com/<>
   email: huyong229@163.com 
@@ -52,7 +49,7 @@ footer-links:
   youtube: # channel/<your_long_string> or user/<user-name>
 
 # 站点页脚的文字
-footer-text: Copyright(c) 2017 愿你出走半生，归来仍是少年
+footer-text: 保持好奇，长期写作，让思考留下痕迹。
 
 # 输入Disqus shortname，即可添加评论区，细节可阅读文档。
 disqus: Jack  #shortname
@@ -106,5 +103,7 @@ exclude:
   - LICENSE
   - README.md
   - CNAME
+  - design-qa.md
+  - .design-qa
 
 excerpt_separator: ---

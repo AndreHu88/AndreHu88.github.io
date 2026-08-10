@@ -2,11 +2,10 @@
 layout: default
 ---
 
-<article class="page">
-
-  <h1>{{ page.title }}</h1>
-
-  <div class="entry">
-    {{ content }}
-  </div>
+<article class="content-page {{ page.page_class }}">
+  <header class="content-page__header">
+    <span class="eyebrow">Jack Hu · {{ page.title }}</span>
+    <h1>{{ page.title }}</h1>
+  </header>
+  <div class="content-page__body entry">{{ content }}</div>
 </article>

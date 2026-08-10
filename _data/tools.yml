@@ -1,0 +1,88 @@
+- slug: base64
+  title: Base64 编解码
+  category: text
+  category_name: 文本处理
+  icon: data_object
+  summary: 支持中文的 Base64 编码、解码与快速复制。
+  keywords: Base64 编码 解码 UTF-8 中文
+  featured: true
+- slug: text-stats
+  title: 文本统计
+  category: text
+  category_name: 文本处理
+  icon: text_fields
+  summary: 实时统计字符、汉字、单词、行数、字节与阅读时间。
+  keywords: 字符数 字数 汉字 单词 行数 字节 阅读时间
+  featured: true
+- slug: url-codec
+  title: URL 编解码
+  category: text
+  category_name: 文本处理
+  icon: link
+  summary: 在完整 URL 与参数组件模式间安全编码和解码。
+  keywords: URL encode decode URI 参数
+- slug: json-formatter
+  title: JSON 格式化
+  category: text
+  category_name: 文本处理
+  icon: data_object
+  summary: 校验、格式化或压缩 JSON，并给出清晰错误提示。
+  keywords: JSON 校验 格式化 压缩 minify
+- slug: timestamp
+  title: 时间戳转换
+  category: developer
+  category_name: 开发辅助
+  icon: schedule
+  summary: 秒与毫秒时间戳、本地时间和 ISO UTC 快速互转。
+  keywords: Unix 时间戳 timestamp 日期 ISO UTC
+- slug: hash
+  title: 哈希生成
+  category: developer
+  category_name: 开发辅助
+  icon: fingerprint
+  summary: 使用浏览器 Web Crypto 生成 SHA-256、384 和 512。
+  keywords: SHA-256 SHA-384 SHA-512 hash 哈希
+- slug: color-converter
+  title: 颜色转换
+  category: developer
+  category_name: 开发辅助
+  icon: palette
+  summary: 在 HEX、RGB(A) 与 HSL(A) 之间转换并预览颜色。
+  keywords: HEX RGB RGBA HSL HSLA 颜色
+- slug: date-difference
+  title: 日期间隔
+  category: developer
+  category_name: 开发辅助
+  icon: date_range
+  summary: 计算两个日期之间的自然日、周数和年月日差。
+  keywords: 日期 间隔 天数 周数 年月日
+- slug: mortgage
+  title: 房贷计算器
+  category: finance
+  category_name: 金融计算
+  icon: home_work
+  summary: 支持商贷、公积金、组合贷与两种还款方式对比。
+  keywords: 房贷 月供 商贷 公积金 组合贷 等额本息 等额本金
+  featured: true
+- slug: compound-interest
+  title: 复利计算器
+  category: finance
+  category_name: 金融计算
+  icon: trending_up
+  summary: 计算不同复利频率下的本金、收益和最终金额。
+  keywords: 复利 本金 利率 收益 终值
+  featured: true
+- slug: cagr
+  title: 年化收益率
+  category: finance
+  category_name: 金融计算
+  icon: monitoring
+  summary: 按起止金额与日期计算 CAGR 年化收益率。
+  keywords: CAGR 年化收益率 投资 回报率
+- slug: recurring-investment
+  title: 定投计算器
+  category: finance
+  category_name: 金融计算
+  icon: savings
+  summary: 估算定期投入的累计本金、收益与期末资产。
+  keywords: 定投 定期投资 收益 本金 期末资产

@@ -1,0 +1,32 @@
+---
+layout: default
+---
+{% assign tool = site.data.tools | where: "slug", page.tool | first %}
+<article class="tool-page" data-tool="{{ tool.slug }}">
+  <header class="tool-hero">
+    <a class="tool-back" href="{{ site.baseurl }}/tools/"><span class="material-symbols-rounded">arrow_back</span>全部工具</a>
+    <div class="tool-hero__title">
+      <span class="tool-icon material-symbols-rounded" aria-hidden="true">{{ tool.icon }}</span>
+      <div><span class="eyebrow">{{ tool.category_name }}</span><h1>{{ tool.title }}</h1><p>{{ tool.summary }}</p></div>
+    </div>
+    <p class="tool-privacy"><span class="material-symbols-rounded">shield_lock</span>所有输入仅在浏览器本地处理，不会上传或保存。</p>
+  </header>
+
+  <div class="tool-workspace">
+    <section class="tool-panel tool-panel--input" aria-labelledby="tool-input-title">
+      <div class="tool-panel__heading"><span class="eyebrow">Input</span><h2 id="tool-input-title">输入与设置</h2></div>
+      {% include tool-form.html tool=tool %}
+      <p class="tool-form-status" data-tool-form-status aria-live="polite"></p>
+    </section>
+    <section class="tool-panel tool-panel--result" aria-labelledby="tool-result-title">
+      <div class="tool-panel__heading"><span class="eyebrow">Result</span><h2 id="tool-result-title">计算结果</h2></div>
+      <div class="tool-result" data-tool-result aria-live="polite"><p class="tool-placeholder">填写左侧内容，结果会在这里出现。</p></div>
+      <button class="tool-copy-result" type="button" data-copy-result hidden><span class="material-symbols-rounded">content_copy</span>复制结果</button>
+    </section>
+  </div>
+
+  {% if tool.category == 'finance' %}<p class="tool-disclaimer">本工具仅供测算和学习参考，不构成投资、收益承诺或贷款建议，请以实际合同与机构规则为准。</p>{% endif %}
+</article>
+<script src="{{ site.baseurl }}/assets/js/tool-core.js"></script>
+<script src="{{ site.baseurl }}/assets/js/tool-{{ tool.category }}.js"></script>
+<script src="{{ site.baseurl }}/assets/js/tool-app.js"></script>

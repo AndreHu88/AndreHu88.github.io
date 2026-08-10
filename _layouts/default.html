@@ -1,20 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hans">
   {% include head.html %}
-  <body>
-    {% include nav.html %}
+  <body class="{% if page.url == '/' %}home-page{% else %}inner-page{% endif %}">
+    {% include site-header.html %}
 
-    <div id="main" role="main" class="wrapper-content">
+    <main id="main" class="site-main" role="main">
       {{ content }}
-    </div>
+    </main>
 
-    {% include analytics.html %}
-  </body>
-
-  <div class="wrapper-footer-mobile">
-    <footer class="footer">
+    <footer class="site-footer">
       {% include footer.html %}
     </footer>
 
-
+    {% include search-overlay.html %}
+    {% include analytics.html %}
+  </body>
 </html>

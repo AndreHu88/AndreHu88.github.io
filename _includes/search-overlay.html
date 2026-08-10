@@ -1,0 +1,20 @@
+<dialog class="search-dialog" id="site-search" aria-labelledby="search-title">
+  <div class="search-dialog__panel">
+    <div class="search-dialog__header">
+      <div>
+        <span class="eyebrow">博客 · 知识库 · 工具</span>
+        <h2 id="search-title">搜索全部内容</h2>
+      </div>
+      <button class="search-dialog__close" type="button" data-search-close aria-label="关闭搜索">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+    <label class="search-field">
+      <span class="material-symbols-rounded" aria-hidden="true">search</span>
+      <input type="search" placeholder="输入标题、标签或关键词" autocomplete="off" data-search-input>
+      <kbd>ESC</kbd>
+    </label>
+    <p class="search-status" data-search-status>输入关键词，同时检索博客文章、知识库与工具。</p>
+    <div class="search-results" data-search-results></div>
+  </div>
+</dialog>

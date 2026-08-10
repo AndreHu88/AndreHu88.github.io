@@ -2,13 +2,15 @@
 layout: page
 title: 归档
 permalink: /archive/
+page_class: archive-page
 ---
 
 {% if site.posts.size == 0 %}
   <h2>No post found</h2>
 {% endif %}
 
-<ul class="archive">
+<p class="page-lead">沿时间回看长期写作留下的轨迹。</p>
+<ul class="archive timeline-list">
   {% for post in site.posts %}
     {% unless post.next %}
       <h2>{{ post.date | date: '%Y' }}</h2>
