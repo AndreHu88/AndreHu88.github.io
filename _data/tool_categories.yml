@@ -1,9 +1,3 @@
-- id: text
-  name: 文本处理
-  description: 整理文本与结构化数据
-- id: developer
-  name: 开发辅助
-  description: 编码、哈希与调试中的常见转换
 - id: finance-loan
   name: 贷款储蓄
   description: 规划房贷月供与存款目标
@@ -31,3 +25,9 @@
 - id: random
   name: 随机趣味
   description: 抽签、骰子与随机选择
+- id: text
+  name: 文本处理
+  description: 整理文本与结构化数据
+- id: developer
+  name: 开发辅助
+  description: 编码、哈希与调试中的常见转换

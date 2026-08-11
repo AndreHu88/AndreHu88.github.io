@@ -115,13 +115,22 @@
     return value;
   }
 
+  function optionalPositiveNumber(name, label) {
+    var rawValue = form.elements[name].value.trim();
+    if (!rawValue) return null;
+    var value = Number(rawValue);
+    if (!Number.isFinite(value) || value <= 0) throw new Error('请填写有效的' + label + '。');
+    return value;
+  }
+
   function resultText(value, language) {
     return '<textarea class="tool-output-text" rows="13" readonly spellcheck="false" aria-label="处理结果" data-language="' + (language || 'text') + '">' + escapeHtml(value) + '</textarea>';
   }
 
   function summaryCards(items) {
     return '<div class="tool-summary-grid">' + items.map(function (item) {
-      return '<div><span>' + escapeHtml(item.label) + '</span><strong>' + escapeHtml(item.value) + '</strong>' + (item.hint ? '<small>' + escapeHtml(item.hint) + '</small>' : '') + '</div>';
+      var classAttribute = item.className ? ' class="' + escapeHtml(item.className) + '"' : '';
+      return '<div' + classAttribute + '><span>' + escapeHtml(item.label) + '</span><strong>' + escapeHtml(item.value) + '</strong>' + (item.hint ? '<small>' + escapeHtml(item.hint) + '</small>' : '') + '</div>';
     }).join('') + '</div>';
   }
 
@@ -254,13 +263,73 @@
     }).join('') + '</tbody></table></div></details>';
   }
 
-  function handleMortgage() {
+  function handleNewMortgage() {
     var components = mortgageComponents();
     var equalPayment = core.mortgagePlan(components, 'equal-payment');
     var equalPrincipal = core.mortgagePlan(components, 'equal-principal');
     var selected = form.elements.scheduleMethod.value === 'equal-principal' ? equalPrincipal : equalPayment;
     var html = '<div class="mortgage-compare"><section><span>等额本息</span><strong>' + moneyFormatter.format(equalPayment.schedule[0].payment) + '</strong><small>每月月供</small><p>总利息 ' + moneyFormatter.format(equalPayment.totalInterest) + '</p></section><section><span>等额本金</span><strong>' + moneyFormatter.format(equalPrincipal.schedule[0].payment) + '</strong><small>首月月供</small><p>总利息 ' + moneyFormatter.format(equalPrincipal.totalInterest) + '</p></section></div>' + summaryCards([{ label: '贷款总额', value: moneyFormatter.format(selected.totalPrincipal) }, { label: '总还款', value: moneyFormatter.format(selected.totalPayment) }, { label: '总利息', value: moneyFormatter.format(selected.totalInterest) }]) + mortgageTable(selected);
     setResult(html);
+  }
+
+  function mortgageAdjustmentComponent(suffix, label) {
+    return {
+      principal: numberValue('adjustmentPrincipal' + suffix, label + '原贷款金额') * 10000,
+      oldAnnualRate: numberValue('oldRate' + suffix, label + '原执行年利率', true),
+      newAnnualRate: numberValue('newRate' + suffix, label + '新执行年利率', true),
+      months: Math.round(numberValue('adjustmentYears' + suffix, label + '总期限') * 12),
+      remainingPrincipal: optionalPositiveNumber('remainingPrincipal' + suffix, label + '当前剩余本金')
+    };
+  }
+
+  function mortgageAdjustmentComponents() {
+    var primaryLabel = form.elements.loanType.value === 'fund' ? '公积金贷款' : '商业贷款';
+    var components = [mortgageAdjustmentComponent('A', primaryLabel)];
+    if (form.elements.loanType.value === 'combination') components.push(mortgageAdjustmentComponent('B', '公积金贷款'));
+    return components;
+  }
+
+  function mortgageChange(value) {
+    var direction = Math.abs(value) < 0.005 ? 'same' : (value < 0 ? 'saving' : 'increase');
+    return {
+      className: direction === 'same' ? '' : 'is-' + direction,
+      label: direction === 'same' ? '无变化' : (direction === 'saving' ? '节省' : '增加'),
+      value: moneyFormatter.format(direction === 'same' ? 0 : Math.abs(value))
+    };
+  }
+
+  function changeSummary(label, value) {
+    var change = mortgageChange(value);
+    return { label: label + change.label, value: change.value, className: 'is-change ' + change.className };
+  }
+
+  function mortgageAdjustmentTable(plan) {
+    return '<details class="mortgage-details"><summary>查看调息后逐月对比（' + plan.schedule.length + ' 期）</summary><div class="tool-table-wrap"><table><thead><tr><th>合同期数</th><th>原月供</th><th>新月供</th><th>月供变化</th><th>新本金</th><th>新利息</th><th>新剩余本金</th></tr></thead><tbody>' + plan.schedule.map(function (row) {
+      var change = mortgageChange(row.paymentChange);
+      return '<tr><td>第 ' + row.month + ' 期</td><td>' + moneyFormatter.format(row.oldPayment) + '</td><td>' + moneyFormatter.format(row.newPayment) + '</td><td class="' + change.className + '">' + change.label + (change.label === '无变化' ? '' : ' ' + change.value) + '</td><td>' + moneyFormatter.format(row.principal) + '</td><td>' + moneyFormatter.format(row.interest) + '</td><td>' + moneyFormatter.format(row.remaining) + '</td></tr>';
+    }).join('') + '</tbody></table></div></details>';
+  }
+
+  function handleMortgageAdjustment() {
+    var paidMonths = numberValue('paidMonths', '已还期数', true);
+    if (!Number.isInteger(paidMonths)) throw new Error('已还期数必须是大于或等于零的整数。');
+    var method = form.elements.adjustmentMethod.value;
+    var plan = core.mortgageAdjustmentPlan(mortgageAdjustmentComponents(), method, paidMonths);
+    var html = '<p class="mortgage-adjustment-note"><strong>新利率完整生效后的还款计划</strong><span>不包含调息首期可能发生的新旧利率分段计息。</span></p>' + summaryCards([
+      { label: '当前剩余本金', value: moneyFormatter.format(plan.remainingPrincipal) },
+      { label: '原下一期月供', value: moneyFormatter.format(plan.oldNextPayment) },
+      { label: '新下一期月供', value: moneyFormatter.format(plan.newNextPayment) },
+      changeSummary('月供', plan.paymentChange),
+      { label: '原剩余利息', value: moneyFormatter.format(plan.oldRemainingInterest) },
+      { label: '新剩余利息', value: moneyFormatter.format(plan.newRemainingInterest) },
+      changeSummary('剩余利息', plan.interestChange)
+    ]) + mortgageAdjustmentTable(plan);
+    setResult(html);
+  }
+
+  function handleMortgage() {
+    if (form.elements.mortgageMode.value === 'adjustment') handleMortgageAdjustment();
+    else handleNewMortgage();
   }
 
   function handleCompound() {
@@ -716,15 +785,82 @@
     return mealApp.handle(action);
   }
 
+  function setRequired(names, required) {
+    names.forEach(function (name) {
+      form.elements[name].required = required;
+      if (!required) form.elements[name].removeAttribute('aria-invalid');
+    });
+  }
+
+  function resetResult(placeholder) {
+    result.classList.remove('is-error');
+    result.innerHTML = '<p class="tool-placeholder">' + placeholder + '</p>';
+    result._copyValue = '';
+    copyButton.hidden = true;
+    setFormStatus('', '');
+  }
+
+  function mortgagePlaceholder() {
+    return form.elements.mortgageMode.value === 'adjustment'
+      ? '填写原贷款及新旧利率，调息变化会在这里出现。'
+      : '填写贷款信息，计算结果会在这里出现。';
+  }
+
+  function updateMortgageModeView(adjustment) {
+    Array.prototype.forEach.call(page.querySelectorAll('[data-mortgage-mode-tab]'), function (tab) {
+      var selected = tab.getAttribute('data-mortgage-mode-tab') === form.elements.mortgageMode.value;
+      tab.setAttribute('aria-selected', String(selected));
+      tab.setAttribute('tabindex', selected ? '0' : '-1');
+    });
+    page.querySelector('[data-mortgage-mode-description]').textContent = adjustment
+      ? '用于比较已有贷款调息前后的月供和剩余利息'
+      : '用于新贷款方案的月供和总利息测算';
+    page.querySelector('[data-mortgage-submit]').textContent = adjustment ? '比较调息变化' : '计算月供';
+    page.querySelector('#tool-result-title').textContent = adjustment ? '调息变化结果' : '新贷款测算结果';
+  }
+
   function updateLoanFields() {
     if (tool !== 'mortgage') return;
     var combination = form.elements.loanType.value === 'combination';
-    page.querySelector('[data-combination-fields]').hidden = !combination;
-    ['principalB', 'rateB', 'yearsB'].forEach(function (name) {
-      form.elements[name].required = combination;
-      if (!combination) form.elements[name].removeAttribute('aria-invalid');
+    var adjustment = form.elements.mortgageMode.value === 'adjustment';
+    page.querySelector('[data-new-loan-fields]').hidden = adjustment;
+    page.querySelector('[data-adjustment-fields]').hidden = !adjustment;
+    page.querySelector('[data-new-combination-fields]').hidden = !combination;
+    page.querySelector('[data-adjustment-combination-fields]').hidden = !combination;
+    setRequired(['principalA', 'rateA', 'yearsA'], !adjustment);
+    setRequired(['principalB', 'rateB', 'yearsB'], !adjustment && combination);
+    setRequired(['paidMonths', 'adjustmentPrincipalA', 'adjustmentYearsA', 'oldRateA', 'newRateA'], adjustment);
+    setRequired(['adjustmentPrincipalB', 'adjustmentYearsB', 'oldRateB', 'newRateB'], adjustment && combination);
+    updateMortgageModeView(adjustment);
+    Array.prototype.forEach.call(page.querySelectorAll('[data-primary-loan-label]'), function (legend) {
+      legend.textContent = combination ? '商业贷款' : (form.elements.loanType.value === 'fund' ? '公积金贷款' : '商业贷款');
     });
-    page.querySelector('[data-primary-loan-label]').textContent = combination ? '商业贷款' : (form.elements.loanType.value === 'fund' ? '公积金贷款' : '商业贷款');
+  }
+
+  function selectMortgageMode(mode, focusTab) {
+    var tabs = Array.prototype.slice.call(page.querySelectorAll('[data-mortgage-mode-tab]'));
+    var selectedTab = tabs.filter(function (tab) { return tab.getAttribute('data-mortgage-mode-tab') === mode; })[0];
+    if (form.elements.mortgageMode.value === mode) {
+      if (focusTab && selectedTab) selectedTab.focus();
+      return;
+    }
+    form.elements.mortgageMode.value = mode;
+    updateLoanFields();
+    resetResult(mortgagePlaceholder());
+    if (focusTab && selectedTab) selectedTab.focus();
+  }
+
+  function handleMortgageTabKeydown(event) {
+    var tabs = Array.prototype.slice.call(page.querySelectorAll('[data-mortgage-mode-tab]'));
+    var currentIndex = tabs.indexOf(event.currentTarget);
+    var nextIndex;
+    if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+    else if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % tabs.length;
+    else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = tabs.length - 1;
+    else return;
+    event.preventDefault();
+    selectMortgageMode(tabs[nextIndex].getAttribute('data-mortgage-mode-tab'), true);
   }
 
   var unitPriceUnits = {
@@ -1172,6 +1308,7 @@
       if (tool === 'timezone-converter') populateTimeZones();
       if (tool === 'workday') { form.elements.startDate.value = localDateValue(new Date()); form.elements.endDate.value = localDateValue(new Date()); }
       applyToolState();
+      if (tool === 'mortgage') resetResult(mortgagePlaceholder());
       if (tool === 'text-stats') renderTextStats();
       if (tool === 'meal-picker' && mealApp) mealApp.resetHistory();
     }, 0);
@@ -1200,6 +1337,13 @@
     form.elements.source.addEventListener('input', renderTextStats);
     renderTextStats();
   }
-  if (tool === 'mortgage') form.elements.loanType.addEventListener('change', updateLoanFields);
+  if (tool === 'mortgage') {
+    form.elements.loanType.addEventListener('change', updateLoanFields);
+    Array.prototype.forEach.call(page.querySelectorAll('[data-mortgage-mode-tab]'), function (tab) {
+      tab.addEventListener('click', function () { selectMortgageMode(tab.getAttribute('data-mortgage-mode-tab'), false); });
+      tab.addEventListener('keydown', handleMortgageTabKeydown);
+    });
+  }
   initializeTool();
+  if (tool === 'mortgage') resetResult(mortgagePlaceholder());
 }());

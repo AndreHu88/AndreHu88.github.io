@@ -67,6 +67,139 @@ test('mortgage handles zero rate and mixed terms', () => {
   assert.ok(mixed.schedule[0].payment > mixed.schedule[12].payment);
 });
 
+test('mortgage adjustment keeps a zero-rate loan unchanged', () => {
+  const result = tools.mortgageAdjustmentPlan([
+    { principal: 120000, oldAnnualRate: 0, newAnnualRate: 0, months: 12 }
+  ], 'equal-payment', 2);
+
+  assert.equal(result.remainingPrincipal, 100000);
+  assert.equal(result.oldNextPayment, 10000);
+  assert.equal(result.newNextPayment, 10000);
+  assert.equal(result.paymentChange, 0);
+  assert.equal(result.oldRemainingInterest, 0);
+  assert.equal(result.newRemainingInterest, 0);
+  assert.equal(result.interestChange, 0);
+  assert.equal(result.schedule.length, 10);
+  assert.deepEqual(result.schedule[0], {
+    month: 3,
+    oldPayment: 10000,
+    newPayment: 10000,
+    paymentChange: 0,
+    principal: 10000,
+    interest: 0,
+    remaining: 90000
+  });
+});
+
+test('mortgage adjustment compares each equal-principal installment after a rate cut', () => {
+  const result = tools.mortgageAdjustmentPlan([
+    { principal: 120000, oldAnnualRate: 12, newAnnualRate: 6, months: 12 }
+  ], 'equal-principal', 2);
+
+  assert.equal(Math.round(result.remainingPrincipal), 100000);
+  assert.equal(Math.round(result.oldNextPayment), 11000);
+  assert.equal(Math.round(result.newNextPayment), 10500);
+  assert.equal(Math.round(result.paymentChange), -500);
+  assert.equal(Math.round(result.oldRemainingInterest), 5500);
+  assert.equal(Math.round(result.newRemainingInterest), 2750);
+  assert.equal(Math.round(result.interestChange), -2750);
+  assert.equal(Math.round(result.schedule[9].paymentChange), -50);
+});
+
+test('mortgage adjustment rejects invalid loan progress and balances', () => {
+  const loan = { principal: 120000, oldAnnualRate: 4, newAnnualRate: 3, months: 12 };
+
+  assert.throws(() => tools.mortgageAdjustmentPlan([loan], 'equal-payment', -1));
+  assert.throws(() => tools.mortgageAdjustmentPlan([loan], 'equal-payment', 1.5));
+  assert.throws(() => tools.mortgageAdjustmentPlan([loan], 'equal-payment', 12));
+  assert.throws(() => tools.mortgageAdjustmentPlan([
+    { ...loan, remainingPrincipal: 130000 }
+  ], 'equal-payment', 2));
+  assert.throws(() => tools.mortgageAdjustmentPlan([
+    { ...loan, principal: Infinity }
+  ], 'equal-payment', 2), /有限数值/);
+  assert.throws(() => tools.mortgageAdjustmentPlan([
+    { ...loan, oldAnnualRate: Infinity }
+  ], 'equal-payment', 2), /有限数值/);
+  assert.throws(() => tools.mortgageAdjustmentPlan([
+    { ...loan, remainingPrincipal: Infinity }
+  ], 'equal-payment', 2), /有限数值/);
+});
+
+test('mortgage adjustment lowers equal-payment costs when a positive rate falls', () => {
+  const result = tools.mortgageAdjustmentPlan([
+    { principal: 120000, oldAnnualRate: 12, newAnnualRate: 6, months: 12 }
+  ], 'equal-payment', 2);
+
+  assert.ok(result.newNextPayment < result.oldNextPayment);
+  assert.ok(result.paymentChange < 0);
+  assert.ok(result.newRemainingInterest < result.oldRemainingInterest);
+  assert.ok(result.interestChange < 0);
+});
+
+test('mortgage adjustment merges combination loans with different remaining terms', () => {
+  const result = tools.mortgageAdjustmentPlan([
+    { principal: 120000, oldAnnualRate: 0, newAnnualRate: 0, months: 12 },
+    { principal: 120000, oldAnnualRate: 0, newAnnualRate: 0, months: 24 }
+  ], 'equal-payment', 6);
+
+  assert.equal(result.remainingPrincipal, 150000);
+  assert.equal(result.oldNextPayment, 15000);
+  assert.equal(result.newNextPayment, 15000);
+  assert.equal(result.schedule.length, 18);
+  assert.equal(result.schedule[0].month, 7);
+  assert.equal(result.schedule[6].newPayment, 5000);
+  assert.equal(result.schedule[17].remaining, 0);
+});
+
+test('mortgage adjustment changes combination components independently', () => {
+  const result = tools.mortgageAdjustmentPlan([
+    { principal: 120000, oldAnnualRate: 0, newAnnualRate: 0, months: 12 },
+    { principal: 120000, oldAnnualRate: 6, newAnnualRate: 3, months: 24 }
+  ], 'equal-payment', 6);
+
+  assert.ok(result.paymentChange < 0);
+  assert.ok(result.interestChange < 0);
+  assert.equal(result.schedule.length, 18);
+  assert.ok(result.schedule[6].newPayment < result.schedule[6].oldPayment);
+});
+
+test('mortgage adjustment honors a bank balance override and reports a rate increase', () => {
+  const result = tools.mortgageAdjustmentPlan([
+    { principal: 120000, oldAnnualRate: 0, newAnnualRate: 12, months: 12, remainingPrincipal: 60000 }
+  ], 'equal-payment', 2);
+  const repaidPrincipal = result.schedule.reduce((sum, row) => sum + row.principal, 0);
+
+  assert.equal(result.remainingPrincipal, 60000);
+  assert.equal(result.oldNextPayment, 6000);
+  assert.ok(result.newNextPayment > result.oldNextPayment);
+  assert.ok(result.paymentChange > 0);
+  assert.ok(result.interestChange > 0);
+  assert.ok(Math.abs(repaidPrincipal - 60000) < 0.01);
+});
+
+test('mortgage adjustment ignores a completed combination component', () => {
+  const result = tools.mortgageAdjustmentPlan([
+    { principal: 60000, oldAnnualRate: 5, newAnnualRate: 3, months: 6 },
+    { principal: 120000, oldAnnualRate: 0, newAnnualRate: 0, months: 12 }
+  ], 'equal-payment', 6);
+
+  assert.equal(result.remainingPrincipal, 60000);
+  assert.equal(result.schedule.length, 6);
+  assert.equal(result.newNextPayment, 10000);
+  assert.equal(result.paymentChange, 0);
+});
+
+test('mortgage adjustment supports the final remaining installment', () => {
+  const result = tools.mortgageAdjustmentPlan([
+    { principal: 12000, oldAnnualRate: 0, newAnnualRate: 0, months: 12 }
+  ], 'equal-payment', 11);
+
+  assert.equal(result.schedule.length, 1);
+  assert.equal(result.schedule[0].month, 12);
+  assert.equal(result.schedule[0].remaining, 0);
+});
+
 test('compound, CAGR and recurring investment calculations cover boundaries', () => {
   assert.equal(Math.round(tools.compoundInterest(10000, 0, 10, 12).finalAmount), 10000);
   assert.ok(tools.compoundInterest(10000, 12, 1, 12).finalAmount > tools.compoundInterest(10000, 12, 1, 1).finalAmount);

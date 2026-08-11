@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
+ruby "~> 3.3.0"
+
 gem "jekyll", "= 4.4.1"
 gem "jekyll-sass-converter", "~> 3.1"
 gem "kramdown", "~> 2.5"

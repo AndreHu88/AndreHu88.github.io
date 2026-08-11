@@ -61,8 +61,8 @@
   category_name: 贷款储蓄
   module: finance
   icon: home_work
-  summary: 支持商贷、公积金、组合贷与两种还款方式对比。
-  keywords: 房贷 月供 商贷 公积金 组合贷 等额本息 等额本金
+  summary: 支持新贷款测算，以及存量房贷调息后的月供与剩余利息对比。
+  keywords: 房贷 月供 商贷 公积金 组合贷 等额本息 等额本金 存量房贷 调息 降息 加息 月供变化
 - slug: compound-interest
   title: 复利计算器
   category: finance-investment

@@ -42,6 +42,64 @@
     return { schedule: merged, totalPrincipal: totalPrincipal, totalPayment: totalPayment, totalInterest: totalPayment - totalPrincipal };
   }
 
+  function validateMortgageAdjustment(components, method, paidMonths) {
+    if (!Array.isArray(components) || components.length === 0) throw new Error('请至少填写一笔贷款。');
+    if (method !== 'equal-payment' && method !== 'equal-principal') throw new Error('请选择有效的还款方式。');
+    if (!Number.isInteger(paidMonths) || paidMonths < 0) throw new Error('已还期数必须是大于或等于零的整数。');
+    components.forEach(function (component) {
+      if (![component.principal, component.oldAnnualRate, component.newAnnualRate].every(Number.isFinite)) throw new Error('贷款金额和利率必须是有限数值。');
+      if (!(component.principal > 0)) throw new Error('原贷款金额必须大于零。');
+      if (!Number.isInteger(component.months) || component.months <= 0) throw new Error('贷款期限必须是完整月数。');
+      if (!(component.oldAnnualRate >= 0) || !(component.newAnnualRate >= 0)) throw new Error('贷款利率不能为负数。');
+      if (component.remainingPrincipal != null && !Number.isFinite(component.remainingPrincipal)) throw new Error('当前剩余本金必须是有限数值。');
+      if (component.remainingPrincipal != null && (!(component.remainingPrincipal > 0) || component.remainingPrincipal > component.principal)) {
+        throw new Error('当前剩余本金必须大于零且不能超过原贷款金额。');
+      }
+    });
+    if (!components.some(function (component) { return component.months > paidMonths; })) throw new Error('贷款已经全部还清。');
+  }
+
+  function mortgageAdjustmentPlan(components, method, paidMonths) {
+    validateMortgageAdjustment(components, method, paidMonths);
+    var activeComponents = components.filter(function (component) { return component.months > paidMonths; }).map(function (component) {
+      var originalSchedule = mortgageComponent(component.principal, component.oldAnnualRate, component.months, method);
+      var inferredRemaining = paidMonths === 0 ? component.principal : originalSchedule[paidMonths - 1].remaining;
+      return {
+        remainingPrincipal: component.remainingPrincipal == null ? inferredRemaining : component.remainingPrincipal,
+        oldAnnualRate: component.oldAnnualRate,
+        newAnnualRate: component.newAnnualRate,
+        remainingMonths: component.months - paidMonths
+      };
+    });
+    var oldPlan = mortgagePlan(activeComponents.map(function (component) {
+      return { principal: component.remainingPrincipal, annualRate: component.oldAnnualRate, months: component.remainingMonths };
+    }), method);
+    var newPlan = mortgagePlan(activeComponents.map(function (component) {
+      return { principal: component.remainingPrincipal, annualRate: component.newAnnualRate, months: component.remainingMonths };
+    }), method);
+    var schedule = newPlan.schedule.map(function (row, index) {
+      return {
+        month: paidMonths + index + 1,
+        oldPayment: oldPlan.schedule[index].payment,
+        newPayment: row.payment,
+        paymentChange: row.payment - oldPlan.schedule[index].payment,
+        principal: row.principal,
+        interest: row.interest,
+        remaining: row.remaining
+      };
+    });
+    return {
+      remainingPrincipal: newPlan.totalPrincipal,
+      oldNextPayment: oldPlan.schedule[0].payment,
+      newNextPayment: newPlan.schedule[0].payment,
+      paymentChange: newPlan.schedule[0].payment - oldPlan.schedule[0].payment,
+      oldRemainingInterest: oldPlan.totalInterest,
+      newRemainingInterest: newPlan.totalInterest,
+      interestChange: newPlan.totalInterest - oldPlan.totalInterest,
+      schedule: schedule
+    };
+  }
+
   function compoundInterest(principal, annualRate, years, compoundsPerYear) {
     var periods = years * compoundsPerYear;
     var finalAmount = principal * Math.pow(1 + annualRate / 100 / compoundsPerYear, periods);
@@ -324,6 +382,7 @@
   return {
     mortgageComponent: mortgageComponent,
     mortgagePlan: mortgagePlan,
+    mortgageAdjustmentPlan: mortgageAdjustmentPlan,
     compoundInterest: compoundInterest,
     cagr: cagr,
     recurringInvestment: recurringInvestment,

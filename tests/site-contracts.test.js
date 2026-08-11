@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 
 const projectRoot = path.resolve(__dirname, '..');
 
@@ -24,6 +25,72 @@ function flatYamlRecords(relativePath, recordKey) {
     if (fieldMatch) current[fieldMatch[1]] = fieldMatch[2].trim();
   });
   return records;
+}
+
+function mortgageControl(value) {
+  const listeners = {};
+  return {
+    value: value || '', required: false, textContent: '', hidden: false, attributes: {}, focused: false,
+    addEventListener(type, listener) { listeners[type] = listener; },
+    removeAttribute(name) { delete this.attributes[name]; },
+    setAttribute(name, nextValue) { this.attributes[name] = String(nextValue); },
+    getAttribute(name) { return this.attributes[name]; },
+    focus() { this.focused = true; },
+    dispatch(type, event) {
+      listeners[type]({ currentTarget: this, key: event && event.key, preventDefault() {} });
+    }
+  };
+}
+
+function loadMortgagePage() {
+  const names = [
+    'principalA', 'rateA', 'yearsA', 'principalB', 'rateB', 'yearsB', 'paidMonths',
+    'adjustmentPrincipalA', 'adjustmentYearsA', 'oldRateA', 'newRateA',
+    'adjustmentPrincipalB', 'adjustmentYearsB', 'oldRateB', 'newRateB'
+  ];
+  const elements = Object.fromEntries(names.map((name) => [name, mortgageControl()]));
+  elements.loanType = mortgageControl('commercial');
+  elements.mortgageMode = mortgageControl('new');
+  const newTab = mortgageControl();
+  newTab.setAttribute('data-mortgage-mode-tab', 'new');
+  const adjustmentTab = mortgageControl();
+  adjustmentTab.setAttribute('data-mortgage-mode-tab', 'adjustment');
+  const panels = {
+    '[data-new-loan-fields]': { hidden: false }, '[data-adjustment-fields]': { hidden: true },
+    '[data-new-combination-fields]': { hidden: true }, '[data-adjustment-combination-fields]': { hidden: true },
+    '[data-mortgage-mode-description]': mortgageControl(), '[data-mortgage-submit]': mortgageControl()
+  };
+  const formListeners = {};
+  const form = {
+    elements, addEventListener(type, listener) { formListeners[type] = listener; }, querySelectorAll() { return []; },
+    dispatch(type) { formListeners[type]({ preventDefault() {} }); }
+  };
+  const result = { innerHTML: '', _copyValue: '', _downloadUrl: '', classList: { add() {}, remove() {} } };
+  const copyButton = { hidden: true, addEventListener() {}, innerHTML: '' };
+  const formStatus = { textContent: '', classList: { toggle() {} } };
+  const resultTitle = { textContent: '计算结果' };
+  const page = {
+    getAttribute() { return 'mortgage'; },
+    querySelector(selector) {
+      if (selector === '[data-tool-form]') return form;
+      if (selector === '[data-tool-result]') return result;
+      if (selector === '[data-copy-result]') return copyButton;
+      if (selector === '[data-tool-form-status]') return formStatus;
+      if (selector === '#tool-result-title') return resultTitle;
+      if (selector === '[data-tool-swap]') return null;
+      return panels[selector];
+    },
+    querySelectorAll(selector) {
+      if (selector === '[data-mortgage-mode-tab]') return [newTab, adjustmentTab];
+      if (selector === '[data-primary-loan-label]') return [{ textContent: '' }, { textContent: '' }];
+      return [];
+    }
+  };
+  vm.runInNewContext(readProjectFile('assets/js/tool-app.js'), {
+    document: { querySelector() { return page; }, createElement() { return mortgageControl(); } },
+    window: { JackToolsCore: {}, setTimeout(callback) { callback(); } }, Intl, URL: { revokeObjectURL() {} }
+  });
+  return { elements, newTab, adjustmentTab, panels, form, result, copyButton, formStatus, resultTitle };
 }
 
 test('site head declares the responsive mobile viewport', () => {
@@ -53,6 +120,99 @@ test('timestamp current-time action bypasses empty required input validation', (
   assert.match(forms, /value="now"[^>]*formnovalidate/);
 });
 
+test('mortgage form exposes accessible mode tabs and repayment explanations', () => {
+  const forms = readProjectFile('_includes/tool-forms/finance.html');
+  const app = readProjectFile('assets/js/tool-app.js');
+  const styles = readProjectFile('style.scss');
+  const mortgageForm = forms.slice(forms.indexOf("{% when 'mortgage' %}"), forms.indexOf("{% when 'compound-interest' %}"));
+
+  assert.match(mortgageForm, /role="tablist"/);
+  assert.match(mortgageForm, /name="mortgageMode" type="hidden" value="new"/);
+  assert.match(mortgageForm, /data-mortgage-mode-tab="new"[^>]*aria-selected="true"/);
+  assert.match(mortgageForm, /data-mortgage-mode-tab="adjustment"[^>]*aria-selected="false"/);
+  assert.match(mortgageForm, /data-new-loan-fields[^>]*role="tabpanel"/);
+  assert.match(mortgageForm, /data-adjustment-fields[^>]*role="tabpanel"[^>]*hidden/);
+  assert.doesNotMatch(mortgageForm, /<select[^>]*name="mortgageMode"/);
+  assert.match(mortgageForm, /每月还款额基本固定，前期利息占比较高，月供压力更平稳。/);
+  assert.match(mortgageForm, /每月偿还相同本金，月供逐月减少；前期月供更高，总利息通常更少。/);
+  assert.match(mortgageForm, /贷款金额、利率和期限相同/);
+  assert.match(mortgageForm, /name="paidMonths"/);
+  assert.match(mortgageForm, /name="remainingPrincipalA"/);
+  assert.match(mortgageForm, /name="remainingPrincipalB"/);
+  assert.match(app, /className: 'is-change ' \+ change\.className/);
+  assert.match(styles, /\.tool-summary-grid > div\.is-saving/);
+  assert.match(styles, /\.tool-summary-grid > div\.is-increase/);
+});
+
+test('mortgage tab click switches modes and clears only stale results', () => {
+  const { elements, newTab, adjustmentTab, panels, result, copyButton, formStatus, resultTitle } = loadMortgagePage();
+  assert.equal(newTab.getAttribute('aria-selected'), 'true');
+  assert.equal(adjustmentTab.getAttribute('aria-selected'), 'false');
+  assert.equal(elements.principalA.required, true);
+  assert.equal(elements.adjustmentPrincipalA.required, false);
+  result.innerHTML = '<p>旧计算结果</p>';
+  result._copyValue = '旧计算结果';
+  copyButton.hidden = false;
+  formStatus.textContent = '输入已就绪';
+  adjustmentTab.dispatch('click');
+  assert.equal(elements.mortgageMode.value, 'adjustment');
+  assert.equal(panels['[data-new-loan-fields]'].hidden, true);
+  assert.equal(panels['[data-adjustment-fields]'].hidden, false);
+  assert.equal(elements.principalA.required, false);
+  assert.equal(elements.adjustmentPrincipalA.required, true);
+  assert.match(result.innerHTML, /填写原贷款及新旧利率/);
+  assert.equal(result._copyValue, '');
+  assert.equal(copyButton.hidden, true);
+  assert.equal(formStatus.textContent, '');
+  assert.equal(panels['[data-mortgage-submit]'].textContent, '比较调息变化');
+  assert.equal(resultTitle.textContent, '调息变化结果');
+
+  result.innerHTML = '<p>保留当前结果</p>';
+  adjustmentTab.dispatch('click');
+  assert.equal(result.innerHTML, '<p>保留当前结果</p>');
+});
+
+test('mortgage tabs support arrow, Home, and End keyboard navigation', () => {
+  const { elements, newTab, adjustmentTab, resultTitle } = loadMortgagePage();
+  adjustmentTab.dispatch('click');
+  adjustmentTab.dispatch('keydown', { key: 'ArrowLeft' });
+  assert.equal(elements.mortgageMode.value, 'new');
+  assert.equal(newTab.focused, true);
+  assert.equal(resultTitle.textContent, '新贷款测算结果');
+  newTab.dispatch('keydown', { key: 'End' });
+  assert.equal(elements.mortgageMode.value, 'adjustment');
+  adjustmentTab.dispatch('keydown', { key: 'Home' });
+  assert.equal(elements.mortgageMode.value, 'new');
+  newTab.dispatch('keydown', { key: 'ArrowRight' });
+  assert.equal(elements.mortgageMode.value, 'adjustment');
+});
+
+test('mortgage form reset restores the new-loan tab and result prompt', () => {
+  const { elements, newTab, adjustmentTab, panels, form, result, copyButton } = loadMortgagePage();
+  adjustmentTab.dispatch('click');
+  elements.mortgageMode.value = 'new';
+  result.innerHTML = '<p>重置前结果</p>';
+  copyButton.hidden = false;
+  form.dispatch('reset');
+  assert.equal(newTab.getAttribute('aria-selected'), 'true');
+  assert.equal(adjustmentTab.getAttribute('aria-selected'), 'false');
+  assert.match(result.innerHTML, /填写贷款信息/);
+  assert.equal(copyButton.hidden, true);
+  assert.equal(panels['[data-mortgage-submit]'].textContent, '计算月供');
+});
+
+test('mortgage combination fields follow the active tab requirements', () => {
+  const { elements, adjustmentTab, panels } = loadMortgagePage();
+  elements.loanType.value = 'combination';
+  elements.loanType.dispatch('change');
+  assert.equal(panels['[data-new-combination-fields]'].hidden, false);
+  assert.equal(elements.principalB.required, true);
+  adjustmentTab.dispatch('click');
+  assert.equal(panels['[data-adjustment-combination-fields]'].hidden, false);
+  assert.equal(elements.principalB.required, false);
+  assert.equal(elements.adjustmentPrincipalB.required, true);
+});
+
 test('article cards support explicit and tag-based local covers', () => {
   const home = readProjectFile('index.html');
   const coverData = readProjectFile('_data/post_covers.yml');
@@ -70,8 +230,8 @@ test('tool metadata contains exactly 40 unique tools in the refined categories',
   assert.equal(tools.length, 40);
   assert.equal(new Set(tools.map((tool) => tool.slug)).size, 40);
   assert.deepEqual(categories.map((category) => category.id), [
-    'text', 'developer', 'finance-loan', 'finance-investment', 'finance-consumer', 'finance-currency',
-    'date-time', 'food-health', 'home-travel', 'utility', 'random'
+    'finance-loan', 'finance-investment', 'finance-consumer', 'finance-currency', 'date-time',
+    'food-health', 'home-travel', 'utility', 'random', 'text', 'developer'
   ]);
 
   const counts = tools.reduce((result, tool) => {

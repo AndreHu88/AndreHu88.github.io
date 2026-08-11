@@ -1,11 +1,30 @@
 {% case include.tool.slug %}
 {% when 'mortgage' %}
 <form class="tool-form" data-tool-form>
+  <div class="mortgage-mode-tabs" role="tablist" aria-label="房贷计算模式">
+    <input name="mortgageMode" type="hidden" value="new" data-mortgage-mode>
+    <button id="mortgage-mode-new" type="button" role="tab" data-mortgage-mode-tab="new" aria-selected="true" aria-controls="mortgage-new-panel" tabindex="0">新贷款测算</button>
+    <button id="mortgage-mode-adjustment" type="button" role="tab" data-mortgage-mode-tab="adjustment" aria-selected="false" aria-controls="mortgage-adjustment-panel" tabindex="-1">存量贷款调息</button>
+  </div>
+  <p class="mortgage-mode-description" data-mortgage-mode-description>用于新贷款方案的月供和总利息测算</p>
   <label>贷款类型<select name="loanType" data-loan-type><option value="commercial">商业贷款</option><option value="fund">公积金贷款</option><option value="combination">组合贷款</option></select></label>
-  <fieldset><legend data-primary-loan-label>贷款信息</legend><div class="tool-fields tool-fields--3"><label>金额（万元）<input name="principalA" type="number" min="0" step="1" required></label><label>年利率（%）<input name="rateA" type="number" min="0" step="0.01" required></label><label>期限（年）<input name="yearsA" type="number" min="1" max="40" value="30" required></label></div></fieldset>
-  <fieldset data-combination-fields hidden><legend>公积金贷款</legend><div class="tool-fields tool-fields--3"><label>金额（万元）<input name="principalB" type="number" min="0" step="1"></label><label>年利率（%）<input name="rateB" type="number" min="0" step="0.01"></label><label>期限（年）<input name="yearsB" type="number" min="1" max="40" value="30"></label></div></fieldset>
-  <label>明细默认展示<select name="scheduleMethod"><option value="equal-payment">等额本息</option><option value="equal-principal">等额本金</option></select></label>
-  <div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算并比较</button><button class="tool-reset" type="reset">重置</button></div>
+  <div id="mortgage-new-panel" class="mortgage-mode-fields" data-new-loan-fields role="tabpanel" aria-labelledby="mortgage-mode-new">
+    <fieldset><legend data-primary-loan-label>贷款信息</legend><div class="tool-fields tool-fields--3"><label>金额（万元）<input name="principalA" type="number" min="0.01" step="0.01" required></label><label>年利率（%）<input name="rateA" type="number" min="0" step="0.01" required></label><label>期限（年）<input name="yearsA" type="number" min="1" max="40" value="30" required></label></div></fieldset>
+    <fieldset data-new-combination-fields hidden><legend>公积金贷款</legend><div class="tool-fields tool-fields--3"><label>金额（万元）<input name="principalB" type="number" min="0.01" step="0.01"></label><label>年利率（%）<input name="rateB" type="number" min="0" step="0.01"></label><label>期限（年）<input name="yearsB" type="number" min="1" max="40" value="30"></label></div></fieldset>
+    <label>明细默认展示<select name="scheduleMethod"><option value="equal-payment">等额本息</option><option value="equal-principal">等额本金</option></select></label>
+  </div>
+  <div id="mortgage-adjustment-panel" class="mortgage-mode-fields" data-adjustment-fields role="tabpanel" aria-labelledby="mortgage-mode-adjustment" hidden>
+    <div class="tool-fields tool-fields--2"><label>实际还款方式<select name="adjustmentMethod"><option value="equal-payment">等额本息</option><option value="equal-principal">等额本金</option></select></label><label>已还期数（月）<input name="paidMonths" type="number" min="0" max="479" step="1"></label></div>
+    <fieldset><legend data-primary-loan-label>贷款信息</legend><div class="tool-fields tool-fields--2"><label>原贷款金额（万元）<input name="adjustmentPrincipalA" type="number" min="0.01" step="0.01"></label><label>总期限（年）<input name="adjustmentYearsA" type="number" min="1" max="40" value="30"></label><label>原执行年利率（%）<input name="oldRateA" type="number" min="0" step="0.01"></label><label>新执行年利率（%）<input name="newRateA" type="number" min="0" step="0.01"></label><label>当前剩余本金（元，可选）<input name="remainingPrincipalA" type="number" min="0.01" step="0.01" placeholder="有提前还款时建议填写"></label></div></fieldset>
+    <fieldset data-adjustment-combination-fields hidden><legend>公积金贷款</legend><div class="tool-fields tool-fields--2"><label>原贷款金额（万元）<input name="adjustmentPrincipalB" type="number" min="0.01" step="0.01"></label><label>总期限（年）<input name="adjustmentYearsB" type="number" min="1" max="40" value="30"></label><label>原执行年利率（%）<input name="oldRateB" type="number" min="0" step="0.01"></label><label>新执行年利率（%）<input name="newRateB" type="number" min="0" step="0.01"></label><label>当前剩余本金（元，可选）<input name="remainingPrincipalB" type="number" min="0.01" step="0.01" placeholder="有提前还款时建议填写"></label></div></fieldset>
+    <p class="tool-hint">未填写当前剩余本金时，将按原计划自动推算。发生过提前还款时，请优先填写银行显示的账面余额。</p>
+  </div>
+  <section class="repayment-guide" aria-labelledby="repayment-guide-title">
+    <h3 id="repayment-guide-title">等额本息和等额本金有什么区别？</h3>
+    <div class="repayment-explanations"><div><strong>等额本息</strong><p>每月还款额基本固定，前期利息占比较高，月供压力更平稳。</p></div><div><strong>等额本金</strong><p>每月偿还相同本金，月供逐月减少；前期月供更高，总利息通常更少。</p></div></div>
+    <p>以上比较基于贷款金额、利率和期限相同的情况。</p>
+  </section>
+  <div class="tool-actions"><button class="button button--primary" name="action" value="calculate" data-mortgage-submit>计算月供</button><button class="tool-reset" type="reset">重置</button></div>
 </form>
 {% when 'compound-interest' %}
 <form class="tool-form" data-tool-form><div class="tool-fields tool-fields--2"><label>初始本金（元）<input name="principal" type="number" min="0" step="100" required></label><label>年利率（%）<input name="rate" type="number" step="0.01" required></label><label>投资期限（年）<input name="years" type="number" min="0.25" step="0.25" required></label><label>每年复利次数<select name="frequency"><option value="1">每年</option><option value="4">每季度</option><option value="12" selected>每月</option><option value="365">每日</option></select></label></div><div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算复利</button><button class="tool-reset" type="reset">重置</button></div></form>

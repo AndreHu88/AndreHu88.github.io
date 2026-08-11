@@ -105,5 +105,8 @@ DEPENDENCIES
   tzinfo-data
   webrick (~> 1.9)
 
+RUBY VERSION
+   ruby 3.3.12p206
+
 BUNDLED WITH
    2.6.3
