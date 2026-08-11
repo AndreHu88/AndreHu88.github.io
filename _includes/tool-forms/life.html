@@ -15,6 +15,48 @@
 <form class="tool-form" data-tool-form><div class="tool-fields tool-fields--2"><label>身高（厘米）<input name="height" type="number" min="50" max="250" step="0.1" required></label><label>体重（千克）<input name="weight" type="number" min="10" max="500" step="0.1" required></label></div><div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算 BMI</button><button class="tool-reset" type="reset">重置</button></div><p class="tool-hint">采用 WHO 成人 BMI 区间，仅供成年人日常参考。</p></form>
 {% when 'workday' %}
 <form class="tool-form" data-tool-form><label>计算方式<select name="mode" data-workday-mode><option value="count">统计日期区间内的工作日</option><option value="add">推算若干工作日后的日期</option></select></label><label>开始日期<input name="startDate" type="date" required></label><div data-workday-count><label>结束日期<input name="endDate" type="date"></label><div class="tool-option-grid"><label class="tool-check"><input name="includeStart" type="checkbox" checked>包含开始日</label><label class="tool-check"><input name="includeEnd" type="checkbox" checked>包含结束日</label></div></div><div data-workday-add hidden><div class="tool-fields tool-fields--2"><label>工作日数量<input name="workdays" type="number" min="0" step="1"></label><label>方向<select name="direction"><option value="forward">向后推算</option><option value="backward">向前推算</option></select></label></div></div><label>额外休息日（每行一个日期）<textarea name="holidays" rows="3" placeholder="2026-10-01"></textarea></label><label>调休工作日（每行一个日期）<textarea name="workingWeekends" rows="3" placeholder="2026-09-27"></textarea></label><div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算工作日</button><button class="tool-reset" type="reset">重置</button></div></form>
+{% when 'time-calculator' %}
+<form class="tool-form" data-tool-form>
+  <label>计算方式<select name="mode" data-time-calculator-mode><option value="adjust">指定时间加减</option><option value="difference">计算两个时刻的间隔</option></select></label>
+  <div data-time-adjust>
+    <label>起始时间<input name="baseDateTime" type="datetime-local" step="1" required></label>
+    <div class="tool-fields tool-fields--2"><label>操作<select name="operation"><option value="add">增加</option><option value="subtract">减少</option></select></label><label>天<input name="days" type="number" min="0" max="100000" step="1" value="0" required></label><label>小时<input name="hours" type="number" min="0" max="100000" step="1" value="0" required></label><label>分钟<input name="minutes" type="number" min="0" max="100000" step="1" value="0" required></label><label>秒<input name="seconds" type="number" min="0" max="100000" step="1" value="0" required></label></div>
+  </div>
+  <div data-time-difference hidden>
+    <div class="tool-fields tool-fields--2"><label>开始时刻<input name="startDateTime" type="datetime-local" step="1"></label><label>结束时刻<input name="endDateTime" type="datetime-local" step="1"></label></div>
+    <button class="button button--ghost" type="button" data-time-swap>交换两个时刻</button>
+  </div>
+  <div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算时间</button><button class="button button--ghost" type="button" data-time-now>使用当前时间</button><button class="tool-reset" type="reset">清空</button></div>
+</form>
+{% when 'countdown' %}
+<form class="tool-form" data-tool-form>
+  <label>事件名称<input name="eventName" type="text" maxlength="80" value="重要日子" placeholder="例如：旅行出发" required></label>
+  <label>目标时间<input name="targetDateTime" type="datetime-local" step="1" required></label>
+  <label>重复方式<select name="repeat"><option value="once">仅一次</option><option value="yearly">每年重复</option></select></label>
+  <div class="tool-actions"><button class="button button--primary" name="action" value="start">开始倒数</button><button class="button button--ghost" type="button" data-countdown-now>使用当前时间</button><button class="tool-reset" type="reset">清空</button></div>
+  <p class="tool-hint">每年重复的 2 月 29 日事件，在非闰年按 2 月 28 日计算。</p>
+</form>
+{% when 'dimensional-weight' %}
+<form class="tool-form" data-tool-form>
+  <div class="tool-fields tool-fields--2"><label>尺寸单位<select name="lengthUnit" data-dimensional-unit><option value="cm">厘米（cm）</option><option value="in">英寸（in）</option></select></label><label>重量单位<select name="weightUnit"><option value="kg">千克（kg）</option><option value="lb">磅（lb）</option></select></label><label>体积系数<select name="divisorPreset" data-dimensional-divisor><option value="6000">6000</option><option value="5000">5000</option><option value="custom">自定义</option></select></label><label>计费重进位<select name="rounding"><option value="none">不进位</option><option value="half">向上进位到 0.5 千克</option><option value="whole">向上进位到 1 千克</option></select></label></div>
+  <label data-custom-divisor hidden>自定义体积系数<input name="customDivisor" type="number" min="1" max="100000" step="any" value="6000"></label>
+  <div class="repeat-list" data-package-items><fieldset class="repeat-row" data-repeat-row><legend>包裹 1</legend><label>名称<input name="packageName" type="text" maxlength="40" value="包裹 1"></label><div class="tool-fields tool-fields--3"><label>数量<input name="packageQuantity" type="number" min="1" max="1000" step="1" value="1" required></label><label>长度<input name="packageLength" type="number" min="0.01" step="any" value="40" required></label><label>宽度<input name="packageWidth" type="number" min="0.01" step="any" value="30" required></label><label>高度<input name="packageHeight" type="number" min="0.01" step="any" value="20" required></label><label>单件实际重量<input name="actualWeight" type="number" min="0" step="any" value="3" required></label></div></fieldset></div>
+  <div class="tool-actions"><button class="button button--ghost" type="button" data-add-package>添加包裹</button><button class="button button--primary" name="action" value="calculate">计算计费重</button><button class="tool-reset" type="reset">重置</button></div>
+  <p class="tool-hint">体积系数和进位方式因承运商、路线而异，寄件前请以承运商规则为准。</p>
+</form>
+{% when 'renovation-estimator' %}
+<form class="tool-form" data-tool-form>
+  <label>估算项目<select name="mode" data-renovation-mode><option value="paint">墙面涂料</option><option value="flooring">地砖 / 地板</option><option value="wallpaper">壁纸</option></select></label>
+  <label>面积输入方式<select name="areaMode" data-renovation-area-mode><option value="room">按房间尺寸计算</option><option value="direct">直接填写施工面积</option></select></label>
+  <div data-renovation-room><div class="tool-fields tool-fields--3"><label>房间长度（米）<input name="length" type="number" min="0.01" step="any" value="4" required></label><label>房间宽度（米）<input name="width" type="number" min="0.01" step="any" value="3" required></label><label data-renovation-height>房间高度（米）<input name="height" type="number" min="0.01" step="any" value="2.8" required></label></div></div>
+  <div data-renovation-direct hidden><label>施工总面积（平方米）<input name="area" type="number" min="0.01" step="any"></label></div>
+  <div class="tool-fields tool-fields--2"><label>门窗等扣除面积（平方米）<input name="deductions" type="number" min="0" step="any" value="0" required></label><label>损耗率（%）<input name="wastePercent" type="number" min="0" max="100" step="any" value="10" required></label></div>
+  <div data-renovation-paint><div class="tool-fields tool-fields--3"><label>施工遍数<input name="coats" type="number" min="1" max="10" step="1" value="2" required></label><label>每升覆盖面积（㎡）<input name="coverage" type="number" min="0.01" step="any" value="10" required></label><label>每桶容量（升）<input name="packageSize" type="number" min="0.01" step="any" value="5" required></label></div></div>
+  <div data-renovation-flooring hidden><div class="tool-fields tool-fields--3"><label>单片长度（厘米）<input name="pieceLengthCm" type="number" min="0.01" step="any" value="60"></label><label>单片宽度（厘米）<input name="pieceWidthCm" type="number" min="0.01" step="any" value="60"></label><label>每包装片数<input name="piecesPerPackage" type="number" min="1" step="1" value="4"></label></div></div>
+  <div data-renovation-wallpaper hidden><div class="tool-fields tool-fields--2"><label>单卷宽度（米）<input name="rollWidth" type="number" min="0.01" step="any" value="0.53"></label><label>单卷长度（米）<input name="rollLength" type="number" min="0.01" step="any" value="10"></label></div></div>
+  <div class="tool-actions"><button class="button button--primary" name="action" value="calculate">估算用量</button><button class="tool-reset" type="reset">重置</button></div>
+  <p class="tool-hint">结果按规则向上取整，异形空间、拼花和施工损耗需结合现场情况调整。</p>
+</form>
 {% when 'image-compressor' %}
 <form class="tool-form" data-tool-form><label>选择图片<input name="image" type="file" accept="image/jpeg,image/png,image/webp" required></label><div class="tool-fields tool-fields--2"><label>最大宽度（像素）<input name="maxWidth" type="number" min="1" max="12000" step="1" placeholder="保持原宽"></label><label>最大高度（像素）<input name="maxHeight" type="number" min="1" max="12000" step="1" placeholder="保持原高"></label><label>输出格式<select name="format"><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option><option value="image/png">PNG</option></select></label><label data-image-quality>压缩质量（10–100）<input name="quality" type="number" min="10" max="100" step="1" value="82" required></label></div><p class="tool-hint" data-image-quality-note hidden>PNG 为无损格式，压缩质量设置不适用，体积主要由输出尺寸决定。</p><div class="tool-actions"><button class="button button--primary" name="action" value="compress">压缩并预览</button><button class="tool-reset" type="reset">重新选择</button></div><p class="tool-hint">图片只在本机浏览器中处理。导出图片不会保留 EXIF 或定位信息。</p></form>
 {% endcase %}

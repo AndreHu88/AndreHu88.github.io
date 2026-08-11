@@ -199,6 +199,214 @@
     return { width: Math.max(1, Math.round(width * scale)), height: Math.max(1, Math.round(height * scale)), scale: scale };
   }
 
+  function validDateTime(value) {
+    var date = value instanceof Date ? new Date(value.getTime()) : new Date(value);
+    if (Number.isNaN(date.getTime())) throw new Error('请输入有效的日期时间。');
+    return date;
+  }
+
+  function localDateTimeText(date) {
+    var pad = function (value) { return String(value).padStart(2, '0'); };
+    return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()) + 'T' +
+      pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
+  }
+
+  function localDayNumber(date) {
+    return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000;
+  }
+
+  function dateTimeAmount(value, name) {
+    var number = Number(value || 0);
+    if (!Number.isInteger(number) || number < 0) throw new Error(name + '需为非负整数。');
+    return number;
+  }
+
+  function adjustDateTime(value, direction, amounts) {
+    if (direction !== 'add' && direction !== 'subtract') throw new Error('请选择增加或减少时间。');
+    var source = validDateTime(value);
+    var result = new Date(source.getTime());
+    var values = amounts || {};
+    var days = dateTimeAmount(values.days, '天数');
+    var hours = dateTimeAmount(values.hours, '小时');
+    var minutes = dateTimeAmount(values.minutes, '分钟');
+    var seconds = dateTimeAmount(values.seconds, '秒数');
+    var multiplier = direction === 'subtract' ? -1 : 1;
+    result.setDate(result.getDate() + multiplier * days);
+    result.setSeconds(result.getSeconds() + multiplier * (hours * 3600 + minutes * 60 + seconds));
+    if (Number.isNaN(result.getTime())) throw new Error('计算结果超出支持的日期范围。');
+    return {
+      date: result,
+      localValue: localDateTimeText(result),
+      dayDifference: localDayNumber(result) - localDayNumber(source),
+      timezoneOffsetMinutes: -result.getTimezoneOffset()
+    };
+  }
+
+  function dateTimeDifference(startValue, endValue) {
+    var difference = validDateTime(endValue).getTime() - validDateTime(startValue).getTime();
+    var absolute = Math.abs(difference);
+    var totalSeconds = Math.floor(absolute / 1000);
+    return {
+      direction: difference === 0 ? 'same' : difference > 0 ? 'after' : 'before',
+      signedMilliseconds: difference,
+      totalSeconds: totalSeconds,
+      totalMinutes: absolute / 60000,
+      totalHours: absolute / 3600000,
+      days: Math.floor(totalSeconds / 86400),
+      hours: Math.floor(totalSeconds % 86400 / 3600),
+      minutes: Math.floor(totalSeconds % 3600 / 60),
+      seconds: totalSeconds % 60
+    };
+  }
+
+  function annualEventDate(source, year) {
+    var month = source.getMonth();
+    var day = source.getDate();
+    var lastDay = new Date(year, month + 1, 0).getDate();
+    var adjustedDay = Math.min(day, lastDay);
+    return {
+      date: new Date(year, month, adjustedDay, source.getHours(), source.getMinutes(), source.getSeconds()),
+      adjustedLeapDay: month === 1 && day === 29 && adjustedDay === 28
+    };
+  }
+
+  function countdownStatus(eventName, targetValue, repeat, nowValue) {
+    var name = String(eventName || '').trim();
+    if (!name) throw new Error('请输入事件名称。');
+    if (repeat !== 'once' && repeat !== 'yearly') throw new Error('请选择有效的重复方式。');
+    var originalTarget = validDateTime(targetValue);
+    var now = validDateTime(nowValue === undefined ? new Date() : nowValue);
+    var target = originalTarget;
+    var adjustedLeapDay = false;
+    if (repeat === 'yearly') {
+      var candidate = annualEventDate(originalTarget, now.getFullYear());
+      if (candidate.date < now) candidate = annualEventDate(originalTarget, now.getFullYear() + 1);
+      target = candidate.date;
+      adjustedLeapDay = candidate.adjustedLeapDay;
+    }
+    var difference = target.getTime() - now.getTime();
+    var totalSeconds = Math.floor(Math.abs(difference) / 1000);
+    return {
+      eventName: name,
+      target: target,
+      targetValue: localDateTimeText(target),
+      status: difference === 0 ? 'now' : difference > 0 ? 'upcoming' : 'elapsed',
+      yearly: repeat === 'yearly',
+      adjustedLeapDay: adjustedLeapDay,
+      totalSeconds: totalSeconds,
+      days: Math.floor(totalSeconds / 86400),
+      hours: Math.floor(totalSeconds % 86400 / 3600),
+      minutes: Math.floor(totalSeconds % 3600 / 60),
+      seconds: totalSeconds % 60
+    };
+  }
+
+  function roundedPackageWeight(weight, rule) {
+    if (rule === 'none') return weight;
+    if (rule === 'half') return Math.ceil(weight * 2 - 1e-12) / 2;
+    if (rule === 'whole') return Math.ceil(weight - 1e-12);
+    throw new Error('请选择有效的计费重进位规则。');
+  }
+
+  function dimensionalWeight(packages, options) {
+    if (!Array.isArray(packages) || packages.length < 1 || packages.length > 10) throw new Error('请填写 1 到 10 种包裹。');
+    var settings = options || {};
+    if (settings.lengthUnit !== 'cm' && settings.lengthUnit !== 'in') throw new Error('请选择厘米或英寸作为尺寸单位。');
+    if (settings.weightUnit !== 'kg' && settings.weightUnit !== 'lb') throw new Error('请选择千克或磅作为重量单位。');
+    if (!Number.isFinite(settings.divisor) || settings.divisor <= 0) throw new Error('体积系数需大于零。');
+    var lengthFactor = settings.lengthUnit === 'in' ? 2.54 : 1;
+    var weightFactor = settings.weightUnit === 'lb' ? 0.45359237 : 1;
+    var totals = { actual: 0, volumetric: 0, chargeable: 0 };
+    var items = packages.map(function (item, index) {
+      var dimensions = [item.length, item.width, item.height];
+      if (!dimensions.every(function (value) { return Number.isFinite(value) && value > 0; })) throw new Error('包裹 ' + (index + 1) + ' 的长宽高需大于零。');
+      if (!Number.isFinite(item.actualWeight) || item.actualWeight < 0) throw new Error('包裹 ' + (index + 1) + ' 的实际重量不能为负。');
+      if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 1000) throw new Error('包裹 ' + (index + 1) + ' 的数量需为 1 到 1000 的整数。');
+      var actualWeightKg = item.actualWeight * weightFactor;
+      var volumetricWeightKg = dimensions.reduce(function (volume, value) { return volume * value * lengthFactor; }, 1) / settings.divisor;
+      var chargeableWeightKg = roundedPackageWeight(Math.max(actualWeightKg, volumetricWeightKg), settings.rounding);
+      totals.actual += actualWeightKg * item.quantity;
+      totals.volumetric += volumetricWeightKg * item.quantity;
+      totals.chargeable += chargeableWeightKg * item.quantity;
+      return {
+        name: String(item.name || '').trim() || '包裹 ' + (index + 1),
+        quantity: item.quantity,
+        actualWeightKg: actualWeightKg,
+        volumetricWeightKg: volumetricWeightKg,
+        chargeableWeightKg: chargeableWeightKg,
+        totalChargeableWeightKg: chargeableWeightKg * item.quantity
+      };
+    });
+    return {
+      items: items,
+      totalActualWeightKg: totals.actual,
+      totalVolumetricWeightKg: totals.volumetric,
+      totalChargeableWeightKg: totals.chargeable,
+      divisor: settings.divisor,
+      rounding: settings.rounding
+    };
+  }
+
+  function positiveRenovationValue(value, label) {
+    if (!Number.isFinite(value) || value <= 0) throw new Error(label + '需大于零。');
+    return value;
+  }
+
+  function tidyDecimal(value) {
+    return Math.round(value * 1e12) / 1e12;
+  }
+
+  function renovationAreas(mode, values) {
+    var grossArea;
+    if (values.areaMode === 'direct') {
+      grossArea = positiveRenovationValue(values.area, '施工面积');
+    } else if (values.areaMode === 'room') {
+      var length = positiveRenovationValue(values.length, '房间长度');
+      var width = positiveRenovationValue(values.width, '房间宽度');
+      grossArea = mode === 'flooring' ? length * width : 2 * (length + width) * positiveRenovationValue(values.height, '房间高度');
+    } else {
+      throw new Error('请选择房间尺寸或直接面积。');
+    }
+    var deductions = values.deductions === undefined || values.deductions === '' ? 0 : values.deductions;
+    var wastePercent = values.wastePercent === undefined || values.wastePercent === '' ? 0 : values.wastePercent;
+    if (!Number.isFinite(deductions) || deductions < 0 || deductions >= grossArea) throw new Error('扣除面积需非负且小于施工总面积。');
+    if (!Number.isFinite(wastePercent) || wastePercent < 0 || wastePercent > 100) throw new Error('损耗率需在 0% 到 100% 之间。');
+    var netArea = grossArea - deductions;
+    return {
+      grossArea: tidyDecimal(grossArea),
+      netArea: tidyDecimal(netArea),
+      areaWithWaste: tidyDecimal(netArea * (1 + wastePercent / 100))
+    };
+  }
+
+  function renovationEstimate(mode, input) {
+    if (['paint', 'flooring', 'wallpaper'].indexOf(mode) === -1) throw new Error('请选择有效的装修用量模式。');
+    var values = input || {};
+    var areas = renovationAreas(mode, values);
+    var result = { mode: mode, grossArea: areas.grossArea, netArea: areas.netArea, areaWithWaste: areas.areaWithWaste };
+    if (mode === 'paint') {
+      if (!Number.isInteger(values.coats) || values.coats < 1 || values.coats > 10) throw new Error('施工遍数需为 1 到 10 的整数。');
+      var coverage = positiveRenovationValue(values.coverage, '每升覆盖面积');
+      var paintPackage = positiveRenovationValue(values.packageSize, '包装容量');
+      result.theoreticalAmount = tidyDecimal(areas.areaWithWaste * values.coats / coverage);
+      result.purchaseUnits = Math.ceil(result.theoreticalAmount / paintPackage);
+      result.unit = '桶';
+    } else if (mode === 'flooring') {
+      var pieceArea = positiveRenovationValue(values.pieceLengthCm, '单片长度') * positiveRenovationValue(values.pieceWidthCm, '单片宽度') / 10000;
+      if (!Number.isInteger(values.piecesPerPackage) || values.piecesPerPackage < 1) throw new Error('每包装片数需为正整数。');
+      result.theoreticalAmount = areas.areaWithWaste;
+      result.pieces = Math.ceil(areas.areaWithWaste / pieceArea);
+      result.purchaseUnits = Math.ceil(result.pieces / values.piecesPerPackage);
+      result.unit = '包装';
+    } else {
+      var rollArea = positiveRenovationValue(values.rollWidth, '单卷宽度') * positiveRenovationValue(values.rollLength, '单卷长度');
+      result.theoreticalAmount = tidyDecimal(areas.areaWithWaste / rollArea);
+      result.purchaseUnits = Math.ceil(result.theoreticalAmount);
+      result.unit = '卷';
+    }
+    return result;
+  }
+
   return {
     unitCategories: unitCategories,
     commonTimeZones: commonTimeZones,
@@ -212,6 +420,11 @@
     bmiCalculation: bmiCalculation,
     countWorkdays: countWorkdays,
     addWorkdays: addWorkdays,
-    resizedDimensions: resizedDimensions
+    resizedDimensions: resizedDimensions,
+    adjustDateTime: adjustDateTime,
+    dateTimeDifference: dateTimeDifference,
+    countdownStatus: countdownStatus,
+    dimensionalWeight: dimensionalWeight,
+    renovationEstimate: renovationEstimate
   };
 }));

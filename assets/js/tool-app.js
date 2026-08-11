@@ -12,6 +12,8 @@
   var core = window.JackToolsCore;
   var moneyFormatter = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', maximumFractionDigits: 2 });
   var numberFormatter = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 10 });
+  var mealApp = null;
+  var countdownTimer = null;
 
   function escapeHtml(value) {
     return String(value).replace(/[&<>'"]/g, function (character) {
@@ -46,6 +48,7 @@
   }
 
   function updateInputStatus(event) {
+    if (tool === 'meal-picker') return;
     var input = event.target;
     if (input.validity && !input.validity.valid) {
       input.setAttribute('aria-invalid', 'true');
@@ -351,6 +354,62 @@
     ]));
   }
 
+  function handleRmbUppercase() {
+    var converted = core.rmbUppercase(form.elements.amount.value);
+    setResult(summaryCards([
+      { label: '数字金额', value: converted.numeric },
+      { label: '人民币大写', value: converted.uppercase }
+    ]) + '<p class="tool-result-note">金额按元、角、分逐位转换，没有经过浮点运算。</p>', converted.uppercase);
+  }
+
+  function handleTaxConverter() {
+    var plan = core.taxConversion(form.elements.mode.value, numberValue('amount', '金额', true), numberValue('taxRate', '税率', true));
+    var formula = plan.mode === 'exclusive'
+      ? '未税金额 × (1 + ' + displayNumber(plan.taxRate, 2) + '%) = 含税金额'
+      : '含税金额 ÷ (1 + ' + displayNumber(plan.taxRate, 2) + '%) = 未税金额';
+    setResult(summaryCards([
+      { label: '未税金额', value: moneyFormatter.format(plan.netAmount) },
+      { label: '税额', value: moneyFormatter.format(plan.taxAmount) },
+      { label: '价税合计', value: moneyFormatter.format(plan.grossAmount) },
+      { label: '采用税率', value: displayNumber(plan.taxRate, 2) + '%' }
+    ]) + '<p class="tool-result-note">' + escapeHtml(formula) + '，结果按分位舍入并保持价税合计一致。</p>');
+  }
+
+  var travelCategoryLabels = {
+    transport: '交通', accommodation: '住宿', food: '餐饮', tickets: '门票', shopping: '购物', other: '其他'
+  };
+
+  function travelExpenseItems() {
+    return Array.prototype.map.call(form.querySelectorAll('[data-travel-expense-row]'), function (row) {
+      var actual = row.querySelector('[name="actualAmount"]').value;
+      return {
+        name: row.querySelector('[name="expenseName"]').value,
+        category: row.querySelector('[name="expenseCategory"]').value,
+        scope: row.querySelector('[name="expenseScope"]').value,
+        planned: Number(row.querySelector('[name="plannedAmount"]').value),
+        actual: actual === '' ? null : Number(actual)
+      };
+    });
+  }
+
+  function handleTravelBudget() {
+    var budget = core.travelBudget(Math.round(numberValue('people', '出行人数')), Math.round(numberValue('days', '出行天数')), travelExpenseItems());
+    var hasActual = budget.actualItemCount > 0;
+    var balanceLabel = budget.allActual ? (budget.balance >= 0 ? '预算结余' : '超出预算') : '预算差额';
+    var categoryRows = budget.categories.map(function (item) {
+      var categoryHasActual = item.actualItemCount > 0;
+      return '<tr><td>' + escapeHtml(travelCategoryLabels[item.category]) + '</td><td>' + moneyFormatter.format(item.planned) + '</td><td>' + item.plannedShare + '%</td><td>' + (categoryHasActual ? moneyFormatter.format(item.actual) : '—') + '</td><td>' + (categoryHasActual ? item.actualShare + '%' : '—') + '</td></tr>';
+    }).join('');
+    var table = '<div class="tool-table-wrap"><table><thead><tr><th>分类</th><th>计划</th><th>计划占比</th><th>已填实际</th><th>实际占比</th></tr></thead><tbody>' + categoryRows + '</tbody></table></div>';
+    setResult(summaryCards([
+      { label: '整趟预算', value: moneyFormatter.format(budget.plannedTotal) },
+      { label: hasActual ? '已填写实际支出' : '实际支出', value: hasActual ? moneyFormatter.format(budget.actualTotal) : '尚未填写' },
+      { label: balanceLabel, value: budget.allActual ? moneyFormatter.format(Math.abs(budget.balance)) : '待补全实际金额' },
+      { label: '预算人均 / 日均', value: moneyFormatter.format(budget.plannedPerPerson) + ' / ' + moneyFormatter.format(budget.plannedPerDay) },
+      { label: '已填实际人均 / 日均', value: hasActual ? moneyFormatter.format(budget.actualPerPerson) + ' / ' + moneyFormatter.format(budget.actualPerDay) : '—' }
+    ]) + table + '<p class="tool-result-note">所有费用已按所选范围换算为整趟总额；只有全部项目都填写实际金额后，才会显示预算结余或超支。</p>');
+  }
+
   function handleUnitConverter() {
     var amount = Number(form.elements.amount.value);
     var converted = core.convertUnit(form.elements.category.value, amount, form.elements.from.value, form.elements.to.value);
@@ -445,6 +504,100 @@
     }
     var count = core.countWorkdays(form.elements.startDate.value, form.elements.endDate.value, workdayOptions());
     setResult(summaryCards([{ label: '工作日数量', value: count + ' 天' }, { label: '开始日期', value: form.elements.startDate.value }, { label: '结束日期', value: form.elements.endDate.value }]));
+  }
+
+  function localDateTimeText(date) {
+    return date.toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+  }
+
+  function handleTimeCalculator() {
+    if (form.elements.mode.value === 'difference') {
+      var difference = core.dateTimeDifference(form.elements.startDateTime.value, form.elements.endDateTime.value);
+      var direction = difference.direction === 'same' ? '两个时刻相同' : difference.direction === 'after' ? '结束时刻晚于开始时刻' : '结束时刻早于开始时刻';
+      setResult(summaryCards([
+        { label: '完整间隔', value: difference.days + ' 天 ' + difference.hours + ' 小时 ' + difference.minutes + ' 分 ' + difference.seconds + ' 秒' },
+        { label: '方向', value: direction },
+        { label: '总小时', value: displayNumber(difference.totalHours, 4) },
+        { label: '总分钟', value: displayNumber(difference.totalMinutes, 2) }
+      ]));
+      return;
+    }
+    var duration = {
+      days: Math.round(numberValue('days', '天数', true)), hours: Math.round(numberValue('hours', '小时数', true)),
+      minutes: Math.round(numberValue('minutes', '分钟数', true)), seconds: Math.round(numberValue('seconds', '秒数', true))
+    };
+    var adjusted = core.adjustDateTime(form.elements.baseDateTime.value, form.elements.operation.value, duration);
+    var dayChange = adjusted.dayDifference === 0 ? '未跨自然日' : (adjusted.dayDifference > 0 ? '向后跨 ' : '向前跨 ') + Math.abs(adjusted.dayDifference) + ' 天';
+    setResult(summaryCards([
+      { label: '计算结果', value: localDateTimeText(adjusted.date) },
+      { label: '跨日情况', value: dayChange },
+      { label: '时区偏移', value: 'UTC' + (adjusted.timezoneOffsetMinutes >= 0 ? '+' : '−') + displayNumber(Math.abs(adjusted.timezoneOffsetMinutes) / 60, 2) },
+      { label: '本地时间值', value: adjusted.localValue.replace('T', ' ') }
+    ]), adjusted.localValue);
+  }
+
+  function renderCountdown() {
+    var status = core.countdownStatus(form.elements.eventName.value, form.elements.targetDateTime.value, form.elements.repeat.value, new Date());
+    var state = status.status === 'elapsed' ? '已经过去' : status.status === 'now' ? '就是现在' : '距离事件还有';
+    var leapNote = status.adjustedLeapDay ? '<p class="tool-result-note">今年不是闰年，2 月 29 日已按 2 月 28 日计算。</p>' : '';
+    var value = status.days + '<small>天</small> ' + String(status.hours).padStart(2, '0') + '<small>时</small> ' + String(status.minutes).padStart(2, '0') + '<small>分</small> ' + String(status.seconds).padStart(2, '0') + '<small>秒</small>';
+    setResult('<div class="countdown-result"><span>' + escapeHtml(status.eventName) + '</span><strong>' + value + '</strong><p>' + state + ' · ' + escapeHtml(status.targetValue.replace('T', ' ')) + '</p></div>' + leapNote, status.eventName + '：' + state + ' ' + status.days + ' 天 ' + status.hours + ' 小时 ' + status.minutes + ' 分 ' + status.seconds + ' 秒');
+  }
+
+  function handleCountdown() {
+    if (countdownTimer) window.clearInterval(countdownTimer);
+    renderCountdown();
+    countdownTimer = window.setInterval(function () {
+      try { renderCountdown(); } catch (error) { window.clearInterval(countdownTimer); countdownTimer = null; showError(error); }
+    }, 1000);
+  }
+
+  function packageItems() {
+    return Array.prototype.map.call(form.querySelectorAll('[data-package-items] [data-repeat-row]'), function (row) {
+      return {
+        name: row.querySelector('[name="packageName"]').value,
+        quantity: Math.round(Number(row.querySelector('[name="packageQuantity"]').value)),
+        length: Number(row.querySelector('[name="packageLength"]').value), width: Number(row.querySelector('[name="packageWidth"]').value),
+        height: Number(row.querySelector('[name="packageHeight"]').value), actualWeight: Number(row.querySelector('[name="actualWeight"]').value)
+      };
+    });
+  }
+
+  function handleDimensionalWeight() {
+    var divisor = form.elements.divisorPreset.value === 'custom' ? Number(form.elements.customDivisor.value) : Number(form.elements.divisorPreset.value);
+    var plan = core.dimensionalWeight(packageItems(), { lengthUnit: form.elements.lengthUnit.value, weightUnit: form.elements.weightUnit.value, divisor: divisor, rounding: form.elements.rounding.value });
+    var rows = plan.items.map(function (item) {
+      return '<tr><td>' + escapeHtml(item.name) + ' × ' + item.quantity + '</td><td>' + displayNumber(item.actualWeightKg, 3) + '</td><td>' + displayNumber(item.volumetricWeightKg, 3) + '</td><td>' + displayNumber(item.totalChargeableWeightKg, 3) + '</td></tr>';
+    }).join('');
+    setResult(summaryCards([
+      { label: '总计费重', value: displayNumber(plan.totalChargeableWeightKg, 3) + ' kg' },
+      { label: '总实际重量', value: displayNumber(plan.totalActualWeightKg, 3) + ' kg' },
+      { label: '总体积重量', value: displayNumber(plan.totalVolumetricWeightKg, 3) + ' kg' },
+      { label: '体积系数', value: plan.divisor }
+    ]) + '<div class="tool-table-wrap"><table><thead><tr><th>包裹</th><th>实际 kg</th><th>体积 kg</th><th>计费 kg</th></tr></thead><tbody>' + rows + '</tbody></table></div>');
+  }
+
+  function renovationValues() {
+    var names = ['length', 'width', 'height', 'area', 'deductions', 'wastePercent', 'coats', 'coverage', 'packageSize', 'pieceLengthCm', 'pieceWidthCm', 'piecesPerPackage', 'rollWidth', 'rollLength'];
+    var values = { areaMode: form.elements.areaMode.value };
+    names.forEach(function (name) { values[name] = Number(form.elements.namedItem(name).value); });
+    values.coats = Math.round(values.coats);
+    values.piecesPerPackage = Math.round(values.piecesPerPackage);
+    return values;
+  }
+
+  function handleRenovationEstimator() {
+    var estimate = core.renovationEstimate(form.elements.mode.value, renovationValues());
+    var theoreticalLabel = estimate.mode === 'paint' ? '理论涂料用量' : estimate.mode === 'flooring' ? '含损耗铺装面积' : '理论卷数';
+    var theoreticalValue = estimate.mode === 'paint' ? displayNumber(estimate.theoreticalAmount, 3) + ' 升' : estimate.mode === 'flooring' ? displayNumber(estimate.theoreticalAmount, 3) + ' ㎡' : displayNumber(estimate.theoreticalAmount, 3) + ' 卷';
+    var items = [
+      { label: '净施工面积', value: displayNumber(estimate.netArea, 3) + ' ㎡', hint: '扣除门窗等区域后' },
+      { label: '含损耗面积', value: displayNumber(estimate.areaWithWaste, 3) + ' ㎡' },
+      { label: theoreticalLabel, value: theoreticalValue },
+      { label: '建议购买', value: estimate.purchaseUnits + ' ' + estimate.unit }
+    ];
+    if (estimate.mode === 'flooring') items.push({ label: '预计片数', value: estimate.pieces + ' 片' });
+    setResult(summaryCards(items) + '<p class="tool-result-note">已按包装、片数或整卷向上取整，建议结合现场异形区域和施工方式复核。</p>');
   }
 
   function fileSize(value) {
@@ -556,6 +709,11 @@
     var plan = core.rollDice(Math.round(Number(form.elements.diceCount.value)), Math.round(Number(form.elements.sides.value)), Math.round(Number(form.elements.modifier.value)));
     var modifierText = plan.modifier ? (plan.modifier > 0 ? ' + ' : ' − ') + Math.abs(plan.modifier) : '';
     setResult(summaryCards([{ label: '最终结果', value: plan.total }, { label: '骰子合计', value: plan.subtotal }, { label: '各骰结果', value: plan.rolls.join('、') }, { label: '计算式', value: plan.rolls.join(' + ') + modifierText }]));
+  }
+
+  function handleMealPicker(action) {
+    if (!mealApp) throw new Error('菜单规划器尚未加载完成。');
+    return mealApp.handle(action);
   }
 
   function updateLoanFields() {
@@ -710,6 +868,90 @@
     form.elements.quality.disabled = png;
   }
 
+  function toggleFieldGroup(group, active) {
+    if (!group) return;
+    group.hidden = !active;
+    Array.prototype.forEach.call(group.querySelectorAll('input, select, textarea'), function (control) {
+      if (!control.hasAttribute('data-original-required')) control.setAttribute('data-original-required', control.required ? 'true' : 'false');
+      control.disabled = !active;
+      control.required = active && control.getAttribute('data-original-required') === 'true';
+      if (!active) control.removeAttribute('aria-invalid');
+    });
+  }
+
+  function updateTaxFields() {
+    if (tool !== 'tax-converter') return;
+    page.querySelector('[data-tax-amount-label]').textContent = form.elements.mode.value === 'exclusive' ? '未税金额（元）' : '含税金额（元）';
+  }
+
+  function updateMealFields() {
+    if (tool === 'meal-picker' && mealApp) mealApp.updateFields();
+  }
+
+  function handleMealDynamicClick(event) {
+    if (tool !== 'meal-picker') return;
+    if (mealApp) mealApp.handleFormClick(event);
+  }
+
+  function updateTimeCalculatorFields() {
+    if (tool !== 'time-calculator') return;
+    var difference = form.elements.mode.value === 'difference';
+    toggleFieldGroup(page.querySelector('[data-time-adjust]'), !difference);
+    toggleFieldGroup(page.querySelector('[data-time-difference]'), difference);
+    form.elements.startDateTime.required = difference;
+    form.elements.endDateTime.required = difference;
+  }
+
+  function updateDimensionalFields() {
+    if (tool !== 'dimensional-weight') return;
+    var custom = form.elements.divisorPreset.value === 'custom';
+    toggleFieldGroup(page.querySelector('[data-custom-divisor]'), custom);
+    form.elements.customDivisor.required = custom;
+  }
+
+  function updateRenovationFields() {
+    if (tool !== 'renovation-estimator') return;
+    var mode = form.elements.mode.value;
+    var room = form.elements.areaMode.value === 'room';
+    toggleFieldGroup(page.querySelector('[data-renovation-room]'), room);
+    toggleFieldGroup(page.querySelector('[data-renovation-direct]'), !room);
+    toggleFieldGroup(page.querySelector('[data-renovation-height]'), room && mode !== 'flooring');
+    toggleFieldGroup(page.querySelector('[data-renovation-paint]'), mode === 'paint');
+    toggleFieldGroup(page.querySelector('[data-renovation-flooring]'), mode === 'flooring');
+    toggleFieldGroup(page.querySelector('[data-renovation-wallpaper]'), mode === 'wallpaper');
+  }
+
+  function refreshTravelRows() {
+    var rows = Array.prototype.slice.call(form.querySelectorAll('[data-travel-expense-row]'));
+    rows.forEach(function (row, index) {
+      row.querySelector('[data-travel-expense-legend]').textContent = '费用 ' + (index + 1);
+      var remove = row.querySelector('[data-remove-travel-expense]');
+      remove.hidden = rows.length === 1;
+      remove.setAttribute('aria-label', '删除费用 ' + (index + 1));
+    });
+  }
+
+  function addTravelExpenseRow() {
+    var container = form.querySelector('[data-travel-expenses]');
+    if (container.querySelectorAll('[data-travel-expense-row]').length >= 30) { showError(new Error('最多添加 30 项旅行费用。')); return; }
+    container.appendChild(page.querySelector('[data-travel-expense-template]').content.cloneNode(true));
+    refreshTravelRows();
+    container.lastElementChild.querySelector('[name="expenseName"]').focus();
+  }
+
+  function addPackageRow() {
+    var container = form.querySelector('[data-package-items]');
+    var count = container.querySelectorAll('[data-repeat-row]').length;
+    if (count >= 10) { showError(new Error('最多添加 10 种包裹。')); return; }
+    var row = container.querySelector('[data-repeat-row]').cloneNode(true);
+    var inheritedRemove = row.querySelector('.repeat-remove');
+    if (inheritedRemove) inheritedRemove.remove();
+    row.querySelector('[name="packageName"]').value = '包裹 ' + (count + 1);
+    container.appendChild(row);
+    refreshRows(container, '包裹', 1);
+    row.querySelector('[name="packageName"]').focus();
+  }
+
   function swapSelectValues(first, second) {
     var value = first.value;
     first.value = second.value;
@@ -727,6 +969,19 @@
       Array.prototype.slice.call(recipeRows, 1).forEach(function (row) { row.remove(); });
       refreshRows(form.querySelector('[data-recipe-items]'), '食材', 1);
     }
+    if (tool === 'travel-budget') {
+      var travelRows = form.querySelectorAll('[data-travel-expense-row]');
+      Array.prototype.slice.call(travelRows, 1).forEach(function (row) { row.remove(); });
+      refreshTravelRows();
+    }
+    if (tool === 'dimensional-weight') {
+      var packageRows = form.querySelectorAll('[data-package-items] [data-repeat-row]');
+      Array.prototype.slice.call(packageRows, 1).forEach(function (row) { row.remove(); });
+      refreshRows(form.querySelector('[data-package-items]'), '包裹', 1);
+    }
+    if (tool === 'meal-picker') {
+      if (mealApp) mealApp.resetDynamicRows();
+    }
   }
 
   function applyToolState() {
@@ -738,9 +993,14 @@
     updateQrFields();
     updateRandomFields();
     updateImageFields();
+    updateTaxFields();
+    updateMealFields();
+    updateTimeCalculatorFields();
+    updateDimensionalFields();
+    updateRenovationFields();
   }
 
-  function initializeTool() {
+  function initializeExistingTool() {
     if (tool === 'exchange-rate') page.querySelector('[data-currency-swap]').addEventListener('click', function () { swapSelectValues(form.elements.from, form.elements.to); });
     if (tool === 'unit-price') {
       form.elements.dimension.addEventListener('change', updateUnitPriceUnits);
@@ -776,6 +1036,64 @@
     }
     if (tool === 'dice-roller') form.elements.mode.addEventListener('change', updateRandomFields);
     if (tool === 'image-compressor') form.elements.format.addEventListener('change', updateImageFields);
+  }
+
+  function initializeExpandedTool() {
+    if (tool === 'tax-converter') {
+      form.elements.mode.addEventListener('change', updateTaxFields);
+      Array.prototype.forEach.call(page.querySelectorAll('[data-tax-rate-value]'), function (button) {
+        button.addEventListener('click', function () { form.elements.taxRate.value = button.getAttribute('data-tax-rate-value'); form.elements.taxRate.focus(); });
+      });
+    }
+    if (tool === 'travel-budget') {
+      page.querySelector('[data-add-travel-expense]').addEventListener('click', addTravelExpenseRow);
+      page.querySelector('[data-travel-expenses]').addEventListener('click', function (event) {
+        var remove = event.target.closest('[data-remove-travel-expense]');
+        if (!remove) return;
+        remove.closest('[data-travel-expense-row]').remove();
+        refreshTravelRows();
+      });
+      refreshTravelRows();
+    }
+    if (tool === 'meal-picker') {
+      if (!window.JackMealData || !window.JackMealPlanner || !window.JackMealApp) throw new Error('菜单规划器资源加载失败。');
+      mealApp = window.JackMealApp.createMealApp({
+        page: page, form: form, result: result, data: window.JackMealData,
+        planner: window.JackMealPlanner.createMealPlanner({ catalog: window.JackMealData.dishes, definitions: window.JackMealData.definitions }),
+        setResult: setResult, setFormStatus: setFormStatus, showError: showError,
+        escapeHtml: escapeHtml, money: function (value) { return moneyFormatter.format(value); }
+      });
+      mealApp.initialize();
+    }
+    if (tool === 'time-calculator') {
+      form.elements.mode.addEventListener('change', updateTimeCalculatorFields);
+      page.querySelector('[data-time-swap]').addEventListener('click', function () { swapSelectValues(form.elements.startDateTime, form.elements.endDateTime); });
+      page.querySelector('[data-time-now]').addEventListener('click', function () {
+        var value = localDateTimeValue(new Date()) + ':00';
+        if (form.elements.mode.value === 'difference') form.elements.startDateTime.value = value;
+        else form.elements.baseDateTime.value = value;
+      });
+      form.elements.baseDateTime.value = localDateTimeValue(new Date()) + ':00';
+    }
+    if (tool === 'countdown') {
+      var tomorrow = new Date(Date.now() + 86400000);
+      form.elements.targetDateTime.value = localDateTimeValue(tomorrow) + ':00';
+      page.querySelector('[data-countdown-now]').addEventListener('click', function () { form.elements.targetDateTime.value = localDateTimeValue(new Date()) + ':00'; });
+    }
+    if (tool === 'dimensional-weight') {
+      form.elements.divisorPreset.addEventListener('change', updateDimensionalFields);
+      page.querySelector('[data-add-package]').addEventListener('click', addPackageRow);
+      refreshRows(form.querySelector('[data-package-items]'), '包裹', 1);
+    }
+    if (tool === 'renovation-estimator') {
+      form.elements.mode.addEventListener('change', updateRenovationFields);
+      form.elements.areaMode.addEventListener('change', updateRenovationFields);
+    }
+  }
+
+  function initializeTool() {
+    initializeExistingTool();
+    initializeExpandedTool();
     applyToolState();
   }
 
@@ -800,6 +1118,9 @@
     'unit-price': handleUnitPrice,
     'percentage': handlePercentage,
     'savings-goal': handleSavingsGoal,
+    'rmb-uppercase': handleRmbUppercase,
+    'tax-converter': handleTaxConverter,
+    'travel-budget': handleTravelBudget,
     'unit-converter': handleUnitConverter,
     'age-calculator': handleAgeCalculation,
     'timezone-converter': handleTimezone,
@@ -808,10 +1129,15 @@
     'recipe-scaler': handleRecipe,
     'bmi': handleBmi,
     'workday': handleWorkday,
+    'time-calculator': handleTimeCalculator,
+    'countdown': handleCountdown,
+    'dimensional-weight': handleDimensionalWeight,
+    'renovation-estimator': handleRenovationEstimator,
     'image-compressor': handleImageCompressor,
     'qr-generator': handleQrGenerator,
     'random-picker': handleRandomPicker,
-    'dice-roller': handleDiceRoller
+    'dice-roller': handleDiceRoller,
+    'meal-picker': handleMealPicker
   };
 
   async function run(action) {
@@ -830,8 +1156,10 @@
   }, true);
   form.addEventListener('input', updateInputStatus);
   form.addEventListener('change', updateInputStatus);
+  form.addEventListener('click', handleMealDynamicClick);
   form.addEventListener('reset', function () {
     window.setTimeout(function () {
+      if (countdownTimer) { window.clearInterval(countdownTimer); countdownTimer = null; }
       if (result._downloadUrl) URL.revokeObjectURL(result._downloadUrl);
       result._downloadUrl = '';
       result.classList.remove('is-error');
@@ -845,6 +1173,7 @@
       if (tool === 'workday') { form.elements.startDate.value = localDateValue(new Date()); form.elements.endDate.value = localDateValue(new Date()); }
       applyToolState();
       if (tool === 'text-stats') renderTextStats();
+      if (tool === 'meal-picker' && mealApp) mealApp.resetHistory();
     }, 0);
   });
   copyButton.addEventListener('click', function () {

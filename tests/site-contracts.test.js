@@ -26,6 +26,10 @@ function flatYamlRecords(relativePath, recordKey) {
   return records;
 }
 
+test('site head declares the responsive mobile viewport', () => {
+  assert.match(readProjectFile('_includes/head.html'), /<meta name="viewport" content="width=device-width, initial-scale=1">/);
+});
+
 test('desktop navigation exposes article destinations without a drawer', () => {
   const header = readProjectFile('_includes/site-header.html');
   [
@@ -60,18 +64,34 @@ test('article cards support explicit and tag-based local covers', () => {
   });
 });
 
-test('tool metadata contains exactly 32 unique tools in the five planned categories', () => {
+test('tool metadata contains exactly 40 unique tools in the refined categories', () => {
   const tools = flatYamlRecords('_data/tools.yml', 'slug');
   const categories = flatYamlRecords('_data/tool_categories.yml', 'id');
-  assert.equal(tools.length, 32);
-  assert.equal(new Set(tools.map((tool) => tool.slug)).size, 32);
-  assert.deepEqual(categories.map((category) => category.id), ['text', 'developer', 'finance', 'life', 'fun']);
+  assert.equal(tools.length, 40);
+  assert.equal(new Set(tools.map((tool) => tool.slug)).size, 40);
+  assert.deepEqual(categories.map((category) => category.id), [
+    'text', 'developer', 'finance-loan', 'finance-investment', 'finance-consumer', 'finance-currency',
+    'date-time', 'food-health', 'home-travel', 'utility', 'random'
+  ]);
 
   const counts = tools.reduce((result, tool) => {
     result[tool.category] = (result[tool.category] || 0) + 1;
     return result;
   }, {});
-  assert.deepEqual(counts, { text: 6, developer: 4, finance: 10, life: 9, fun: 3 });
+  assert.deepEqual(counts, {
+    text: 6, developer: 3, 'finance-loan': 2, 'finance-investment': 3,
+    'finance-consumer': 5, 'finance-currency': 3, 'date-time': 6,
+    'food-health': 3, 'home-travel': 4, utility: 3, random: 2
+  });
+  const categoryNames = Object.fromEntries(categories.map((category) => [category.id, category.name]));
+  tools.forEach((tool) => {
+    assert.equal(tool.category_name, categoryNames[tool.category], `${tool.slug} category label is out of sync`);
+    assert.ok(['text', 'developer', 'finance', 'life', 'fun'].includes(tool.module || tool.category), `${tool.slug} has an unknown script module`);
+  });
+  assert.deepEqual(
+    tools.slice(-8).map((tool) => tool.slug),
+    ['meal-picker', 'time-calculator', 'countdown', 'rmb-uppercase', 'tax-converter', 'travel-budget', 'dimensional-weight', 'renovation-estimator']
+  );
   tools.forEach((tool) => {
     ['title', 'category', 'category_name', 'icon', 'summary', 'keywords'].forEach((field) => {
       assert.ok(tool[field], `${tool.slug} is missing ${field}`);
@@ -97,10 +117,11 @@ test('every tool metadata record has a matching route page', () => {
 test('category dispatcher and forms cover every tool slug', () => {
   const tools = flatYamlRecords('_data/tools.yml', 'slug');
   const formDispatcher = readProjectFile('_includes/tool-form.html');
+  assert.match(formDispatcher, /include\.tool\.module \| default: include\.tool\.category/);
   ['text', 'developer', 'finance', 'life', 'fun'].forEach((category) => {
     assert.match(formDispatcher, new RegExp(`include tool-forms/${category}\\.html`));
     const categoryForm = readProjectFile(`_includes/tool-forms/${category}.html`);
-    tools.filter((tool) => tool.category === category).forEach((tool) => {
+    tools.filter((tool) => (tool.module || tool.category) === category).forEach((tool) => {
       assert.match(categoryForm, new RegExp(`(?:include\\.tool\\.slug ==|when) '${tool.slug}'`), `${tool.slug} has no form branch`);
     });
   });
@@ -118,7 +139,9 @@ test('tool application uses a complete explicit handler registry', () => {
 
 test('tool layout loads category modules, optional local scripts and privacy notices', () => {
   const layout = readProjectFile('_layouts/tool.html');
-  assert.match(layout, /tool-\{\{ tool\.category \}\}\.js/);
+  assert.match(layout, /tool\.module \| default: tool\.category/);
+  assert.match(layout, /tool-\{\{ tool_module \}\}\.js/);
+  assert.match(layout, /tool_module == 'finance'/);
   assert.match(layout, /assets\/js\/vendor\/\{\{ tool\.extra_script \}\}\.js/);
   assert.match(layout, /if tool\.networked/);
   assert.match(layout, /输入金额不会发送或保存/);
@@ -133,7 +156,9 @@ test('tools hub provides data-driven categories, search, filtering and local-fir
   assert.match(hub, /data-tool-filter=/);
   assert.match(hub, /data-tool-filter-status/);
   assert.match(hub, /data-tools-empty/);
-  assert.match(hub, /32 个工具/);
+  assert.match(hub, /assign tool_count = site\.data\.tools \| size/);
+  assert.match(hub, /\{\{ tool_count \}\} 个工具/);
+  assert.doesNotMatch(hub, /32 个工具/);
   assert.match(hub, /大多数工具完全在浏览器本地运行/);
   assert.match(hub, /汇率工具仅联网请求币种对应的最新参考汇率/);
   const behavior = readProjectFile('assets/js/tools-hub.js');
@@ -144,4 +169,11 @@ test('tools hub provides data-driven categories, search, filtering and local-fir
   const styles = readProjectFile('style.scss');
   assert.match(styles, /\.tool-category[^}]*scroll-margin-top/);
   assert.match(styles, /\.tools-hub \[hidden\][^}]*display: none !important/);
+});
+
+test('pages without a tool slug do not inherit the first tool metadata record', () => {
+  const head = readProjectFile('_includes/head.html');
+  const meta = readProjectFile('_includes/meta.html');
+  assert.match(head, /if page\.tool[\s\S]*assign head_tool/);
+  assert.match(meta, /if page\.tool[\s\S]*assign meta_tool/);
 });

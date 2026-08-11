@@ -3,21 +3,22 @@ layout: default
 title: 实用工具
 permalink: /tools/
 ---
+{% assign tool_count = site.data.tools | size %}
 <section class="tools-hub" data-tools-hub>
   <header class="tools-hub__hero">
-    <span class="eyebrow">32 local-first utilities</span>
+    <span class="eyebrow">{{ tool_count }} local-first utilities</span>
     <h1>实用工具箱</h1>
-    <p>从文字整理、金融测算到图片压缩和随机选择，打开即用。大多数工具完全在浏览器本地运行，汇率工具仅联网请求币种对应的最新参考汇率。</p>
+    <p>从文字整理、金融测算到饮食、日期与居家规划，按场景快速找到需要的工具。大多数工具完全在浏览器本地运行，汇率工具仅联网请求币种对应的最新参考汇率。</p>
     <div class="tools-hub__trust"><span class="material-symbols-rounded">shield_lock</span>本地优先 · 不上传 · 不保存</div>
   </header>
 
   <section class="tools-discovery" aria-label="查找工具">
-    <label class="tools-search"><span class="material-symbols-rounded">search</span><input type="search" placeholder="搜索工具，例如：单位、汇率、图片" autocomplete="off" data-tool-search-input><kbd>32 个工具</kbd></label>
+    <label class="tools-search"><span class="material-symbols-rounded">search</span><input type="search" placeholder="搜索工具，例如：吃什么、预算、时间" autocomplete="off" data-tool-search-input><kbd>{{ tool_count }} 个工具</kbd></label>
     <div class="tools-filters" role="group" aria-label="按分类筛选">
       <button class="is-active" type="button" data-tool-filter="all" aria-pressed="true">全部</button>
       {% for category in site.data.tool_categories %}<button type="button" data-tool-filter="{{ category.id }}" aria-pressed="false">{{ category.name }}</button>{% endfor %}
     </div>
-    <p class="tools-filter-status" data-tool-filter-status aria-live="polite">显示全部 32 个工具</p>
+    <p class="tools-filter-status" data-tool-filter-status aria-live="polite">显示全部 {{ tool_count }} 个工具</p>
   </section>
 
   {% for category in site.data.tool_categories %}

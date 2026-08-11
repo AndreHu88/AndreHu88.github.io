@@ -28,4 +28,60 @@
 <form class="tool-form" data-tool-form><label>计算方式<select name="mode" data-percentage-mode><option value="share">A 是 B 的百分之多少</option><option value="change">从 A 到 B 的涨跌幅</option><option value="adjust">将 A 增加或减少 B%</option><option value="reverse">变化 B% 后为 A，反推原值</option></select></label><div class="tool-fields tool-fields--2"><label><span data-percentage-label-a>数值 A</span><input name="a" type="number" step="any" required></label><label><span data-percentage-label-b>数值 B</span><input name="b" type="number" step="any" required></label></div><label data-percentage-direction hidden>变化方向<select name="direction"><option value="increase">增加</option><option value="decrease">减少</option></select></label><div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算百分比</button><button class="tool-reset" type="reset">重置</button></div></form>
 {% when 'savings-goal' %}
 <form class="tool-form" data-tool-form><div class="tool-fields tool-fields--2"><label>目标金额（元）<input name="target" type="number" min="0.01" step="0.01" required></label><label>已有金额（元）<input name="current" type="number" min="0" step="0.01" value="0" required></label><label>计划期限（月）<input name="months" type="number" min="1" max="1200" step="1" required></label><label>预期年化收益（%）<input name="annualRate" type="number" min="0" step="0.01" value="0" required></label><label>每月存入时点<select name="timing"><option value="ending">月末存入</option><option value="beginning">月初存入</option></select></label></div><div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算每月应存</button><button class="tool-reset" type="reset">重置</button></div></form>
+{% when 'rmb-uppercase' %}
+<form class="tool-form" data-tool-form>
+  <label for="rmb-amount">人民币金额（元）
+    <input id="rmb-amount" name="amount" type="text" inputmode="decimal" autocomplete="off" maxlength="15" placeholder="例如：1001.01" pattern="[0-9]+(?:\.[0-9]{1,2})?" aria-describedby="rmb-amount-hint" required>
+  </label>
+  <div class="tool-actions"><button class="button button--primary" name="action" value="convert">转换为大写</button><button class="tool-reset" type="reset">清空</button></div>
+  <p class="tool-hint" id="rmb-amount-hint">支持 0–999999999999.99 元，最多两位小数。使用字符串处理，不会因大整数产生浮点精度损失。</p>
+</form>
+{% when 'tax-converter' %}
+<form class="tool-form" data-tool-form>
+  <label for="tax-mode">换算方向<select id="tax-mode" name="mode" data-tax-mode><option value="exclusive">未税金额 → 价税合计</option><option value="inclusive">含税金额 → 拆分价税</option></select></label>
+  <div class="tool-fields tool-fields--2">
+    <label for="tax-amount"><span data-tax-amount-label>未税金额（元）</span><input id="tax-amount" name="amount" type="number" min="0" step="0.01" inputmode="decimal" required></label>
+    <label for="tax-rate">税率（%）<input id="tax-rate" name="taxRate" type="number" min="0" max="100" step="0.01" inputmode="decimal" value="13" aria-describedby="tax-rate-hint" required></label>
+  </div>
+  <div class="tool-actions" aria-label="常用税率">
+    <button class="button button--ghost" type="button" data-tax-rate-value="13">13%</button><button class="button button--ghost" type="button" data-tax-rate-value="9">9%</button><button class="button button--ghost" type="button" data-tax-rate-value="6">6%</button><button class="button button--ghost" type="button" data-tax-rate-value="3">3%</button><button class="button button--ghost" type="button" data-tax-rate-value="1">1%</button><button class="button button--ghost" type="button" data-tax-rate-value="0">0%</button>
+  </div>
+  <div class="tool-actions"><button class="button button--primary" name="action" value="calculate">计算价税金额</button><button class="tool-reset" type="reset">重置</button></div>
+  <p class="tool-hint" id="tax-rate-hint">快捷税率仅用于填写，税率应由你根据真实业务选择；本工具不提供税务判断。</p>
+</form>
+{% when 'travel-budget' %}
+<form class="tool-form" data-tool-form>
+  <div class="tool-fields tool-fields--2">
+    <label for="travel-people">出行人数<input id="travel-people" name="people" type="number" min="1" max="1000" step="1" value="2" required></label>
+    <label for="travel-days">出行天数<input id="travel-days" name="days" type="number" min="1" max="3650" step="1" value="3" required></label>
+  </div>
+  <div class="repeat-list" data-travel-expenses>
+    <fieldset class="repeat-row" data-repeat-row data-travel-expense-row>
+      <legend data-travel-expense-legend>费用 1</legend>
+      <div class="tool-fields tool-fields--3">
+        <label>费用名称<input name="expenseName" type="text" value="往返交通" maxlength="40" required></label>
+        <label>分类<select name="expenseCategory"><option value="transport">交通</option><option value="accommodation">住宿</option><option value="food">餐饮</option><option value="tickets">门票</option><option value="shopping">购物</option><option value="other">其他</option></select></label>
+        <label>计价范围<select name="expenseScope"><option value="total">整趟总额</option><option value="per-person">每人</option><option value="per-day">每天</option><option value="per-person-day">每人每天</option></select></label>
+        <label>计划金额（元）<input name="plannedAmount" type="number" min="0" step="0.01" inputmode="decimal" required></label>
+        <label>实际金额（元，可留空）<input name="actualAmount" type="number" min="0" step="0.01" inputmode="decimal"></label>
+      </div>
+      <button class="button button--ghost" type="button" data-remove-travel-expense aria-label="删除费用 1">删除此项</button>
+    </fieldset>
+  </div>
+  <template data-travel-expense-template>
+    <fieldset class="repeat-row" data-repeat-row data-travel-expense-row>
+      <legend data-travel-expense-legend>费用</legend>
+      <div class="tool-fields tool-fields--3">
+        <label>费用名称<input name="expenseName" type="text" maxlength="40" required></label>
+        <label>分类<select name="expenseCategory"><option value="transport">交通</option><option value="accommodation">住宿</option><option value="food">餐饮</option><option value="tickets">门票</option><option value="shopping">购物</option><option value="other">其他</option></select></label>
+        <label>计价范围<select name="expenseScope"><option value="total">整趟总额</option><option value="per-person">每人</option><option value="per-day">每天</option><option value="per-person-day">每人每天</option></select></label>
+        <label>计划金额（元）<input name="plannedAmount" type="number" min="0" step="0.01" inputmode="decimal" required></label>
+        <label>实际金额（元，可留空）<input name="actualAmount" type="number" min="0" step="0.01" inputmode="decimal"></label>
+      </div>
+      <button class="button button--ghost" type="button" data-remove-travel-expense>删除此项</button>
+    </fieldset>
+  </template>
+  <div class="tool-actions"><button class="button button--ghost" type="button" data-add-travel-expense>添加费用</button><button class="button button--primary" name="action" value="calculate">汇总旅行预算</button><button class="tool-reset" type="reset">重置</button></div>
+  <p class="tool-hint">每项金额会按照计价范围乘以人数和天数，统一换算为整趟总额；最多添加 30 项。</p>
+</form>
 {% endcase %}

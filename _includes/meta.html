@@ -4,7 +4,10 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
     <meta name="keywords" content="Jack Hu, 胡勇, 技术, 投资, 阅读, 知识管理, 实用工具, huyong, sohod.cn">
 
-    {% assign meta_tool = site.data.tools | where: "slug", page.tool | first %}
+    {% assign meta_tool = nil %}
+    {% if page.tool %}
+      {% assign meta_tool = site.data.tools | where: "slug", page.tool | first %}
+    {% endif %}
     {% if meta_tool %}
     <meta name="description" content="{{ meta_tool.summary }}" />
     <meta property="og:description" content="{{ meta_tool.summary }}" />
