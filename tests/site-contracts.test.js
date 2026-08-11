@@ -224,11 +224,11 @@ test('article cards support explicit and tag-based local covers', () => {
   });
 });
 
-test('tool metadata contains exactly 40 unique tools in the refined categories', () => {
+test('tool metadata contains exactly 42 unique tools in the refined categories', () => {
   const tools = flatYamlRecords('_data/tools.yml', 'slug');
   const categories = flatYamlRecords('_data/tool_categories.yml', 'id');
-  assert.equal(tools.length, 40);
-  assert.equal(new Set(tools.map((tool) => tool.slug)).size, 40);
+  assert.equal(tools.length, 42);
+  assert.equal(new Set(tools.map((tool) => tool.slug)).size, 42);
   assert.deepEqual(categories.map((category) => category.id), [
     'finance-loan', 'finance-investment', 'finance-consumer', 'finance-currency', 'date-time',
     'food-health', 'home-travel', 'utility', 'random', 'text', 'developer'
@@ -240,8 +240,8 @@ test('tool metadata contains exactly 40 unique tools in the refined categories',
   }, {});
   assert.deepEqual(counts, {
     text: 6, developer: 3, 'finance-loan': 2, 'finance-investment': 3,
-    'finance-consumer': 5, 'finance-currency': 3, 'date-time': 6,
-    'food-health': 3, 'home-travel': 4, utility: 3, random: 2
+    'finance-consumer': 5, 'finance-currency': 3, 'date-time': 7,
+    'food-health': 3, 'home-travel': 4, utility: 4, random: 2
   });
   const categoryNames = Object.fromEntries(categories.map((category) => [category.id, category.name]));
   tools.forEach((tool) => {
@@ -249,8 +249,8 @@ test('tool metadata contains exactly 40 unique tools in the refined categories',
     assert.ok(['text', 'developer', 'finance', 'life', 'fun'].includes(tool.module || tool.category), `${tool.slug} has an unknown script module`);
   });
   assert.deepEqual(
-    tools.slice(-8).map((tool) => tool.slug),
-    ['meal-picker', 'time-calculator', 'countdown', 'rmb-uppercase', 'tax-converter', 'travel-budget', 'dimensional-weight', 'renovation-estimator']
+    tools.slice(-10).map((tool) => tool.slug),
+    ['meal-picker', 'time-calculator', 'countdown', 'rmb-uppercase', 'tax-converter', 'travel-budget', 'dimensional-weight', 'renovation-estimator', 'pomodoro-timer', 'common-sizes']
   );
   tools.forEach((tool) => {
     ['title', 'category', 'category_name', 'icon', 'summary', 'keywords'].forEach((field) => {
@@ -260,6 +260,23 @@ test('tool metadata contains exactly 40 unique tools in the refined categories',
   assert.deepEqual(tools.filter((tool) => tool.networked === 'true').map((tool) => tool.slug), ['exchange-rate']);
   assert.deepEqual(tools.filter((tool) => tool.extra_script).map((tool) => tool.slug), ['qr-generator']);
   assert.equal(tools.some((tool) => Object.prototype.hasOwnProperty.call(tool, 'featured')), false);
+});
+
+test('pomodoro and common sizes load local modules and expose complete controls', () => {
+  const metadata = readProjectFile('_data/tools.yml');
+  const forms = readProjectFile('_includes/tool-forms/life.html');
+  const app = readProjectFile('assets/js/tool-app.js');
+  const pomodoroApp = readProjectFile('assets/js/pomodoro-app.js');
+
+  assert.match(metadata, /slug: pomodoro-timer[\s\S]*?pre_scripts:[\s\S]*?- pomodoro-timer/);
+  assert.match(metadata, /slug: common-sizes[\s\S]*?pre_scripts:[\s\S]*?- common-sizes-data/);
+  assert.match(forms, /when 'pomodoro-timer'[\s\S]*?data-pomodoro-clock[\s\S]*?data-pomodoro-noise/);
+  assert.match(forms, /when 'common-sizes'[\s\S]*?data-size-search[\s\S]*?data-size-results[\s\S]*?data-size-layout/);
+  assert.match(app, /'pomodoro-timer'\s*:\s*handlePomodoroTimer/);
+  assert.match(app, /'common-sizes'\s*:\s*handleCommonSizes/);
+  assert.match(pomodoroApp, /requestNotificationPermission/);
+  assert.match(pomodoroApp, /navigator\.wakeLock/);
+  assert.match(pomodoroApp, /keydown/);
 });
 
 test('every tool metadata record has a matching route page', () => {

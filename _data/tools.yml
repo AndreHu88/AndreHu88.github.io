@@ -321,3 +321,26 @@
   summary: 估算涂料、地砖地板和壁纸的施工面积与购买数量。
   keywords: 装修 涂料 油漆 地砖 地板 壁纸 面积 损耗
   disclaimer: 结果是规则空间的材料估算，异形区域、施工工艺与产品批次差异请交由施工方复核。
+- slug: pomodoro-timer
+  title: 番茄时钟
+  category: date-time
+  category_name: 日期时间
+  module: life
+  icon: timer
+  summary: 用可调节的专注与休息节奏完成一轮高质量工作。
+  keywords: 番茄时钟 专注 计时器 白噪音 棕噪音 休息 效率
+  pre_scripts:
+    - pomodoro-timer
+    - pomodoro-app
+- slug: common-sizes
+  title: 常用尺寸查询
+  category: utility
+  category_name: 便捷工具
+  module: life
+  icon: photo_size_select_large
+  summary: 查询证件照、照片和纸张尺寸，并换算像素与打印排版。
+  keywords: 证件照 一寸 二寸 照片 纸张 A4 尺寸 像素 DPI 排版
+  pre_scripts:
+    - common-sizes-data
+    - common-sizes-app
+  disclaimer: 常见照片名称仅作日常参考；正式证件请以办理机构的最新采集和受理要求为准。

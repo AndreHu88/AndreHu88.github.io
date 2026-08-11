@@ -13,6 +13,8 @@
   var moneyFormatter = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', maximumFractionDigits: 2 });
   var numberFormatter = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 10 });
   var mealApp = null;
+  var pomodoroApp = null;
+  var commonSizesApp = null;
   var countdownTimer = null;
 
   function escapeHtml(value) {
@@ -48,7 +50,7 @@
   }
 
   function updateInputStatus(event) {
-    if (tool === 'meal-picker') return;
+    if (tool === 'meal-picker' || tool === 'pomodoro-timer') return;
     var input = event.target;
     if (input.validity && !input.validity.valid) {
       input.setAttribute('aria-invalid', 'true');
@@ -619,6 +621,16 @@
     countdownTimer = window.setInterval(function () {
       try { renderCountdown(); } catch (error) { window.clearInterval(countdownTimer); countdownTimer = null; showError(error); }
     }, 1000);
+  }
+
+  function handlePomodoroTimer(action) {
+    if (!pomodoroApp) throw new Error('番茄时钟尚未加载完成。');
+    pomodoroApp.handle(action);
+  }
+
+  function handleCommonSizes(action) {
+    if (!commonSizesApp) throw new Error('尺寸查询组件尚未加载完成。');
+    commonSizesApp.handle(action);
   }
 
   function packageItems() {
@@ -1230,7 +1242,28 @@
   function initializeTool() {
     initializeExistingTool();
     initializeExpandedTool();
+    initializeNewLocalTools();
     applyToolState();
+  }
+
+  function initializeNewLocalTools() {
+    if (tool === 'pomodoro-timer') {
+      if (!window.JackPomodoroTimer || !window.JackPomodoroApp) throw new Error('番茄时钟资源加载失败。');
+      pomodoroApp = window.JackPomodoroApp.createPomodoroApp({
+        page: page, form: form, result: result, copyButton: copyButton,
+        engineApi: window.JackPomodoroTimer, setFormStatus: setFormStatus,
+        showError: showError, escapeHtml: escapeHtml, windowObject: window
+      });
+      pomodoroApp.initialize();
+    }
+    if (tool === 'common-sizes') {
+      if (!window.JackCommonSizes || !window.JackCommonSizesApp) throw new Error('常用尺寸数据加载失败。');
+      commonSizesApp = window.JackCommonSizesApp.createCommonSizesApp({
+        page: page, form: form, result: result, data: window.JackCommonSizes,
+        setResult: setResult, setFormStatus: setFormStatus, escapeHtml: escapeHtml
+      });
+      commonSizesApp.initialize();
+    }
   }
 
   var toolHandlers = {
@@ -1267,9 +1300,11 @@
     'workday': handleWorkday,
     'time-calculator': handleTimeCalculator,
     'countdown': handleCountdown,
+    'pomodoro-timer': handlePomodoroTimer,
     'dimensional-weight': handleDimensionalWeight,
     'renovation-estimator': handleRenovationEstimator,
     'image-compressor': handleImageCompressor,
+    'common-sizes': handleCommonSizes,
     'qr-generator': handleQrGenerator,
     'random-picker': handleRandomPicker,
     'dice-roller': handleDiceRoller,
@@ -1311,6 +1346,8 @@
       if (tool === 'mortgage') resetResult(mortgagePlaceholder());
       if (tool === 'text-stats') renderTextStats();
       if (tool === 'meal-picker' && mealApp) mealApp.resetHistory();
+      if (tool === 'pomodoro-timer' && pomodoroApp) pomodoroApp.reset();
+      if (tool === 'common-sizes' && commonSizesApp) commonSizesApp.reset();
     }, 0);
   });
   copyButton.addEventListener('click', function () {
