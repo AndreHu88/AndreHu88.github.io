@@ -59,4 +59,81 @@
 </form>
 {% when 'image-compressor' %}
 <form class="tool-form" data-tool-form><label>选择图片<input name="image" type="file" accept="image/jpeg,image/png,image/webp" required></label><div class="tool-fields tool-fields--2"><label>最大宽度（像素）<input name="maxWidth" type="number" min="1" max="12000" step="1" placeholder="保持原宽"></label><label>最大高度（像素）<input name="maxHeight" type="number" min="1" max="12000" step="1" placeholder="保持原高"></label><label>输出格式<select name="format"><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option><option value="image/png">PNG</option></select></label><label data-image-quality>压缩质量（10–100）<input name="quality" type="number" min="10" max="100" step="1" value="82" required></label></div><p class="tool-hint" data-image-quality-note hidden>PNG 为无损格式，压缩质量设置不适用，体积主要由输出尺寸决定。</p><div class="tool-actions"><button class="button button--primary" name="action" value="compress">压缩并预览</button><button class="tool-reset" type="reset">重新选择</button></div><p class="tool-hint">图片只在本机浏览器中处理。导出图片不会保留 EXIF 或定位信息。</p></form>
+{% when 'pomodoro-timer' %}
+<form class="tool-form pomodoro-form" data-tool-form>
+  <div class="pomodoro-clock" data-pomodoro-clock aria-live="polite" style="--pomodoro-progress:0deg">
+    <span data-pomodoro-phase>专注时间</span>
+    <strong data-pomodoro-time>25:00</strong>
+    <small data-pomodoro-state>准备开始</small>
+  </div>
+  <div class="pomodoro-cycles" data-pomodoro-cycles aria-label="本轮专注进度"></div>
+  <fieldset class="pomodoro-presets"><legend>选择节奏</legend><div class="tool-option-grid tool-option-grid--4">
+    <label class="pomodoro-preset"><input type="radio" name="preset" value="classic" checked><strong>经典</strong><span>25 / 5 / 15</span></label>
+    <label class="pomodoro-preset"><input type="radio" name="preset" value="deep"><strong>深度</strong><span>50 / 10 / 20</span></label>
+    <label class="pomodoro-preset"><input type="radio" name="preset" value="long"><strong>长专注</strong><span>90 / 20 / 30</span></label>
+    <label class="pomodoro-preset"><input type="radio" name="preset" value="custom"><strong>自定义</strong><span>按需设置</span></label>
+  </div></fieldset>
+  <details class="pomodoro-settings">
+    <summary>自定义与高级设置</summary>
+    <div class="pomodoro-settings__content">
+      <div class="tool-fields tool-fields--2">
+        <label>专注分钟<input name="focusMinutes" type="number" min="1" max="180" step="1" value="25" required></label>
+        <label>短休分钟<input name="shortBreakMinutes" type="number" min="1" max="60" step="1" value="5" required></label>
+        <label>长休分钟<input name="longBreakMinutes" type="number" min="1" max="60" step="1" value="15" required></label>
+        <label>每几轮长休<input name="longBreakEvery" type="number" min="1" max="12" step="1" value="4" required></label>
+      </div>
+      <p class="tool-field-error" data-pomodoro-error aria-live="polite"></p>
+      <div class="tool-option-grid">
+        <label class="tool-check"><input name="autoStart" type="checkbox">阶段结束后自动开始</label>
+        <label class="tool-check"><input name="notifications" type="checkbox">允许系统通知</label>
+        <label class="tool-check"><input name="keepAwake" type="checkbox">计时期间保持屏幕常亮</label>
+      </div>
+      <div class="tool-fields tool-fields--2">
+        <label>专注背景音<select name="noise" data-pomodoro-noise><option value="none">关闭</option><option value="white">白噪音</option><option value="brown">棕噪音</option></select></label>
+        <label>背景音音量<input name="noiseVolume" type="range" min="0" max="100" step="1" value="24"></label>
+      </div>
+    </div>
+  </details>
+  <div class="tool-actions pomodoro-actions">
+    <button class="button button--primary" name="action" value="toggle" data-pomodoro-toggle formnovalidate><span class="material-symbols-rounded">play_arrow</span><span data-pomodoro-toggle-label>开始专注</span></button>
+    <button class="button button--ghost" name="action" value="reset-phase" formnovalidate>重置本阶段</button>
+    <button class="button button--ghost" name="action" value="skip" formnovalidate>跳过</button>
+    <button class="tool-reset" type="reset">全部重置</button>
+  </div>
+  <p class="tool-hint">快捷键：空格开始或暂停，R 重置当前阶段，N 跳过。统计仅保留在当前页面。</p>
+</form>
+{% when 'common-sizes' %}
+<form class="tool-form common-sizes-form" data-tool-form>
+  <div class="tool-fields tool-fields--2">
+    <label>搜索名称或用途<input name="sizeSearch" type="search" placeholder="例如：身份证、A4、六寸" data-size-search></label>
+    <label>尺寸分类<select name="sizeCategory" data-size-category><option value="all">全部尺寸</option><option value="official">官方证件规格</option><option value="photo">常见照片规格</option><option value="paper">ISO 纸张</option></select></label>
+  </div>
+  <div class="size-reference-list" data-size-results role="listbox" aria-label="尺寸查询结果"></div>
+  <section class="size-reference-detail" data-size-detail aria-live="polite"></section>
+  <div class="tool-fields tool-fields--2">
+    <label>宽度<input name="sizeWidth" type="number" min="0.01" step="any" required></label>
+    <label>高度<input name="sizeHeight" type="number" min="0.01" step="any" required></label>
+    <label>尺寸单位<select name="sizeUnit" data-size-unit><option value="mm">毫米（mm）</option><option value="cm">厘米（cm）</option><option value="in">英寸（in）</option><option value="px">像素（px）</option></select></label>
+    <label>DPI<input name="dpi" type="number" min="1" max="2400" step="1" value="300" required></label>
+  </div>
+  <p class="tool-field-error" data-size-error aria-live="polite"></p>
+  {% assign size_dpi_values = "72,96,150,300,350,600" | split: "," %}
+  <div class="size-dpi-presets" aria-label="常用 DPI">
+    <span>快捷 DPI</span>{% for dpi in size_dpi_values %}<button type="button" data-size-dpi="{{ dpi }}">{{ dpi }}</button>{% endfor %}
+  </div>
+  <details class="size-layout" data-size-layout>
+    <summary>打印排版估算</summary>
+    <div class="size-layout__content">
+      <div class="tool-fields tool-fields--2">
+        <label>目标纸张<select name="paperId" data-size-paper></select></label>
+        <label>纸张方向<select name="paperOrientation"><option value="auto">自动选择最多数量</option><option value="portrait">纵向</option><option value="landscape">横向</option></select></label>
+        <label>页边距（mm）<input name="marginMm" type="number" min="0" max="100" step="0.1" value="5" required></label>
+        <label>项目间距（mm）<input name="gapMm" type="number" min="0" max="100" step="0.1" value="2" required></label>
+      </div>
+      <label class="tool-check"><input name="allowRotation" type="checkbox" checked>允许旋转照片以增加排版数量</label>
+    </div>
+  </details>
+  <div class="tool-actions"><button class="button button--primary" name="action" value="convert">换算尺寸</button><button class="button button--ghost" name="action" value="layout">换算并估算排版</button><button class="tool-reset" type="reset">重置</button></div>
+  <p class="tool-hint">像素结果按物理尺寸和 DPI 四舍五入；正式证件和打印成品仍需核对受理方与打印机要求。</p>
+</form>
 {% endcase %}
