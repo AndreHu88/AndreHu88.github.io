@@ -136,6 +136,169 @@
     return { monthlyDeposit: monthlyDeposit, contributed: contributed, earnings: finalAmount - contributed, finalAmount: finalAmount, months: months };
   }
 
+  var uppercaseDigits = ['零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖'];
+  var groupUnits = ['', '万', '亿'];
+
+  function uppercaseFourDigits(value) {
+    var digits = String(value).padStart(4, '0').split('').map(Number);
+    var placeUnits = ['仟', '佰', '拾', ''];
+    var result = '';
+    var pendingZero = false;
+    digits.forEach(function (digit, index) {
+      if (digit === 0) {
+        if (result) pendingZero = true;
+        return;
+      }
+      if (pendingZero) result += uppercaseDigits[0];
+      result += uppercaseDigits[digit] + placeUnits[index];
+      pendingZero = false;
+    });
+    return result;
+  }
+
+  function uppercaseInteger(integerText) {
+    if (integerText === '0') return uppercaseDigits[0];
+    var groups = [];
+    for (var end = integerText.length; end > 0; end -= 4) {
+      groups.push(Number(integerText.slice(Math.max(0, end - 4), end)));
+    }
+    var result = '';
+    var skippedGroup = false;
+    for (var index = groups.length - 1; index >= 0; index -= 1) {
+      var group = groups[index];
+      if (group === 0) {
+        if (result) skippedGroup = true;
+        continue;
+      }
+      if (result && (skippedGroup || group < 1000) && !result.endsWith(uppercaseDigits[0])) result += uppercaseDigits[0];
+      result += uppercaseFourDigits(group) + groupUnits[index];
+      skippedGroup = false;
+    }
+    return result;
+  }
+
+  function rmbUppercase(amount) {
+    var source = String(amount === undefined || amount === null ? '' : amount).trim();
+    if (!/^\d+(?:\.\d{1,2})?$/.test(source)) throw new Error('请输入有效金额，最多保留两位小数。');
+    var parts = source.split('.');
+    var integerText = parts[0].replace(/^0+(?=\d)/, '');
+    if (integerText.length > 12) throw new Error('金额不能超过 999999999999.99 元。');
+    var fractionText = (parts[1] || '').padEnd(2, '0');
+    var jiao = Number(fractionText.charAt(0));
+    var fen = Number(fractionText.charAt(1));
+    var uppercase = uppercaseInteger(integerText) + '元';
+    if (jiao === 0 && fen === 0) uppercase += '整';
+    if (jiao > 0) uppercase += uppercaseDigits[jiao] + '角';
+    if (fen > 0) {
+      if (jiao === 0 && integerText !== '0') uppercase += uppercaseDigits[0];
+      uppercase += uppercaseDigits[fen] + '分';
+    }
+    return { numeric: integerText + '.' + fractionText, uppercase: uppercase };
+  }
+
+  function roundMoney(value) {
+    return Math.round((value + Number.EPSILON) * 100) / 100;
+  }
+
+  function taxConversion(mode, amount, taxRate) {
+    if (mode !== 'exclusive' && mode !== 'inclusive') throw new Error('请选择有效的含税换算方式。');
+    if (!Number.isFinite(amount) || amount < 0) throw new Error('金额必须是大于或等于零的有效数值。');
+    if (!Number.isFinite(taxRate) || taxRate < 0 || taxRate > 100) throw new Error('税率需在 0% 到 100% 之间。');
+    var netAmount;
+    var grossAmount;
+    if (mode === 'exclusive') {
+      netAmount = roundMoney(amount);
+      grossAmount = roundMoney(netAmount * (1 + taxRate / 100));
+    } else {
+      grossAmount = roundMoney(amount);
+      netAmount = roundMoney(grossAmount / (1 + taxRate / 100));
+    }
+    return {
+      mode: mode,
+      taxRate: taxRate,
+      netAmount: netAmount,
+      taxAmount: roundMoney(grossAmount - netAmount),
+      grossAmount: grossAmount
+    };
+  }
+
+  var travelCategories = ['transport', 'accommodation', 'food', 'tickets', 'shopping', 'other'];
+  function travelScopeMultiplier(scope, people, days) {
+    if (scope === 'total') return 1;
+    if (scope === 'per-person') return people;
+    if (scope === 'per-day') return days;
+    if (scope === 'per-person-day') return people * days;
+    throw new Error('请选择有效的费用计价范围。');
+  }
+
+  function normalizeTravelItem(item, index, people, days) {
+    if (!item || travelCategories.indexOf(item.category) === -1) throw new Error('请选择有效的费用分类。');
+    if (!Number.isFinite(item.planned) || item.planned < 0) throw new Error('计划金额必须是大于或等于零的有效数值。');
+    var hasActual = item.actual !== null && item.actual !== undefined;
+    if (hasActual && (!Number.isFinite(item.actual) || item.actual < 0)) throw new Error('实际金额必须是大于或等于零的有效数值，或留空。');
+    var multiplier = travelScopeMultiplier(item.scope, people, days);
+    return {
+      name: String(item.name || '').trim() || '费用 ' + (index + 1),
+      category: item.category,
+      scope: item.scope,
+      plannedTotal: roundMoney(item.planned * multiplier),
+      actualTotal: hasActual ? roundMoney(item.actual * multiplier) : null
+    };
+  }
+
+  function travelBudget(people, days, items) {
+    if (!Number.isInteger(people) || people < 1 || people > 1000) throw new Error('出行人数需为 1 到 1000 的整数。');
+    if (!Number.isInteger(days) || days < 1 || days > 3650) throw new Error('出行天数需为 1 到 3650 的整数。');
+    if (!Array.isArray(items) || items.length < 1 || items.length > 30) throw new Error('请填写 1 到 30 项旅行费用。');
+    var normalizedItems = items.map(function (item, index) {
+      return normalizeTravelItem(item, index, people, days);
+    });
+    var categoryTotals = {};
+    var plannedTotal = 0;
+    var actualTotal = 0;
+    var actualItemCount = 0;
+    normalizedItems.forEach(function (item) {
+      if (!categoryTotals[item.category]) categoryTotals[item.category] = { category: item.category, planned: 0, actual: 0, itemCount: 0, actualItemCount: 0 };
+      categoryTotals[item.category].itemCount += 1;
+      plannedTotal = roundMoney(plannedTotal + item.plannedTotal);
+      categoryTotals[item.category].planned = roundMoney(categoryTotals[item.category].planned + item.plannedTotal);
+      if (item.actualTotal === null) return;
+      actualItemCount += 1;
+      categoryTotals[item.category].actualItemCount += 1;
+      actualTotal = roundMoney(actualTotal + item.actualTotal);
+      categoryTotals[item.category].actual = roundMoney(categoryTotals[item.category].actual + item.actualTotal);
+    });
+    var categories = travelCategories.filter(function (category) { return categoryTotals[category]; }).map(function (category) {
+      var totals = categoryTotals[category];
+      return {
+        category: category,
+        planned: totals.planned,
+        actual: totals.actual,
+        plannedShare: plannedTotal === 0 ? 0 : roundMoney(totals.planned / plannedTotal * 100),
+        actualShare: actualTotal === 0 ? 0 : roundMoney(totals.actual / actualTotal * 100),
+        itemCount: totals.itemCount,
+        actualItemCount: totals.actualItemCount
+      };
+    });
+    return {
+      people: people,
+      days: days,
+      items: normalizedItems,
+      categories: categories,
+      plannedTotal: plannedTotal,
+      actualTotal: actualTotal,
+      balance: roundMoney(plannedTotal - actualTotal),
+      plannedPerPerson: roundMoney(plannedTotal / people),
+      actualPerPerson: roundMoney(actualTotal / people),
+      plannedPerDay: roundMoney(plannedTotal / days),
+      actualPerDay: roundMoney(actualTotal / days),
+      plannedPerPersonDay: roundMoney(plannedTotal / people / days),
+      actualPerPersonDay: roundMoney(actualTotal / people / days),
+      actualItemCount: actualItemCount,
+      allActual: actualItemCount === normalizedItems.length
+    };
+  }
+
   function fetchExchangeRate(from, to, fetchImpl, timeoutMs) {
     var base = String(from || '').toUpperCase();
     var quote = String(to || '').toUpperCase();
@@ -169,6 +332,9 @@
     compareUnitPrices: compareUnitPrices,
     percentageCalculation: percentageCalculation,
     savingsGoal: savingsGoal,
+    rmbUppercase: rmbUppercase,
+    taxConversion: taxConversion,
+    travelBudget: travelBudget,
     fetchExchangeRate: fetchExchangeRate
   };
 }));

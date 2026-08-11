@@ -2,6 +2,7 @@
 layout: default
 ---
 {% assign tool = site.data.tools | where: "slug", page.tool | first %}
+{% assign tool_module = tool.module | default: tool.category %}
 <article class="tool-page" data-tool="{{ tool.slug }}">
   <header class="tool-hero">
     <a class="tool-back" href="{{ site.baseurl }}/tools/"><span class="material-symbols-rounded">arrow_back</span>全部工具</a>
@@ -29,10 +30,13 @@ layout: default
     </section>
   </div>
 
-  {% if tool.category == 'finance' %}<p class="tool-disclaimer">本工具仅供测算和学习参考，不构成投资、收益承诺或贷款建议，请以实际合同与机构规则为准。</p>{% endif %}
+  {% if tool.disclaimer %}<p class="tool-disclaimer">{{ tool.disclaimer }}</p>
+  {% elsif tool_module == 'finance' %}<p class="tool-disclaimer">本工具仅供测算和学习参考，不构成投资、收益承诺或贷款建议，请以实际合同与机构规则为准。</p>{% endif %}
   {% if tool.slug == 'bmi' %}<p class="tool-disclaimer">BMI 仅供成年人日常参考，不能替代体脂、腰围评估或专业医疗判断。</p>{% endif %}
 </article>
-<script src="{{ site.baseurl }}/assets/js/tool-core.js"></script>
-{% if tool.extra_script %}<script src="{{ site.baseurl }}/assets/js/vendor/{{ tool.extra_script }}.js"></script>{% endif %}
-<script src="{{ site.baseurl }}/assets/js/tool-{{ tool.category }}.js"></script>
-<script src="{{ site.baseurl }}/assets/js/tool-app.js"></script>
+{% assign asset_version = site.time | date: '%s' %}
+<script src="{{ site.baseurl }}/assets/js/tool-core.js?v={{ asset_version }}"></script>
+{% if tool.extra_script %}<script src="{{ site.baseurl }}/assets/js/vendor/{{ tool.extra_script }}.js?v={{ asset_version }}"></script>{% endif %}
+{% for pre_script in tool.pre_scripts %}<script src="{{ site.baseurl }}/assets/js/{{ pre_script }}.js?v={{ asset_version }}"></script>{% endfor %}
+<script src="{{ site.baseurl }}/assets/js/tool-{{ tool_module }}.js?v={{ asset_version }}"></script>
+<script src="{{ site.baseurl }}/assets/js/tool-app.js?v={{ asset_version }}"></script>

@@ -5,4 +5,75 @@
 <form class="tool-form" data-tool-form><label>候选名单（每行一项）<textarea name="source" rows="12" placeholder="小明&#10;小红&#10;小李" required></textarea></label><div class="tool-fields tool-fields--2"><label>抽取数量<input name="count" type="number" min="1" step="1" value="1" required></label><label class="tool-check"><input name="dedupe" type="checkbox" checked>抽取前去重</label></div><div class="tool-actions"><button class="button button--primary" name="action" value="pick">随机抽取</button><button class="button button--ghost" name="action" value="shuffle">打乱全部</button><button class="tool-reset" type="reset">重置</button></div></form>
 {% when 'dice-roller' %}
 <form class="tool-form" data-tool-form><label>模式<select name="mode" data-random-mode><option value="dice">投掷骰子</option><option value="integer">生成随机整数</option></select></label><div data-dice-fields><div class="tool-fields tool-fields--3"><label>骰子数量<input name="diceCount" type="number" min="1" max="20" step="1" value="2"></label><label>每个面数<input name="sides" type="number" min="2" max="1000" step="1" value="6"></label><label>修正值<input name="modifier" type="number" step="1" value="0"></label></div></div><div data-integer-fields hidden><div class="tool-fields tool-fields--3"><label>最小值<input name="minimum" type="number" step="1" value="1"></label><label>最大值<input name="maximum" type="number" step="1" value="100"></label><label>生成数量<input name="integerCount" type="number" min="1" max="1000" step="1" value="1"></label></div></div><div class="tool-actions"><button class="button button--primary" name="action" value="generate">开始生成</button><button class="tool-reset" type="reset">重置</button></div></form>
+{% when 'meal-picker' %}
+<form class="tool-form" data-tool-form data-meal-picker-form>
+  <fieldset class="meal-mode-switch">
+    <legend>候选来源</legend>
+    <div>
+      <label><input name="mode" type="radio" value="builtin" data-meal-mode checked><span class="material-symbols-rounded">auto_awesome</span><strong>智能推荐</strong></label>
+      <label><input name="mode" type="radio" value="custom" data-meal-mode><span class="material-symbols-rounded">playlist_add</span><strong>自定义分组</strong></label>
+    </div>
+  </fieldset>
+  <div class="meal-main-grid">
+    <label for="meal-people">用餐人数
+      <input id="meal-people" name="people" type="number" min="1" max="12" step="1" value="2" required inputmode="numeric">
+    </label>
+    <label for="meal-dish-count">推荐菜数量
+      <input id="meal-dish-count" name="dishCount" type="number" min="1" max="20" step="1" value="3" required inputmode="numeric">
+    </label>
+    <label for="meal-dining">就餐方式
+      <select id="meal-dining" name="dining">
+        <option value="cook" selected>自己做</option><option value="takeout">外卖</option><option value="dine-in">堂食</option>
+      </select>
+    </label>
+    <label for="meal-budget">人均预算（元）
+      <input id="meal-budget" name="budgetPerPerson" type="number" min="0" max="10000" step="1" value="30" inputmode="decimal" placeholder="留空表示不限预算">
+    </label>
+  </div>
+
+  <div id="meal-builtin-fields" data-meal-builtin>
+    <fieldset class="meal-theme-field">
+      <legend>推荐主题</legend>
+      <div class="meal-theme-grid" data-meal-theme-options></div>
+    </fieldset>
+
+    <details class="meal-advanced" data-meal-advanced>
+      <summary><span>高级设置</span><small data-meal-advanced-summary>荤素均衡 · 辣度不限 · 汤品可选</small></summary>
+      <div class="meal-advanced__content">
+        <div class="meal-filter-grid">
+          <label for="meal-ratio">荤素结构<select id="meal-ratio" name="ratio"><option value="balanced" selected>荤素均衡</option><option value="meat-heavy">荤食为主（约 3:1）</option><option value="vegetable-heavy">素食为主（约 1:3）</option><option value="all-meat">全部荤食</option><option value="all-vegetarian">全部素食</option></select></label>
+          <label for="meal-max-spice">最高可接受辣度<select id="meal-max-spice" name="maxSpice"><option value="any" selected>不限辣度</option><option value="none">不辣</option><option value="mild">微辣</option><option value="medium">中辣</option><option value="hot">重辣</option></select></label>
+          <label for="meal-soup-policy">汤品规则<select id="meal-soup-policy" name="soupPolicy"><option value="none">不要汤</option><option value="optional" selected>可有一道</option><option value="required">固定一道</option></select></label>
+          <label for="meal-cook-minutes" data-meal-cook-time>单道菜耗时上限<select id="meal-cook-minutes" name="maxCookMinutes"><option value="">不限</option><option value="20">20 分钟内</option><option value="40">40 分钟内</option><option value="60">60 分钟内</option></select></label>
+        </div>
+        <fieldset class="meal-style-field" data-meal-style-field aria-describedby="meal-style-error">
+          <legend>允许菜式（可多选）</legend><div class="meal-style-grid" data-meal-style-options></div>
+          <p class="tool-field-error" id="meal-style-error" data-meal-style-error role="alert" hidden>请至少选择一种普通菜式。</p>
+        </fieldset>
+        <div class="meal-ingredient-columns">
+          <fieldset><legend>想优先用掉的食材</legend><div class="meal-ingredient-list" data-meal-ingredient-list="preferred"></div><button class="button button--ghost" type="button" data-add-meal-ingredient="preferred">添加食材</button><p class="tool-hint">系统会优先覆盖这些食材，但不会破坏预算和菜单结构。</p></fieldset>
+          <fieldset><legend>必须避开的食材</legend><div class="meal-ingredient-list" data-meal-ingredient-list="avoided"></div><button class="button button--ghost" type="button" data-add-meal-ingredient="avoided">添加忌口</button><p class="tool-hint">严重过敏时仍需向商家确认配料与交叉接触风险。</p></fieldset>
+        </div>
+      </div>
+    </details>
+    <datalist id="meal-ingredient-suggestions" data-meal-ingredient-suggestions></datalist>
+  </div>
+
+  <div id="meal-custom-fields" data-meal-custom hidden>
+    <label for="meal-custom-candidates">我的候选（每行一道菜）
+      <textarea id="meal-custom-candidates" name="customCandidates" rows="10" maxlength="10000" placeholder="番茄牛腩饭&#10;兰州牛肉面&#10;鸡胸肉沙拉" aria-describedby="meal-custom-help"></textarea>
+    </label>
+    <p class="tool-hint" id="meal-custom-help">会生成三组随机名单，不判断荤素、结构、主题和预算；名单不会保存。</p>
+    <p class="tool-hint" data-meal-custom-count aria-live="polite">当前 0 个有效候选</p>
+  </div>
+
+  <div class="tool-actions">
+    <button class="button button--primary" name="action" value="plan">生成三套菜单</button>
+    <button class="button button--ghost" name="action" value="reroll">换一批</button>
+    <button class="button button--ghost" name="action" value="reset-history" formnovalidate>重置本轮记录</button>
+    <button class="tool-reset" type="reset">全部重置</button>
+  </div>
+  <p class="tool-hint" data-meal-history-status aria-live="polite">本轮还没有推荐记录。</p>
+  <p class="tool-hint">抽选使用浏览器安全随机源；推荐仅供快速决策，食材、价格和供应情况请以实际商家为准。</p>
+</form>
 {% endcase %}

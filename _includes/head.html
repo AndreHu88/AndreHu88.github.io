@@ -1,5 +1,9 @@
 <head>
-  {% assign head_tool = site.data.tools | where: "slug", page.tool | first %}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% assign head_tool = nil %}
+  {% if page.tool %}
+    {% assign head_tool = site.data.tools | where: "slug", page.tool | first %}
+  {% endif %}
   <title>{% if head_tool %}{{ head_tool.title }} – {% elsif page.title %}{{ page.title }} – {% endif %}{{ site.name }} – {{ site.description }}</title>
 
   {% include meta.html %}

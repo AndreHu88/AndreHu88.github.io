@@ -49,36 +49,41 @@
   keywords: HEX RGB RGBA HSL HSLA 颜色
 - slug: date-difference
   title: 日期间隔
-  category: developer
-  category_name: 开发辅助
+  category: date-time
+  category_name: 日期时间
+  module: developer
   icon: date_range
   summary: 计算两个日期之间的自然日、周数和年月日差。
   keywords: 日期 间隔 天数 周数 年月日
 - slug: mortgage
   title: 房贷计算器
-  category: finance
-  category_name: 金融计算
+  category: finance-loan
+  category_name: 贷款储蓄
+  module: finance
   icon: home_work
   summary: 支持商贷、公积金、组合贷与两种还款方式对比。
   keywords: 房贷 月供 商贷 公积金 组合贷 等额本息 等额本金
 - slug: compound-interest
   title: 复利计算器
-  category: finance
-  category_name: 金融计算
+  category: finance-investment
+  category_name: 投资收益
+  module: finance
   icon: trending_up
   summary: 计算不同复利频率下的本金、收益和最终金额。
   keywords: 复利 本金 利率 收益 终值
 - slug: cagr
   title: 年化收益率
-  category: finance
-  category_name: 金融计算
+  category: finance-investment
+  category_name: 投资收益
+  module: finance
   icon: monitoring
   summary: 按起止金额与日期计算 CAGR 年化收益率。
   keywords: CAGR 年化收益率 投资 回报率
 - slug: recurring-investment
   title: 定投计算器
-  category: finance
-  category_name: 金融计算
+  category: finance-investment
+  category_name: 投资收益
+  module: finance
   icon: savings
   summary: 估算定期投入的累计本金、收益与期末资产。
   keywords: 定投 定期投资 收益 本金 期末资产
@@ -98,129 +103,221 @@
   keywords: 列表 去重 排序 空行 文本 清理
 - slug: exchange-rate
   title: 汇率换算
-  category: finance
-  category_name: 金融计算
+  category: finance-currency
+  category_name: 汇率财税
+  module: finance
   icon: currency_exchange
   summary: 联网获取最新公开参考汇率，金额在本地完成换算。
   keywords: 汇率 外币 人民币 美元 欧元 日元 换算
   networked: true
 - slug: discount
   title: 折扣计算器
-  category: finance
-  category_name: 金融计算
+  category: finance-consumer
+  category_name: 消费计算
+  module: finance
   icon: sell
   summary: 计算折后价、优惠金额与实际折扣比例。
   keywords: 折扣 折后价 优惠券 省钱 打折
 - slug: bill-split
   title: AA 分账
-  category: finance
-  category_name: 金融计算
+  category: finance-consumer
+  category_name: 消费计算
+  module: finance
   icon: groups
   summary: 计算多人账单、服务费、小费和分位差额。
   keywords: AA 分账 聚餐 人均 小费 服务费
 - slug: unit-price
   title: 商品单价比较
-  category: finance
-  category_name: 金融计算
+  category: finance-consumer
+  category_name: 消费计算
+  module: finance
   icon: compare_arrows
   summary: 统一规格单位，找出真正更划算的商品。
   keywords: 单价 比价 克 千克 毫升 升 件
 - slug: percentage
   title: 百分比计算器
-  category: finance
-  category_name: 金融计算
+  category: finance-consumer
+  category_name: 消费计算
+  module: finance
   icon: percent
   summary: 计算占比、涨跌幅、增减结果或反推原值。
   keywords: 百分比 占比 涨幅 跌幅 增长 反推
 - slug: savings-goal
   title: 存款目标计算器
-  category: finance
-  category_name: 金融计算
+  category: finance-loan
+  category_name: 贷款储蓄
+  module: finance
   icon: account_balance
   summary: 按目标、期限和预期收益估算每月应存金额。
   keywords: 存款 目标 每月 储蓄 利息 规划
 - slug: unit-converter
   title: 单位转换
-  category: life
-  category_name: 生活实用
+  category: utility
+  category_name: 便捷工具
+  module: life
   icon: swap_horiz
   summary: 转换长度、面积、质量、体积、温度、速度和容量。
   keywords: 单位 换算 长度 面积 重量 温度 速度 数据
 - slug: age-calculator
   title: 年龄计算器
-  category: life
-  category_name: 生活实用
+  category: date-time
+  category_name: 日期时间
+  module: life
   icon: cake
   summary: 计算周岁、精确年龄、总天数与下次生日。
   keywords: 年龄 周岁 生日 出生日期 天数
 - slug: timezone-converter
   title: 时区转换
-  category: life
-  category_name: 生活实用
+  category: date-time
+  category_name: 日期时间
+  module: life
   icon: public
   summary: 在 IANA 时区之间转换日期时间并识别跨日。
   keywords: 时区 世界时间 UTC 夏令时 跨日
 - slug: fuel-cost
   title: 油费计算器
-  category: life
-  category_name: 生活实用
+  category: home-travel
+  category_name: 居家出行
+  module: life
   icon: local_gas_station
   summary: 按里程、油耗和油价估算用油量与出行成本。
   keywords: 油费 油耗 百公里 里程 油价 自驾
 - slug: electricity-cost
   title: 电费计算器
-  category: life
-  category_name: 生活实用
+  category: home-travel
+  category_name: 居家出行
+  module: life
   icon: electric_bolt
   summary: 按功率、时长和电价估算耗电量与费用。
   keywords: 电费 功率 千瓦时 度电 家电 用电量
 - slug: recipe-scaler
   title: 配方比例换算
-  category: life
-  category_name: 生活实用
+  category: food-health
+  category_name: 饮食健康
+  module: life
   icon: restaurant
   summary: 按新旧份数批量缩放多项食材用量。
   keywords: 配方 食谱 份数 食材 比例 烘焙
 - slug: bmi
   title: BMI 计算器
-  category: life
-  category_name: 生活实用
+  category: food-health
+  category_name: 饮食健康
+  module: life
   icon: monitor_weight
   summary: 计算成人 BMI、分类与身高对应的参考体重范围。
   keywords: BMI 身高 体重 成人 健康 参考范围
 - slug: workday
   title: 工作日计算器
-  category: life
-  category_name: 生活实用
+  category: date-time
+  category_name: 日期时间
+  module: life
   icon: event_available
   summary: 统计工作日，或推算若干工作日后的日期。
   keywords: 工作日 周末 日期 调休 假期 天数
 - slug: image-compressor
   title: 图片压缩与缩放
-  category: life
-  category_name: 生活实用
+  category: utility
+  category_name: 便捷工具
+  module: life
   icon: image
   summary: 在本地调整图片尺寸、格式和压缩质量。
   keywords: 图片 压缩 缩放 JPEG PNG WebP 体积
 - slug: qr-generator
   title: 二维码生成器
-  category: fun
-  category_name: 趣味效率
+  category: utility
+  category_name: 便捷工具
+  module: fun
   icon: qr_code_2
   summary: 在本地生成文本、网址或 Wi-Fi 二维码。
   keywords: 二维码 QR 网址 文本 WiFi PNG
   extra_script: qrcode-generator
 - slug: random-picker
   title: 随机抽取器
-  category: fun
-  category_name: 趣味效率
+  category: random
+  category_name: 随机趣味
+  module: fun
   icon: draw
   summary: 从名单中无放回抽取结果或打乱完整顺序。
   keywords: 随机 抽签 名单 选择 打乱 去重
 - slug: dice-roller
   title: 骰子与随机数
-  category: fun
-  category_name: 趣味效率
+  category: random
+  category_name: 随机趣味
+  module: fun
   icon: casino
   summary: 投掷多面骰子，或生成范围内的不重复整数。
   keywords: 骰子 随机数 抽数 多面骰 修正值
+- slug: meal-picker
+  title: 今天吃什么
+  category: food-health
+  category_name: 饮食健康
+  module: fun
+  icon: restaurant_menu
+  summary: 按人数、预算、主题和忌口，生成三套结构完整的正餐菜单。
+  keywords: 今天吃什么 菜单 推荐 家常 下饭菜 午餐 晚餐 外卖 随机
+  pre_scripts:
+    - meal-data
+    - meal-planner
+    - meal-app
+  disclaimer: 忌口筛选仅依据常见食材标签，不能替代餐厅配料确认；如有严重过敏，请务必向商家核实。
+- slug: time-calculator
+  title: 时间加减
+  category: date-time
+  category_name: 日期时间
+  module: life
+  icon: more_time
+  summary: 增减天时分秒，或计算两个时刻之间的精确间隔。
+  keywords: 时间 加减 时刻 间隔 小时 分钟 秒 跨日
+- slug: countdown
+  title: 倒数日
+  category: date-time
+  category_name: 日期时间
+  module: life
+  icon: timer
+  summary: 实时查看重要事件还剩多久，也支持每年重复的纪念日。
+  keywords: 倒数日 倒计时 纪念日 目标日期 生日 时间
+- slug: rmb-uppercase
+  title: 人民币大写
+  category: finance-currency
+  category_name: 汇率财税
+  module: finance
+  icon: request_quote
+  summary: 将数字金额准确转换为人民币财务大写写法。
+  keywords: 人民币 大写 金额 壹贰叁 元角分 财务 发票
+  disclaimer: 转换结果用于日常金额书写参考，正式票据仍请按所在机构的填写规范复核。
+- slug: tax-converter
+  title: 含税与未税换算
+  category: finance-currency
+  category_name: 汇率财税
+  module: finance
+  icon: receipt_long
+  summary: 按自选税率拆分含税金额，或从未税金额计算价税合计。
+  keywords: 含税 未税 税额 税率 价税合计 发票
+  disclaimer: 本工具只按你输入的税率做数学换算，不判断业务适用税率，也不构成税务建议。
+- slug: travel-budget
+  title: 旅行预算
+  category: finance-consumer
+  category_name: 消费计算
+  module: finance
+  icon: luggage
+  summary: 按人数、天数和费用范围汇总旅行预算与实际支出。
+  keywords: 旅行 预算 人均 日均 交通 住宿 餐饮 支出
+  disclaimer: 预算结果仅供行程规划，请另外预留汇率波动、临时交通和其他意外支出。
+- slug: dimensional-weight
+  title: 快递体积重
+  category: home-travel
+  category_name: 居家出行
+  module: life
+  icon: inventory_2
+  summary: 比较包裹实际重量与体积重量，估算快递计费重。
+  keywords: 快递 体积重 计费重 包裹 长宽高 物流
+  disclaimer: 不同承运商、线路和货物类型的系数与进位规则可能不同，请以实际报价为准。
+- slug: renovation-estimator
+  title: 装修用量
+  category: home-travel
+  category_name: 居家出行
+  module: life
+  icon: format_paint
+  summary: 估算涂料、地砖地板和壁纸的施工面积与购买数量。
+  keywords: 装修 涂料 油漆 地砖 地板 壁纸 面积 损耗
+  disclaimer: 结果是规则空间的材料估算，异形区域、施工工艺与产品批次差异请交由施工方复核。
